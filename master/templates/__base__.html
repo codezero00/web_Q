@@ -3,57 +3,80 @@
 <head>
     <meta charset="utf-8" />
     {% block meta %}<!-- block meta  -->{% endblock %}
-    <title>{% block title %} ? {% endblock %} - Awesome Python Webapp</title>
-    <!-- <link rel="stylesheet" href="/static/css/uikit.min.css"> -->
-    <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
-    <link rel="stylesheet" href="/static/css/awesome.css" />
-    <link rel="stylesheet" href="//cdn.bootcss.com/uikit/2.25.0/css/uikit.css" />
-    <script src="//cdn.bootcss.com/uikit/2.25.0/js/uikit.js"></script>
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/md5.js"></script>
-    <!-- <script src="/static/js/uikit.min.js"></script> -->
-    <script src="/static/js/awesome.js"></script>
+    <title>{% block title %} ? {% endblock %} hello word</title>
+    <script src="https://unpkg.com/vue"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
+    <link rel="stylesheet" href="../static/gap.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     {% block beforehead %}<!-- before head  -->{% endblock %}
 </head>
 <body>
-    <nav class="uk-navbar uk-navbar-attached uk-margin-bottom">
-        <div class="uk-container uk-container-center">
-            <a href="/" class="uk-navbar-brand">Awesome</a>
-            <ul class="uk-navbar-nav">
-                <li data-url="blogs"><a href="/"><i class="uk-icon-home"></i> 日志</a></li>
-                <li><a target="_blank" href="#"><i class="uk-icon-book"></i> 教程</a></li>
-                <li><a target="_blank" href="#"><i class="uk-icon-code"></i> 源码</a></li>
-            </ul>
-            <div class="uk-navbar-flip">
-                <ul class="uk-navbar-nav">
-                </ul>
-            </div>
-        </div>
-    </nav>
+<div id="app">
 
-    <div class="uk-container uk-container-center">
-        <div class="uk-grid">
+    <el-row>
+        <el-col :span="24">
+            <el-menu theme="dark" :default-active="activeIndex" class="el-menu-main" mode="horizontal"
+                     @select="handleSelect">
+                <span>SEARCH GAP</span>
+            </el-menu>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="4">
+
+            <el-menu default-active="2" class="el-menu-vertical-left" @open="handleOpen" @close="handleClose">
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-message"></i>导航一</template>
+                        <el-menu-item index="1-1">7天内实时缺口信息</el-menu-item>
+                        <el-menu-item index="1-2">选项2</el-menu-item>
+                        <el-menu-item index="1-3">选项3</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="2"><i class="el-icon-menu"></i>导航二</el-menu-item>
+                <el-menu-item index="3"><i class="el-icon-setting"></i>导航三</el-menu-item>
+            </el-menu>
+
+        </el-col>
+        <el-col :span="20">
             <!-- content -->
             {% block content %}
             {% endblock %}
-            <!-- // content -->
-        </div>
-    </div>
+            <!-- // content -->>
+        </el-col>
+    </el-row>
 
-    <div class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
-        <div class="uk-container uk-container-center uk-text-center">
-            <div class="uk-panel uk-margin-top uk-margin-bottom">
-                <p>
-                    <a target="_blank" href="#" class="uk-icon-button uk-icon-weibo"></a>
-                    <a target="_blank" href="#" class="uk-icon-button uk-icon-github"></a>
-                    <a target="_blank" href="#" class="uk-icon-button uk-icon-linkedin-square"></a>
-                    <a target="_blank" href="#" class="uk-icon-button uk-icon-twitter"></a>
-                </p>
-                <p>Powered by <a href="#">Awesome Python Webapp</a>. Copyright &copy; 2014. [<a href="/manage/" target="_blank">Manage</a>]</p>
-                <p><a href="http://www.liaoxuefeng.com/" target="_blank">www.liaoxuefeng.com</a>. All rights reserved.</p>
-                <a target="_blank" href="#"><i class="uk-icon-html5" style="font-size:64px; color: #444;"></i></a>
-            </div>
-        </div>
-    </div>
+</div>
 </body>
+<script>
+    var index = new Vue({
+        el: '#app',
+        data() {
+            return {
+
+            };
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    });
+
+    var weekgap = new Vue({
+        el: '#weekgap',
+        data() {
+            return {
+                weekgaplist:[
+                    {
+
+                    }
+                ]
+            };
+        },
+        methods: {
+
+        }
+    })
+</script>
 </html>

@@ -44,3 +44,32 @@ async def test_example():
             await cur.close()
             print(r)
             return r
+
+async def exec():
+    global __pool
+    async with __pool.acquire() as conn:
+        async with conn.cursor() as cur:
+            SQL="""
+            select
+            t2.code,
+            t2.name,
+            t2.industry,
+            t1.today,
+            t1.yesterday,
+            t1.tod_high,
+            t1.tod_low,
+            t1.yes_high,
+            t1.yes_low,
+            t1.gaptype,
+            t1.gapdesc
+            from (
+            SELECT *
+            FROM gold.gap order by today desc limit 1,10) t1
+            left join sharelist t2 on t1.code=t2.code
+            """
+            await cur.execute(SQL)
+            print(cur.description)
+            r = await cur.fetchall()
+            await cur.close()
+            print(r)
+            return r

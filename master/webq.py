@@ -87,6 +87,11 @@ class webQ(object):
         logging.info('add_url_rule : {} {} call funcation: {} '.format(method,path,view_func.__name__) )
         app.router.add_route(method, path, view_func)
 
+    def add_static(self,app):
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+        app.router.add_static('/static/', path)
+        logging.info('add static %s => %s' % ('/static/', path))
+
     def setup_routes(self, app, patterns):
         for attr in patterns:
             #logging.info('func_name: %s' % str(attr))
@@ -104,6 +109,7 @@ class webQ(object):
         await orm.create_pool(loop=loop)   ### 创建数据库连接池
         app = web.Application(loop=loop, middlewares=[self.logger_factory,self.response_factory])
         self.init_jinja2(app)
+        self.add_static(app)
         self.setup_routes(app, self.patterns)
         srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
         logging.info('server started at http://127.0.0.1:9000...')

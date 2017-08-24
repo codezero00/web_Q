@@ -9,5 +9,6 @@ urlpatterns = [('GET', '/',  'view.index'),
                ('GET', '/4', 'view.index4'),
                ('GET', '/5', 'view.index5'),
                ('GET', '/6', 'view.index6'),
-               ('GET', '/7', 'view.index7')
+               ('GET', '/7', 'view.index7'),
+               ('GET', '/8', 'view.index8')
                ]

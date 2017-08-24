@@ -1,6 +1,6 @@
 from aiohttp import web
 import json, time
-from . import orm
+import orm
 import logging
 
 
@@ -82,5 +82,17 @@ async def index7(request):
     '''
     logging.info('get int index7777')
     list = await orm.test_example()
+    print('endddddddddddddd{}'.format(str(list)))
+    return str(list)
+
+
+async def index8(request):
+    '''
+    通过连接池完成mysql查询
+    :param request:
+    :return:
+    '''
+    logging.info('get int index8')
+    list = await orm.exec()
     print('endddddddddddddd{}'.format(str(list)))
     return str(list)
