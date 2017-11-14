@@ -1,0 +1,72 @@
+{% extends '__base__.html' %} {% block title %}周缺口{% endblock %} {% block content %}
+<div id="weekgap">
+        <template>
+                <el-table :data="weekgaplist" border stripe style="width: 100%" max-height="2000">
+                        <el-table-column fixed  label="股票代码" width="100">
+                                <template scope="scope">
+                                        <a :href="'http://quote.eastmoney.com/search.html?stockcode='+scope.row.code" target="_blank">{{scope.row.code}}</a>
+                                </template>
+                        </el-table-column>
+                        <el-table-column prop="name" label="股票名称" width="120">
+                        </el-table-column>
+                        <el-table-column prop="industry" label="产业" width="120">
+                        </el-table-column>
+                        <el-table-column prop="today" label="N" width="120">
+                        </el-table-column>
+                        <el-table-column prop="yesterday" label="N-1" width="120">
+                        </el-table-column>
+                        <el-table-column prop="tod_high" label="N日最高点" width="120">
+                        </el-table-column>
+                        <el-table-column prop="tod_low" label="N日最低点" width="120">
+                        </el-table-column>
+                        <el-table-column prop="yes_high" label="N-1日最高点" width="120">
+                        </el-table-column>
+                        <el-table-column prop="yes_low" label="N-1日最低点" width="120">
+                        </el-table-column>
+                        <el-table-column prop="gaptype" label="缺口类型" width="120">
+                        </el-table-column>
+                        <el-table-column prop="gapdesc" label="缺口描述" width="200">
+                        </el-table-column>
+                        <el-table-column fixed="right" label="操作" width="120">
+                                <template scope="scope">
+                                        <el-button  @click="detail(scope.row.code)" type="text" size="small">
+                                                详情
+                                        </el-button>
+                                </template>
+                        </el-table-column>
+                </el-table>
+        </template>
+</div>
+
+
+<el-dialog title="收货地址" :visible.sync="dialogTableVisible" size="large">
+        <el-table :data="onegaplist" border stripe style="width: 100%" max-height="2000">
+                <el-table-column fixed label="股票代码" width="100">
+                        <template scope="scope">
+                                <a :href="'http://quote.eastmoney.com/search.html?stockcode='+scope.row.code" target="_blank">{{scope.row.code}}</a>
+                        </template>
+                </el-table-column>
+                <el-table-column prop="name" label="股票名称" width="120">
+                </el-table-column>
+                <el-table-column prop="industry" label="产业" width="120">
+                </el-table-column>
+                <el-table-column prop="today" label="N" width="120">
+                </el-table-column>
+                <el-table-column prop="yesterday" label="N-1" width="120">
+                </el-table-column>
+                <el-table-column prop="tod_high" label="N日最高点" width="120">
+                </el-table-column>
+                <el-table-column prop="tod_low" label="N日最低点" width="120">
+                </el-table-column>
+                <el-table-column prop="yes_high" label="N-1日最高点" width="120">
+                </el-table-column>
+                <el-table-column prop="yes_low" label="N-1日最低点" width="120">
+                </el-table-column>
+                <el-table-column prop="gaptype" label="缺口类型" width="120">
+                </el-table-column>
+                <el-table-column prop="gapdesc" label="缺口描述" width="200">
+                </el-table-column>
+        </el-table>
+</el-dialog>
+
+{% endblock %}
