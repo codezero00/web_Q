@@ -1,11 +1,110 @@
-
 import json, time, hashlib, logging
 import webQ.q_orm  as orm
-from webQ.q_response import Response, json_response
+from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id
 import model
-from model import User
+from model import User, grils, ggroup,gimages,ginfo,gtype
+from utils import parestree
+
+async def authenticate(request):
+    '''
+    登陆模块
+    :param request:
+    :return:
+    '''
+    # data = await request.json()
+    # email = data['email']
+    # passwd = data['passwd']
+    email = request.query.get('email')
+    passwd = request.query.get('passwd')
+    if not email:
+        raise Exception('email', 'Invalid email.')
+    if not passwd:
+        raise Exception('passwd', 'Invalid password.')
+    users = await User.findAll('email=?', [email])
+    if len(users) == 0:
+        raise Exception('email', 'Email not exist.')
+    user = users[0]
+    # check passwd:
+    sha1 = hashlib.sha1()
+    sha1.update(user.id.encode('utf-8'))
+    sha1.update(b':')
+    sha1.update(passwd.encode('utf-8'))
+    print(sha1.hexdigest())
+    print('passwd: {}'.format(user.passwd))
+    if user.passwd != sha1.hexdigest():
+        raise Exception('passwd', 'Invalid password.')
+    # authenticate ok, set cookie:
+    r = Response()
+    # r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400, httponly=True)
+    r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400)
+    user.passwd = '******'
+    r.content_type = 'application/json'
+    data = dict()
+    data['success'] = True
+    data['data'] = user
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+
+async def api_register_user(request):
+    # def api_register_user(*, email, name, passwd):
+    '''
+    用户注册模块
+    :param email:
+    :param name:
+    :param passwd:
+    :return:
+    '''
+    email = request.query.get('email')
+    name = request.query.get('name')
+    passwd = request.query.get('passwd')
+    print('e: {} n: {} p: {}'.format(email, name, passwd))
+    if not name or not name.strip():
+        raise APIValueError('name')
+    if not email or not _RE_EMAIL.match(email):
+        raise APIValueError('email')
+    # if not passwd or not _RE_SHA1.match(passwd):
+    if not passwd:
+        raise APIValueError('passwd')
+    users = await User.findAll('email=?', [email])
+    if len(users) > 0:
+        raise APIError('register:failed', 'email', 'Email is already in use.')
+    uid = next_id()
+    sha1_passwd = '%s:%s' % (uid, passwd)
+    user = User(id=uid, name=name.strip(), email=email, passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(),
+                image='http://xxx/qq?d=mm&s=120')
+    await user.save()
+    # make session cookie:
+    r = Response()
+    # r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400, httponly=True)
+    r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400)
+    user.passwd = '******'
+    r.content_type = 'application/json'
+    r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
+    return r
+
+
+async def islogin(request):
+    if request.__user__:
+        ##
+        data = dict()
+        data['success'] = True
+        # data4['failure'] = None
+        data['data'] = request.__user__
+        ##
+        r = Response()
+        # request.__user__.passwd = '******'
+        r.content_type = 'application/json'
+        r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+        # r.body = json.dumps(request.__user__, ensure_ascii=False).encode('utf-8')
+        return r
+    else:
+        raise APIError('do not login! plase login!')
+
+
+
 
 def index(request):
     return Response(body=u'<h1>hello word</h1>')
@@ -195,97 +294,93 @@ async def index12(request):
     return json_response(data)
 
 
-async def authenticate(request):
-    '''
-    登陆模块
-    :param request:
-    :return:
-    '''
-    # data = await request.json()
-    # email = data['email']
-    # passwd = data['passwd']
-    email = request.query.get('email')
-    passwd = request.query.get('passwd')
-    if not email:
-        raise Exception('email', 'Invalid email.')
-    if not passwd:
-        raise Exception('passwd', 'Invalid password.')
-    users = await User.findAll('email=?', [email])
-    if len(users) == 0:
-        raise Exception('email', 'Email not exist.')
-    user = users[0]
-    # check passwd:
-    sha1 = hashlib.sha1()
-    sha1.update(user.id.encode('utf-8'))
-    sha1.update(b':')
-    sha1.update(passwd.encode('utf-8'))
-    print(sha1.hexdigest())
-    print('passwd: {}'.format(user.passwd))
-    if user.passwd != sha1.hexdigest():
-        raise Exception('passwd', 'Invalid password.')
-    # authenticate ok, set cookie:
-    r = Response()
-    # r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400, httponly=True)
-    r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400)
-    user.passwd = '******'
-    r.content_type = 'application/json'
+async def metagroup(request):
+    # if request.__user__:
+    group = await Metadata_group.findAll()
+    #print(group)
+    # for i in group:
+    #     print(i)
+    #     print(i[0])
+    group_list = [{'ID': int(i['id']), 'PID': int(i['pid']), 'NAME': i['groupname']} for i in group]
+    print(group_list)
+    ##
     data = dict()
     data['success'] = True
-    data['data'] = user
-    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
-    return r
-
-
-async def api_register_user(request):
-    # def api_register_user(*, email, name, passwd):
-    '''
-    用户注册模块
-    :param email:
-    :param name:
-    :param passwd:
-    :return:
-    '''
-    email = request.query.get('email')
-    name = request.query.get('name')
-    passwd = request.query.get('passwd')
-    print('e: {} n: {} p: {}'.format(email, name, passwd))
-    if not name or not name.strip():
-        raise APIValueError('name')
-    if not email or not _RE_EMAIL.match(email):
-        raise APIValueError('email')
-    # if not passwd or not _RE_SHA1.match(passwd):
-    if not passwd:
-        raise APIValueError('passwd')
-    users = await User.findAll('email=?', [email])
-    if len(users) > 0:
-        raise APIError('register:failed', 'email', 'Email is already in use.')
-    uid = next_id()
-    sha1_passwd = '%s:%s' % (uid, passwd)
-    user = User(id=uid, name=name.strip(), email=email, passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(),
-                image='http://xxx/qq?d=mm&s=120')
-    await user.save()
-    # make session cookie:
+    # data4['failure'] = None
+    data['data'] = parestree(group_list)
+    ##
     r = Response()
-    # r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400, httponly=True)
-    r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400)
-    user.passwd = '******'
+    # request.__user__.passwd = '******'
     r.content_type = 'application/json'
-    r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    # r.body = json.dumps(request.__user__, ensure_ascii=False).encode('utf-8')
     return r
+    # else:
+    #     raise APIError('do not login! plase login!')
 
-async def islogin(request):
-    if request.__user__:
-        ##
-        data = dict()
-        data['success'] = True
-        #data4['failure'] = None
-        data['data'] = request.__user__
-        ##
-        r = Response()
-        # request.__user__.passwd = '******'
-        r.content_type = 'application/json'
-        r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
-        # r.body = json.dumps(request.__user__, ensure_ascii=False).encode('utf-8')
-        return r
-    else:
-        raise APIError('do not login! plase login!')
+async def websocket_handler(request):
+
+    ws = WebSocketResponse()
+    await ws.prepare(request)
+
+    async for msg in ws:
+        if msg.type == WSMsgType.TEXT:
+            if msg.data == 'close':
+                await ws.close()
+            else:
+                await ws.send_str(msg.data + '/answer')
+        elif msg.type == WSMsgType.ERROR:
+            print('ws connection closed with exception %s' %
+                  ws.exception())
+
+    print('websocket connection closed')
+
+    return ws
+
+import time
+import random
+
+async def websocket_handler_test1(request):
+
+    ws = WebSocketResponse()
+    print(ws)
+    await ws.prepare(request)
+    x = 0
+    y = 0
+    async for msg in ws:
+        print(msg.data)
+        if msg.type == WSMsgType.TEXT:
+            if msg.data == 'close':
+                await ws.close()
+            else:
+                while True:
+                    y = x
+                    x += random.randint(10, 20)
+                    await ws.send_str(str(x)+','+str(y))
+        elif msg.type == WSMsgType.ERROR:
+            print('ws connection closed with exception %s' % ws.exception())
+            ws.close()
+
+    print('websocket connection closed')
+
+    return ws
+
+async def websocket_handler_test3(request):
+
+    ws = WebSocketResponse()
+    await ws.prepare(request)
+    test3 = []
+    async for msg in ws:
+        if msg.type == WSMsgType.TEXT:
+            if msg.data == 'close':
+                await ws.close()
+            else:
+                test3.append()
+                await ws.send_str(msg.data + '/answer')
+        elif msg.type == WSMsgType.ERROR:
+            print('ws connection closed with exception %s' %
+                  ws.exception())
+
+    print('websocket connection closed')
+
+    return ws

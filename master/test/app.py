@@ -1,6 +1,6 @@
 # from webq import webQ
 import os
-import logging;
+import logging
 
 logging.basicConfig(level=logging.INFO)
 from webQ.webq import webQ
@@ -17,7 +17,7 @@ app.conf_dbsource = dict(
     port=3306,
     user='root',
     password='zhangjun',
-    db='project.1'
+    db='akeec'
 )
 app.conf_others = dict(
     static_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'),
