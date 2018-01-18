@@ -138,8 +138,8 @@ class webQ(object):
     async def setup(self, loop, port):
         # await orm.create_pool(loop=loop)   ### 创建数据库连接池
         await create_pool(loop=loop, **self._dbsource)  # 创建数据库连接池
-        app = web.Application(loop=loop, middlewares=[
-                              self.logger_factory, self.response_factory, self.auth_factory])
+        app = web.Application(loop=loop, middlewares=[self.logger_factory, self.response_factory, self.auth_factory])
+        app['sockets'] = []
         self.init_jinja2(app, **self._others)
         self.add_static(app, **self._others)
         self.setup_routes(app, self.patterns)

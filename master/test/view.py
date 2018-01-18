@@ -384,3 +384,40 @@ async def websocket_handler_test3(request):
     print('websocket connection closed')
 
     return ws
+
+
+async def wshandler(request):
+    resp = WebSocketResponse()
+    # ok, protocol = resp.can_prepare(request)
+    # if not ok:
+    #     with open(WS_FILE, 'rb') as fp:
+    #         return Response(body=fp.read(), content_type='text/html')
+
+    await resp.prepare(request)
+
+    print(request.app['sockets'])
+    try:
+        print('Someone joined.')
+        for ws in request.app['sockets']:
+            await ws.send_str('Someone joined')
+        request.app['sockets'].append(resp)
+
+        async for msg in resp:
+            if msg.type == WSMsgType.TEXT:
+                for ws in request.app['sockets']:
+                    if ws is not resp:
+                        await ws.send_str(msg.data)
+            else:
+                return resp
+        return resp
+
+    finally:
+        request.app['sockets'].remove(resp)
+        print('Someone disconnected.')
+        for ws in request.app['sockets']:
+            await ws.send_str('Someone disconnected.')
+
+
+async def on_shutdown(app):
+    for ws in app['sockets']:
+        await ws.close()

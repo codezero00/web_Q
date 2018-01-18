@@ -20,4 +20,5 @@ urlpatterns = [
     ('ws', 'GET', '/api/v1/ws', 'view.websocket_handler'),
     ('ws2', 'GET', '/api/v1/ws2', 'view.websocket_handler_test1'),
     ('ws3', 'GET', '/api/v1/ws3', 'view.websocket_handler_test3'),
+    ('ws4', 'GET', '/api/v1/ws4', 'view.wshandler'),
 ]
