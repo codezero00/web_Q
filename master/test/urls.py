@@ -16,7 +16,10 @@ urlpatterns = [
     ('login', 'GET', '/api/v1/login', 'view.authenticate'),
     ('reg', 'GET', '/api/v1/reg', 'view.api_register_user'),
     ('islogin', 'GET', '/api/v1/userinfo', 'view.islogin'),
-    ('metagroup', 'GET', '/api/v1/metagroup', 'view.metagroup'),
+    ('metaclasstree', 'GET', '/api/v1/metaclasstree', 'view.metaclasstree'),
+    ('metaclass', 'GET', '/api/v1/metaclass', 'view.metaclass'),
+
+
     ('ws', 'GET', '/api/v1/ws', 'view.websocket_handler'),
     ('ws2', 'GET', '/api/v1/ws2', 'view.websocket_handler_test1'),
     ('ws3', 'GET', '/api/v1/ws3', 'view.websocket_handler_test3'),

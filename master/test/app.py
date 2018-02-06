@@ -17,7 +17,7 @@ app.conf_dbsource = dict(
     port=3306,
     user='root',
     password='root',
-    db='akeec'
+    db='dwc'
 )
 app.conf_others = dict(
     static_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'),

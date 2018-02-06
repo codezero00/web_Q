@@ -16,39 +16,59 @@ class User(Model):
     image = StringField(ddl='varchar(500)')
     created_at = FloatField(default=time.time)
 
-# class Metadata_detail(Model):
-#     __table__ = 'metadata_detail'
-#
-#     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-#     pid = StringField(ddl='varchar(50)')
-#     zysxbh = StringField(ddl='varchar(50)')
-#     bzbm = StringField(ddl='varchar(100)')
-#     zdmc = StringField(ddl='varchar(100)')
-#     yszdmc = StringField(ddl='varchar(100)')
-#     zysxzwmc = StringField(ddl='varchar(100)')
-#     zysxzwqp = StringField(ddl='varchar(100)')
-#     cd = StringField(ddl='varchar(100)')
-#     lx = StringField(ddl='varchar(100)')
-#     zysxdy = StringField(ddl='varchar(100)')
-#     bz = StringField(ddl='varchar(100)')
-#     created_at = FloatField(default=time.time)
-#
-# class Metadata_group(Model):
-#     __table__ = 'metadata_group'
-#
-#     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-#     pid = StringField(ddl='varchar(50)')
-#     groupname = StringField(ddl='varchar(50)')
-#     groupcode = StringField(ddl='varchar(50)')
-#     sfzyx = StringField(ddl='varchar(100)')
-#     py = StringField(ddl='varchar(50)')
-#     fzdw = StringField(ddl='varchar(50)')
-#     yyxt = StringField(ddl='varchar(50)')
-#     fldy = StringField(ddl='varchar(50)')
-#     sjkb = StringField(ddl='varchar(50)')
-#     yssjkb = StringField(ddl='varchar(50)')
-#     created_at = FloatField(default=time.time)
-#
+class Rc_metadata_class(Model):
+    __table__ = 'rc_metadata_class'
+
+    meta_cls_id = StringField(primary_key=True, default=next_id, ddl='varchar(200)')
+    classno = StringField(ddl='varchar(200)')
+    level = StringField(ddl='varchar(200)')
+    meta_cls_name = StringField(ddl='varchar(200)')
+    meta_cls_py = StringField(ddl='varchar(200)')
+    parent_id = StringField(ddl='varchar(200)')
+    isresource = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    createname = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    updatename = StringField(ddl='varchar(200)')
+
+
+class Rc_metadata(Model):
+    __table__ = 'Rc_metadata'
+
+    meta_id = StringField(primary_key=True, default=next_id, ddl='varchar(200)')
+    ministry_no = StringField(ddl='varchar(200)')
+    meta_name = StringField(ddl='varchar(200)')
+    meta_py = StringField(ddl='varchar(200)')
+    meta_cls_id = StringField(ddl='varchar(200)')
+    field_name = StringField(ddl='varchar(200)')
+    field_name1 = StringField(ddl='varchar(200)')
+    field_type = StringField(ddl='varchar(200)')
+    field_len = StringField(ddl='varchar(200)')
+    meta_define = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    createname = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    updatename = StringField(ddl='varchar(200)')
+
+
+class ViewMetadataClass(Model):
+    __table__ = 'V_metadata_class'
+
+    FLMC = StringField(ddl='varchar(200)')
+    FLBM = StringField(primary_key=True, default=next_id, ddl='varchar(200)')
+    SFZYX = StringField(ddl='varchar(200)')
+    ZWQP = StringField(ddl='varchar(200)')
+    FZDW = StringField(ddl='varchar(200)')
+    YYXT = StringField(ddl='varchar(200)')
+    FLDY = StringField(ddl='varchar(200)')
+    SJKB = StringField(ddl='varchar(200)')
+    YSSJKB = StringField(ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+
+
+
 # class ExcelContent(Model):
 #     __table__ = 'data_excel_content'
 #

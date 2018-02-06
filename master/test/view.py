@@ -4,7 +4,7 @@ from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgTyp
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id
 import model
-from model import User, grils, ggroup,gimages,ginfo,gtype
+from model import User, grils, ggroup, gimages, ginfo, gtype, Rc_metadata_class, ViewMetadataClass
 from utils import parestree
 
 async def authenticate(request):
@@ -294,14 +294,48 @@ async def index12(request):
     return json_response(data)
 
 
-async def metagroup(request):
+async def metaclasstree(request):
     # if request.__user__:
-    group = await Metadata_group.findAll()
-    #print(group)
-    # for i in group:
-    #     print(i)
-    #     print(i[0])
-    group_list = [{'ID': int(i['id']), 'PID': int(i['pid']), 'NAME': i['groupname']} for i in group]
+    group = await Rc_metadata_class.findAll()
+    group_list = [{'ID': str(i['meta_cls_id']), 'PID': str(i['parent_id']), 'NAME': i['meta_cls_name']} for i in group]
+    # print(group_list)
+    ##
+    data = dict()
+    data['success'] = True
+    # data4['failure'] = None
+    data['data'] = parestree(group_list)
+    ##
+    r = Response()
+    # request.__user__.passwd = '******'
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    # r.body = json.dumps(request.__user__, ensure_ascii=False).encode('utf-8')
+    return r
+    # else:
+    #     raise APIError('do not login! plase login!')
+
+async def metaclass(request):
+    id = request.query.get('id')
+    upclass = await ViewMetadataClass.findAll(where=f'FLBM = "{id}"')
+    upclass_list = {'upclass': upclass}
+    downclass = await ViewMetadataClass.findAll(where=f'PID = "{id}"')
+    downclass_list = {'downclass': downclass}
+    # print(downclass)
+
+    data = dict()
+    data['success'] = True
+    data['data'] = dict(**upclass_list, **downclass_list)
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+    # else:
+    #     raise APIError('do not login! plase login!')
+
+async def metaclassdetail(request):
+    # if request.__user__:
+    group = await Rc_metadata_class.findAll()
+    group_list = [{'ID': str(i['meta_cls_id']), 'PID': str(i['parent_id']), 'NAME': i['meta_cls_name']} for i in group]
     print(group_list)
     ##
     data = dict()
