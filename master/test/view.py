@@ -4,7 +4,7 @@ from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgTyp
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id
 import model
-from model import User, grils, ggroup, gimages, ginfo, gtype, Rc_metadata_class, ViewMetadataClass
+from model import User, grils, ggroup, gimages, ginfo, gtype, Rc_metadata_class, ViewMetadataClass, VMetaData, VDBManage, VDBTableTree, VDBTable, VDBTableColumn
 from utils import parestree
 
 async def authenticate(request):
@@ -297,7 +297,7 @@ async def index12(request):
 async def metaclasstree(request):
     # if request.__user__:
     group = await Rc_metadata_class.findAll()
-    group_list = [{'ID': str(i['meta_cls_id']), 'PID': str(i['parent_id']), 'NAME': i['meta_cls_name']} for i in group]
+    group_list = [{'ID': str(i['meta_cls_id']), 'PID': str(i['parent_id']), 'NAME': i['meta_cls_name'], 'ISRESOURCE': i['isresource']} for i in group]
     # print(group_list)
     ##
     data = dict()
@@ -324,7 +324,7 @@ async def metaclass(request):
 
     data = dict()
     data['success'] = True
-    data['data'] = dict(**upclass_list, **downclass_list)
+    data['data'] = dict(**upclass_list, **downclass_list)  # 合并dict
     r = Response()
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
@@ -332,25 +332,68 @@ async def metaclass(request):
     # else:
     #     raise APIError('do not login! plase login!')
 
-async def metaclassdetail(request):
-    # if request.__user__:
-    group = await Rc_metadata_class.findAll()
-    group_list = [{'ID': str(i['meta_cls_id']), 'PID': str(i['parent_id']), 'NAME': i['meta_cls_name']} for i in group]
-    print(group_list)
+async def metadatadetail(request):
+    id = request.query.get('id')
+    metadata = await VMetaData.findAll(where=f'PID = "{id}"')
     ##
     data = dict()
     data['success'] = True
-    # data4['failure'] = None
-    data['data'] = parestree(group_list)
+    data['data'] = metadata
     ##
     r = Response()
-    # request.__user__.passwd = '******'
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
-    # r.body = json.dumps(request.__user__, ensure_ascii=False).encode('utf-8')
     return r
     # else:
     #     raise APIError('do not login! plase login!')
+
+
+async def dbmanage(request):
+    dblist = await VDBManage.findAll()
+    data = dict()
+    data['success'] = True
+    data['data'] = dblist
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+
+async def dbtabletree(request):
+    tabletreelist = await VDBTableTree.findAll()
+    data = dict()
+    data['success'] = True
+    data['data'] = parestree(tabletreelist)
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+
+async def dbtable(request):
+    id = request.query.get('id')
+    print(id)
+    if not id:tablelist = await VDBTable.findAll()
+    else:tablelist = await VDBTable.findAll(where=f'TABID = "{id}"')
+    data = dict()
+    data['success'] = True
+    data['data'] = tablelist
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+
+async def dbtablecolumn(request):
+    id = request.query.get('id')
+    columnlist = await VDBTableColumn.findAll(where=f'TABID = "{id}"')
+    data = dict()
+    data['success'] = True
+    data['data'] = columnlist
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
 
 async def websocket_handler(request):
 

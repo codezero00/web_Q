@@ -22,7 +22,7 @@ from pprint import pprint
 
 def parestree(lis):
     l = []
-    entities = {d['ID']: {'id': d['ID'], 'pid': d['PID'], 'label': d['NAME']} for d in lis}
+    entities = {d['ID']: {'id': d['ID'], 'pid': d['PID'], 'label': d['NAME'], 'isresource': d['ISRESOURCE']} for d in lis}
     # pprint(entities)
     for e_id in entities:
         print(e_id)

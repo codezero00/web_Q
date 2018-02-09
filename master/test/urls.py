@@ -18,7 +18,11 @@ urlpatterns = [
     ('islogin', 'GET', '/api/v1/userinfo', 'view.islogin'),
     ('metaclasstree', 'GET', '/api/v1/metaclasstree', 'view.metaclasstree'),
     ('metaclass', 'GET', '/api/v1/metaclass', 'view.metaclass'),
-
+    ('metadata', 'GET', '/api/v1/metadata', 'view.metadatadetail'),
+    ('dbmanage', 'GET', '/api/v1/dbmanage', 'view.dbmanage'),
+    ('dbtabletree', 'GET', '/api/v1/dbtabletree', 'view.dbtabletree'),
+    ('dbtable', 'GET', '/api/v1/dbtable', 'view.dbtable'),
+    ('dbtablecolumn', 'GET', '/api/v1/dbtablecolumn', 'view.dbtablecolumn'),
 
     ('ws', 'GET', '/api/v1/ws', 'view.websocket_handler'),
     ('ws2', 'GET', '/api/v1/ws2', 'view.websocket_handler_test1'),

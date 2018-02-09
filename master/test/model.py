@@ -19,7 +19,7 @@ class User(Model):
 class Rc_metadata_class(Model):
     __table__ = 'rc_metadata_class'
 
-    meta_cls_id = StringField(primary_key=True, default=next_id, ddl='varchar(200)')
+    meta_cls_id = StringField(primary_key=True, ddl='varchar(200)')
     classno = StringField(ddl='varchar(200)')
     level = StringField(ddl='varchar(200)')
     meta_cls_name = StringField(ddl='varchar(200)')
@@ -36,7 +36,7 @@ class Rc_metadata_class(Model):
 class Rc_metadata(Model):
     __table__ = 'Rc_metadata'
 
-    meta_id = StringField(primary_key=True, default=next_id, ddl='varchar(200)')
+    meta_id = StringField(primary_key=True, ddl='varchar(200)')
     ministry_no = StringField(ddl='varchar(200)')
     meta_name = StringField(ddl='varchar(200)')
     meta_py = StringField(ddl='varchar(200)')
@@ -57,7 +57,7 @@ class ViewMetadataClass(Model):
     __table__ = 'V_metadata_class'
 
     FLMC = StringField(ddl='varchar(200)')
-    FLBM = StringField(primary_key=True, default=next_id, ddl='varchar(200)')
+    FLBM = StringField(primary_key=True, ddl='varchar(200)')
     SFZYX = StringField(ddl='varchar(200)')
     ZWQP = StringField(ddl='varchar(200)')
     FZDW = StringField(ddl='varchar(200)')
@@ -68,23 +68,73 @@ class ViewMetadataClass(Model):
     PID = StringField(ddl='varchar(200)')
 
 
+class VMetaData(Model):
+    __table__ = 'v_metadata'
 
-# class ExcelContent(Model):
-#     __table__ = 'data_excel_content'
-#
-#     id = StringField(primary_key=True, default=next_id, ddl='varchar(50)')
-#     exid = StringField(ddl='varchar(50)')
-#     ex_name = StringField(ddl='varchar(50)')
-#     ex_column = StringField(ddl='varchar(100)')
-#     ex_content = TextField()
-#     rnum = IntegerField()
+    ZYSXBH = StringField(primary_key=True, ddl='varchar(200)')
+    BZBM = StringField(ddl='varchar(200)')
+    ZDMC = StringField(ddl='varchar(200)')
+    YSZDMC = StringField(ddl='varchar(200)')
+    ZYSXZWMC = StringField(ddl='varchar(200)')
+    ZYSXZWQP = StringField(ddl='varchar(200)')
+    CD = StringField(ddl='varchar(200)')
+    LX = StringField(ddl='varchar(200)')
+    ZYSXDY = StringField(ddl='varchar(200)')
+    BZ = StringField(ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
 
 
+class VDBManage(Model):
+    __table__ = 'v_dbmanage'
 
+    DBID = StringField(primary_key=True, ddl='varchar(200)')
+    XMMC = StringField(ddl='varchar(200)')
+    SJLYDW = StringField(ddl='varchar(200)')
+    CJDW = StringField(ddl='varchar(200)')
+    LXR = StringField(ddl='varchar(200)')
+    LXFS = StringField(ddl='varchar(200)')
+    ZT = StringField(ddl='varchar(200)')
+
+
+class VDBTableTree(Model):
+    __table__ = 'v_dbtabletree'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+    NAME = StringField(ddl='varchar(200)')
+    ISRESOURCE = StringField(ddl='varchar(200)')
+
+class VDBTable(Model):
+    __table__ = 'v_dbtable'
+
+    TABID = StringField(primary_key=True, ddl='varchar(200)')
+    DBID = StringField(ddl='varchar(200)')
+    SSZYK = StringField(ddl='varchar(200)')
+    BYWMC = StringField(ddl='varchar(200)')
+    BZWMC = StringField(ddl='varchar(200)')
+    MS = StringField(ddl='varchar(200)')
+    CJSJ = StringField(ddl='varchar(200)')
+    ZHXGSJ = StringField(ddl='varchar(200)')
+
+
+class VDBTableColumn(Model):
+    __table__ = 'v_dbtablecolumn'
+
+    COLID = StringField(primary_key=True, ddl='varchar(200)')
+    TABID = StringField(ddl='varchar(200)')
+    METAID = StringField(ddl='varchar(200)')
+    ZDMC = StringField(ddl='varchar(200)')
+    ZWM = StringField(ddl='varchar(200)')
+    ZDLX = StringField(ddl='varchar(200)')
+    ZDDX = StringField(ddl='varchar(200)')
+    ZJ = StringField(ddl='varchar(200)')
+    FK = StringField(ddl='varchar(200)')
+    WY = StringField(ddl='varchar(200)')
+    ZY = StringField(ddl='varchar(200)')
 
 
 class grils(Model):
-    __tablename__='girls'
+    __tablename__ = 'girls'
 
     girid = StringField(ddl='varchar(50)', primary_key=True)
     name = StringField(ddl='varchar(100)')
