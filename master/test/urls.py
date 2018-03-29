@@ -23,6 +23,8 @@ urlpatterns = [
     ('dbtabletree', 'GET', '/api/v1/dbtabletree', 'view.dbtabletree'),
     ('dbtable', 'GET', '/api/v1/dbtable', 'view.dbtable'),
     ('dbtablecolumn', 'GET', '/api/v1/dbtablecolumn', 'view.dbtablecolumn'),
+    ('etlclients', 'GET', '/api/v1/etlclients', 'view.etlclients'),
+    ('ai', 'GET', '/api/v1/classforecast', 'view.ai'),
 
     ('ws', 'GET', '/api/v1/ws', 'view.websocket_handler'),
     ('ws2', 'GET', '/api/v1/ws2', 'view.websocket_handler_test1'),

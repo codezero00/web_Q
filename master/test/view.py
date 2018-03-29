@@ -4,8 +4,24 @@ from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgTyp
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id
 import model
-from model import User, grils, ggroup, gimages, ginfo, gtype, Rc_metadata_class, ViewMetadataClass, VMetaData, VDBManage, VDBTableTree, VDBTable, VDBTableColumn
+from model import User, grils, ggroup, gimages, ginfo, gtype, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, VDBTable, VDBTableColumn, VETLClients
 from utils import parestree
+from etlcarte import ETLCarte
+from cls_dnn import forecast
+
+
+async def ai(request):
+    content = request.query.get('content')
+    content2 = forecast(content)
+    print(content2)
+
+    data = dict()
+    data['success'] = True
+    data['data'] = content2
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
 
 async def authenticate(request):
     '''
@@ -33,19 +49,26 @@ async def authenticate(request):
     sha1.update(passwd.encode('utf-8'))
     print(sha1.hexdigest())
     print('passwd: {}'.format(user.passwd))
-    if user.passwd != sha1.hexdigest():
-        raise Exception('passwd', 'Invalid password.')
+
+    # if user.passwd != sha1.hexdigest():
+    #     raise Exception('passwd', 'Invalid password.')
+
     # authenticate ok, set cookie:
     r = Response()
-    # r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400, httponly=True)
-    r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400)
-    user.passwd = '******'
     r.content_type = 'application/json'
     data = dict()
-    data['success'] = True
-    data['data'] = user
-    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
-    return r
+
+    if user.passwd == sha1.hexdigest():
+        r.set_cookie(_COOKIE_NAME, encode_cookie(user, 86400), max_age=86400)
+        user.passwd = '******'
+        data['success'] = True
+        data['data'] = user
+        r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+        return r
+    else:
+        data['failure'] = 'Invalid password.'
+        r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+        return r
 
 
 async def api_register_user(request):
@@ -86,13 +109,32 @@ async def api_register_user(request):
     return r
 
 
+# async def islogin(request):
+#     if request.__user__:
+#         ##
+#         data = dict()
+#         data['success'] = True
+#         # data4['failure'] = None
+#         data['data'] = request.__user__
+#         ##
+#         r = Response()
+#         # request.__user__.passwd = '******'
+#         r.content_type = 'application/json'
+#         r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+#         # r.body = json.dumps(request.__user__, ensure_ascii=False).encode('utf-8')
+#         return r
+#     else:
+#         raise APIError('do not login! plase login!')
+
 async def islogin(request):
-    if request.__user__:
+    #if request.__user__:
+    if True:  # 暂时修改 登陆权限取消
         ##
         data = dict()
         data['success'] = True
         # data4['failure'] = None
-        data['data'] = request.__user__
+        users = await User.findAll('email=?', ["258607438@qq.com"])
+        data['data'] = users[0]
         ##
         r = Response()
         # request.__user__.passwd = '******'
@@ -102,8 +144,6 @@ async def islogin(request):
         return r
     else:
         raise APIError('do not login! plase login!')
-
-
 
 
 def index(request):
@@ -296,8 +336,8 @@ async def index12(request):
 
 async def metaclasstree(request):
     # if request.__user__:
-    group = await Rc_metadata_class.findAll()
-    group_list = [{'ID': str(i['meta_cls_id']), 'PID': str(i['parent_id']), 'NAME': i['meta_cls_name'], 'ISRESOURCE': i['isresource']} for i in group]
+    group = await MetaDataClass.findAll()
+    group_list = [{'ID': str(i['metaclsid']), 'PID': str(i['parentid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource']} for i in group]
     # print(group_list)
     ##
     data = dict()
@@ -316,9 +356,9 @@ async def metaclasstree(request):
 
 async def metaclass(request):
     id = request.query.get('id')
-    upclass = await ViewMetadataClass.findAll(where=f'FLBM = "{id}"')
+    upclass = await VMetadataClass.findAll(where=f'FLBM = "{id}"')
     upclass_list = {'upclass': upclass}
-    downclass = await ViewMetadataClass.findAll(where=f'PID = "{id}"')
+    downclass = await VMetadataClass.findAll(where=f'PID = "{id}"')
     downclass_list = {'downclass': downclass}
     # print(downclass)
 
@@ -349,7 +389,7 @@ async def metadatadetail(request):
 
 
 async def dbmanage(request):
-    dblist = await VDBManage.findAll()
+    dblist = await VResourceBase.findAll()
     data = dict()
     data['success'] = True
     data['data'] = dblist
@@ -394,6 +434,30 @@ async def dbtablecolumn(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
+
+async def etlclients(request):
+    clientslist = await VETLClients.findAll()
+    # print(clientslist)
+    for x in clientslist:
+        # print(x['URL'])
+        try:
+            client = ETLCarte(x['URL'])  # 实例化carte类
+            y = client.get_status()  # 获取状态
+            # print(type(y))
+            x['ZT'] = str(y)  # 将Y赋值给ZT字典
+            # print(x)
+        except:
+            x['ZT'] = 'Offline'
+    # print(clientslist)
+    data = dict()
+    data['success'] = True
+    data['data'] = clientslist
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+#region websokect
 
 async def websocket_handler(request):
 
@@ -498,3 +562,5 @@ async def wshandler(request):
 async def on_shutdown(app):
     for ws in app['sockets']:
         await ws.close()
+
+#region end

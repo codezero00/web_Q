@@ -16,45 +16,45 @@ class User(Model):
     image = StringField(ddl='varchar(500)')
     created_at = FloatField(default=time.time)
 
-class Rc_metadata_class(Model):
-    __table__ = 'rc_metadata_class'
+class MetaDataClass(Model):
+    __table__ = 'metadataclass'
 
-    meta_cls_id = StringField(primary_key=True, ddl='varchar(200)')
+    metaclsid = StringField(primary_key=True, ddl='varchar(200)')
+    parentid = StringField(ddl='varchar(200)')
     classno = StringField(ddl='varchar(200)')
-    level = StringField(ddl='varchar(200)')
-    meta_cls_name = StringField(ddl='varchar(200)')
-    meta_cls_py = StringField(ddl='varchar(200)')
-    parent_id = StringField(ddl='varchar(200)')
     isresource = StringField(ddl='varchar(200)')
+    level = StringField(ddl='varchar(200)')
+    metaclsname = StringField(ddl='varchar(200)')
+    metaclspy = StringField(ddl='varchar(200)')
     remark = StringField(ddl='varchar(200)')
     createname = StringField(ddl='varchar(200)')
     createtime = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-    updatename = StringField(ddl='varchar(200)')
 
 
-class Rc_metadata(Model):
-    __table__ = 'Rc_metadata'
 
-    meta_id = StringField(primary_key=True, ddl='varchar(200)')
-    ministry_no = StringField(ddl='varchar(200)')
-    meta_name = StringField(ddl='varchar(200)')
-    meta_py = StringField(ddl='varchar(200)')
-    meta_cls_id = StringField(ddl='varchar(200)')
-    field_name = StringField(ddl='varchar(200)')
-    field_name1 = StringField(ddl='varchar(200)')
-    field_type = StringField(ddl='varchar(200)')
-    field_len = StringField(ddl='varchar(200)')
-    meta_define = StringField(ddl='varchar(200)')
+class MetaData(Model):
+    __table__ = 'MetaData'
+
+    metaid = StringField(primary_key=True, ddl='varchar(200)')
+    metaclsid = StringField(ddl='varchar(200)')
+    standardno = StringField(ddl='varchar(200)')
+    metaname = StringField(ddl='varchar(200)')
+    metapy = StringField(ddl='varchar(200)')
+    columnname = StringField(ddl='varchar(200)')
+    oldcolumnname = StringField(ddl='varchar(200)')
+    columntype = StringField(ddl='varchar(200)')
+    columnlen = StringField(ddl='varchar(200)')
+    metadefine = StringField(ddl='varchar(200)')
     remark = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
     createtime = StringField(ddl='varchar(200)')
-    createname = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-    updatename = StringField(ddl='varchar(200)')
 
 
-class ViewMetadataClass(Model):
-    __table__ = 'V_metadata_class'
+class VMetadataClass(Model):
+    __table__ = 'v_metadataclass'
 
     FLMC = StringField(ddl='varchar(200)')
     FLBM = StringField(primary_key=True, ddl='varchar(200)')
@@ -84,8 +84,8 @@ class VMetaData(Model):
     PID = StringField(ddl='varchar(200)')
 
 
-class VDBManage(Model):
-    __table__ = 'v_dbmanage'
+class VResourceBase(Model):
+    __table__ = 'v_resourcebase'
 
     DBID = StringField(primary_key=True, ddl='varchar(200)')
     XMMC = StringField(ddl='varchar(200)')
@@ -108,7 +108,7 @@ class VDBTable(Model):
     __table__ = 'v_dbtable'
 
     TABID = StringField(primary_key=True, ddl='varchar(200)')
-    DBID = StringField(ddl='varchar(200)')
+    RBID = StringField(ddl='varchar(200)')
     SSZYK = StringField(ddl='varchar(200)')
     BYWMC = StringField(ddl='varchar(200)')
     BZWMC = StringField(ddl='varchar(200)')
@@ -132,6 +132,27 @@ class VDBTableColumn(Model):
     WY = StringField(ddl='varchar(200)')
     ZY = StringField(ddl='varchar(200)')
 
+class VETLClients(Model):
+    __table__ = 'v_etlclients'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    KHDMC = StringField(ddl='varchar(200)')
+    IPDZ = StringField(ddl='varchar(200)')
+    SYDK = StringField(ddl='varchar(200)')
+    URL = StringField(ddl='varchar(200)')
+    BB = StringField(ddl='varchar(200)')
+    WZ = StringField(ddl='varchar(200)')
+    MS = StringField(ddl='varchar(200)')
+
+class VDataLayer(Model):
+    __table__ = 'v_datalayer'
+
+    DLID = StringField(ddl='varchar(200)')
+    NAME = StringField(ddl='varchar(200)')
+    SHORTNAME = StringField(ddl='varchar(200)')
+    EFFECT = StringField(ddl='varchar(200)')
+    REMARK = StringField(ddl='varchar(200)')
+    STATUS = StringField(ddl='varchar(200)')
 
 class grils(Model):
     __tablename__ = 'girls'

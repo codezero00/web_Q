@@ -7,18 +7,25 @@ from webQ.webq import webQ
 from webQ.q_login import LoginManager
 from model import User
 from urls import urlpatterns
+from dnnmodel import MultiCNNTextBNDeep
+
+cors_urls = tuple(x[0] for x in urlpatterns)
+
 
 app = webQ(urlpatterns)
 app.conf_multiports = (9001, 9002, 9003, 9004)
 app.conf_cors_url = "*"
-app.conf_cors_routes = ('name11', 'name13', 'login', 'reg', 'islogin')
+# app.conf_cors_routes = ('name11', 'name13', 'login', 'reg', 'islogin', 'metaclasstree', 'metaclass')
+app.conf_cors_routes = cors_urls  # 所有url跨域
+
 app.conf_dbsource = dict(
     host='127.0.0.1',
     port=3306,
     user='root',
     password='root',
-    db='dwc'
+    db='zyjs_dwc'
 )
+
 app.conf_others = dict(
     static_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'),
     templates_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
