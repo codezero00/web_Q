@@ -1,4 +1,4 @@
-import time,hashlib,logging,uuid,re
+import time, hashlib, logging, uuid, re
 
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
@@ -9,8 +9,8 @@ def next_id():
 class Page(object):
     
     def __init__(self, item_count, page_index=1, page_size=10):
-        self.item_count = item_count
-        self.page_size = page_size
+        self.item_count = item_count  # 总数
+        self.page_size = page_size    # 没叶多少条
         self.page_count = item_count // page_size + (1 if item_count % page_size > 0 else 0)
         if (item_count == 0) or (page_index > self.page_count):
             self.offset = 0
@@ -27,6 +27,11 @@ class Page(object):
         return 'item_count: %s, page_count: %s, page_index: %s, page_size: %s, offset: %s, limit: %s' % (self.item_count, self.page_count, self.page_index, self.page_size, self.offset, self.limit)
 
     __repr__ = __str__
+
+    @property
+    def GetDict(self):
+        return dict(item_count=self.item_count, page_count=self.page_count, page_index=self.page_index, page_size=self.page_size, offset=self.offset, limit=self.limit)
+
 
 class APIError(Exception):
     '''

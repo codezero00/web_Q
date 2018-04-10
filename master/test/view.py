@@ -1,14 +1,21 @@
-import json, time, hashlib, logging
+import json, time, hashlib, logging, model
 import webQ.q_orm  as orm
-from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType
+from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json
 from webQ.q_login import _COOKIE_NAME, encode_cookie
-from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id
-import model
-from model import User, grils, ggroup, gimages, ginfo, gtype, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, VDBTable, VDBTableColumn, VETLClients
+from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page
+from model import User, VFrontBase, VDataLayer, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, VDBTableLayerTree, VDBTable, VDBTableColumn, VETLClients, VEtlJobs
 from utils import parestree
 from etlcarte import ETLCarte
 from cls_dnn import forecast
+import pandas as pd
 
+# def render_json(data):
+#     r = Response()
+#     r.content_type = 'application/json'
+#     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+#     return r
+
+#region ai
 
 async def ai(request):
     content = request.query.get('content')
@@ -22,6 +29,11 @@ async def ai(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
+
+#endregion
+
+
+#region login
 
 async def authenticate(request):
     '''
@@ -145,7 +157,10 @@ async def islogin(request):
     else:
         raise APIError('do not login! plase login!')
 
+#endregion
 
+
+#region test
 def index(request):
     return Response(body=u'<h1>hello word</h1>')
 
@@ -332,8 +347,10 @@ async def index12(request):
     data = await User.find(1)
     print(data)
     return json_response(data)
+#endregion
 
 
+#region metadata
 async def metaclasstree(request):
     # if request.__user__:
     group = await MetaDataClass.findAll()
@@ -387,8 +404,35 @@ async def metadatadetail(request):
     # else:
     #     raise APIError('do not login! plase login!')
 
+async def FrontBase(request):
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    try:
+        num = await VFrontBase.findNumber(selectField='count(*)')
+        p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+        if num == 0:
+            data1 = dict(page=p.GetDict, res=[])
+        else:
+            dblist = await VFrontBase.findAll(limit=(p.offset, p.limit))
+            data1 = dict(page=p.GetDict, res=dblist)
+        data = dict(success=True, data=data1)
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+    # dblist = await VFrontBase.findAll()
+    # data = dict()
+    # data['success'] = True
+    # data['data'] = dblist
+    # r = Response()
+    # r.content_type = 'application/json'
+    # r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    # return r
 
-async def dbmanage(request):
+async def ResourceBase(request):
     dblist = await VResourceBase.findAll()
     data = dict()
     data['success'] = True
@@ -398,6 +442,25 @@ async def dbmanage(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
+async def DataLayer(request):
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    try:
+        num = await VDataLayer.findNumber(selectField='count(*)')
+        p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+        if num == 0:
+            data1 = dict(page=p.GetDict, res=[])
+        else:
+            dblist = await VDataLayer.findAll(limit=(p.offset, p.limit))
+            data1 = dict(page=p.GetDict, res=dblist)
+        data = dict(success=True, data=data1)
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
 
 async def dbtabletree(request):
     tabletreelist = await VDBTableTree.findAll()
@@ -409,10 +472,18 @@ async def dbtabletree(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
+async def DBTableLayerTree(request):
+    tabletreelist = await VDBTableLayerTree.findAll()
+    data = dict()
+    data['success'] = True
+    data['data'] = parestree(tabletreelist)
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
 
 async def dbtable(request):
     id = request.query.get('id')
-    print(id)
     if not id:tablelist = await VDBTable.findAll()
     else:tablelist = await VDBTable.findAll(where=f'TABID = "{id}"')
     data = dict()
@@ -422,7 +493,6 @@ async def dbtable(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
-
 
 async def dbtablecolumn(request):
     id = request.query.get('id')
@@ -456,6 +526,34 @@ async def etlclients(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
+
+async def EtlJobs(request):
+    clientslist = await VETLClients.findAll()
+    jobslist = await VEtlJobs.findAll()
+    jbl = []
+    for x in clientslist:
+        try:
+            client = ETLCarte(x['URL'])  # 实例化carte类
+            jobs = client.get_jobs()  # 获取状态
+            jbl += list({'name': x.jobname, 'status': x.status_desc, 'jobnum': x.id} for x in jobs)
+        except:
+            pass
+    jobslist = pd.DataFrame(jobslist)
+    jobslist2 = pd.DataFrame(jbl)
+    jobslist = pd.merge(jobslist, jobslist2, left_on='name', right_on='name', how='left').fillna('未匹配')  # fillna 填充空值
+    # print(jbl)
+    mm = jobslist.to_dict(orient='record')  # pandsa df 转 dict
+    # print(mm)
+    data = dict()
+    data['success'] = True
+    data['data'] = mm
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+#endregion
+
 
 #region websokect
 
@@ -563,4 +661,4 @@ async def on_shutdown(app):
     for ws in app['sockets']:
         await ws.close()
 
-#region end
+#endregion

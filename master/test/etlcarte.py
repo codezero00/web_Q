@@ -26,3 +26,10 @@ class ETLCarte(object):
         :return: online offline
         """
         return self.client.status()
+
+    def get_jobs(self):
+        """
+        获取 子服务器的作业列表
+        :return: online offline
+        """
+        return self.client.jobs()

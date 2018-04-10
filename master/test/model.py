@@ -104,17 +104,30 @@ class VDBTableTree(Model):
     NAME = StringField(ddl='varchar(200)')
     ISRESOURCE = StringField(ddl='varchar(200)')
 
+class VDBTableLayerTree(Model):
+    __table__ = 'v_dbtablelayertree'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+    NAME = StringField(ddl='varchar(200)')
+    ISRESOURCE = StringField(ddl='varchar(200)')
+
 class VDBTable(Model):
     __table__ = 'v_dbtable'
 
     TABID = StringField(primary_key=True, ddl='varchar(200)')
     RBID = StringField(ddl='varchar(200)')
-    SSZYK = StringField(ddl='varchar(200)')
-    BYWMC = StringField(ddl='varchar(200)')
-    BZWMC = StringField(ddl='varchar(200)')
-    MS = StringField(ddl='varchar(200)')
-    CJSJ = StringField(ddl='varchar(200)')
-    ZHXGSJ = StringField(ddl='varchar(200)')
+    DLID = StringField(ddl='varchar(200)')
+    RESNAME = StringField(ddl='varchar(200)')
+    DLNAME = StringField(ddl='varchar(200)')
+    TABLENAMEYW = StringField(ddl='varchar(200)')
+    TABLENAMEZW = StringField(ddl='varchar(200)')
+    REMARK = StringField(ddl='varchar(200)')
+    CREATEUSERID = StringField(ddl='varchar(200)')
+    CREATETIME = StringField(ddl='varchar(200)')
+    UPDATEUSERID = StringField(ddl='varchar(200)')
+    UPDATETIME = StringField(ddl='varchar(200)')
+
 
 
 class VDBTableColumn(Model):
@@ -144,15 +157,41 @@ class VETLClients(Model):
     WZ = StringField(ddl='varchar(200)')
     MS = StringField(ddl='varchar(200)')
 
+class VEtlJobs(Model):
+    __table__ = 'v_etljobs'
+
+    JBID = StringField(primary_key=True, ddl='varchar(200)')
+    NAME = StringField(ddl='varchar(200)')
+    REMARK = StringField(ddl='varchar(200)')
+    CLIENTNAME = StringField(ddl='varchar(200)')
+    URL = StringField(ddl='varchar(200)')
+    CREATETIME = StringField(ddl='varchar(200)')
+
+
 class VDataLayer(Model):
     __table__ = 'v_datalayer'
 
-    DLID = StringField(ddl='varchar(200)')
+    DLID = StringField(ddl='varchar(200)', primary_key=True)
     NAME = StringField(ddl='varchar(200)')
     SHORTNAME = StringField(ddl='varchar(200)')
     EFFECT = StringField(ddl='varchar(200)')
     REMARK = StringField(ddl='varchar(200)')
     STATUS = StringField(ddl='varchar(200)')
+
+class VFrontBase(Model):
+    __table__ = 'v_frontbase'
+
+    FBID = StringField(ddl='varchar(200)', primary_key=True)
+    NAME = StringField(ddl='varchar(200)')
+    IP = StringField(ddl='varchar(200)')
+    USESOFTWARE = StringField(ddl='varchar(200)')
+    LOCATION = StringField(ddl='varchar(200)')
+    DEPT = StringField(ddl='varchar(200)')
+    EFFECT = StringField(ddl='varchar(200)')
+    REMARK = StringField(ddl='varchar(200)')
+    STATUS = StringField(ddl='varchar(200)')
+
+#region ggg
 
 class grils(Model):
     __tablename__ = 'girls'
@@ -205,3 +244,5 @@ class gtype(Model):
     girid = IntegerField()
     type = StringField(ddl='varchar(100)')
     createtime = StringField(ddl='varchar(100)')
+
+#endregion

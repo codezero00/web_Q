@@ -53,3 +53,8 @@ def json_response(data=sentinel, *, text=None, body=None, status=200,
     return Response(text=text, body=body, status=status, reason=reason,
                       headers=headers, content_type=content_type)
 
+def render_json(data):
+    res = Response()
+    res.content_type = 'application/json'
+    res.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return res
