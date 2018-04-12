@@ -3,11 +3,14 @@ import webQ.q_orm  as orm
 from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page
-from model import User, VFrontBase, VDataLayer, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, VDBTableLayerTree, VDBTable, VDBTableColumn, VETLClients, VEtlJobs
+# from model import User, VFrontBase, VDataLayer, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, \
+#     VDBTableLayerTree, VDBTable, VDBTableColumn, VETLClients, VEtlJobs
+from model import *
 from utils import parestree
 from etlcarte import ETLCarte
 from cls_dnn import forecast
 import pandas as pd
+
 
 # def render_json(data):
 #     r = Response()
@@ -15,7 +18,7 @@ import pandas as pd
 #     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
 #     return r
 
-#region ai
+# region ai
 
 async def ai(request):
     content = request.query.get('content')
@@ -30,10 +33,11 @@ async def ai(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
-#endregion
+
+# endregion
 
 
-#region login
+# region login
 
 async def authenticate(request):
     '''
@@ -139,7 +143,7 @@ async def api_register_user(request):
 #         raise APIError('do not login! plase login!')
 
 async def islogin(request):
-    #if request.__user__:
+    # if request.__user__:
     if True:  # 暂时修改 登陆权限取消
         ##
         data = dict()
@@ -157,10 +161,11 @@ async def islogin(request):
     else:
         raise APIError('do not login! plase login!')
 
-#endregion
+
+# endregion
 
 
-#region test
+# region test
 def index(request):
     return Response(body=u'<h1>hello word</h1>')
 
@@ -347,14 +352,18 @@ async def index12(request):
     data = await User.find(1)
     print(data)
     return json_response(data)
-#endregion
 
 
-#region metadata
-async def metaclasstree(request):
+# endregion
+
+
+# region metadata
+async def metaclasstreeQuery(request):
     # if request.__user__:
     group = await MetaDataClass.findAll()
-    group_list = [{'ID': str(i['metaclsid']), 'PID': str(i['parentid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource']} for i in group]
+    group_list = [
+        {'ID': str(i['metaclsid']), 'PID': str(i['parentid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource']}
+        for i in group]
     # print(group_list)
     ##
     data = dict()
@@ -371,7 +380,8 @@ async def metaclasstree(request):
     # else:
     #     raise APIError('do not login! plase login!')
 
-async def metaclass(request):
+
+async def metaclassQuery(request):
     id = request.query.get('id')
     upclass = await VMetadataClass.findAll(where=f'FLBM = "{id}"')
     upclass_list = {'upclass': upclass}
@@ -389,7 +399,8 @@ async def metaclass(request):
     # else:
     #     raise APIError('do not login! plase login!')
 
-async def metadatadetail(request):
+
+async def metadatadetailQuery(request):
     id = request.query.get('id')
     metadata = await VMetaData.findAll(where=f'PID = "{id}"')
     ##
@@ -404,7 +415,8 @@ async def metadatadetail(request):
     # else:
     #     raise APIError('do not login! plase login!')
 
-async def FrontBase(request):
+
+async def FrontBaseQuery(request):
     CurrentPage = request.query.get('CurrentPage')
     PageSize = request.query.get('PageSize')
     if (not CurrentPage or not PageSize):
@@ -416,8 +428,8 @@ async def FrontBase(request):
         if num == 0:
             data1 = dict(page=p.GetDict, res=[])
         else:
-            dblist = await VFrontBase.findAll(limit=(p.offset, p.limit))
-            data1 = dict(page=p.GetDict, res=dblist)
+            list = await VFrontBase.findAll(limit=(p.offset, p.limit))
+            data1 = dict(page=p.GetDict, res=list)
         data = dict(success=True, data=data1)
         return render_json(data)
     except Exception as e:
@@ -432,17 +444,37 @@ async def FrontBase(request):
     # r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     # return r
 
-async def ResourceBase(request):
-    dblist = await VResourceBase.findAll()
-    data = dict()
-    data['success'] = True
-    data['data'] = dblist
-    r = Response()
-    r.content_type = 'application/json'
-    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
-    return r
 
-async def DataLayer(request):
+async def ResourceBaseQuery(request):
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    try:
+        num = await VResourceBase.findNumber(selectField='count(*)')
+        p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+        if num == 0:
+            data1 = dict(page=p.GetDict, res=[])
+        else:
+            list = await VResourceBase.findAll(limit=(p.offset, p.limit))
+            data1 = dict(page=p.GetDict, res=list)
+        data = dict(success=True, data=data1)
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+    # dblist = await VResourceBase.findAll()
+    # data = dict()
+    # data['success'] = True
+    # data['data'] = dblist
+    # r = Response()
+    # r.content_type = 'application/json'
+    # r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    # return r
+
+
+async def DataLayerQuery(request):
     CurrentPage = request.query.get('CurrentPage')
     PageSize = request.query.get('PageSize')
     if (not CurrentPage or not PageSize):
@@ -454,15 +486,16 @@ async def DataLayer(request):
         if num == 0:
             data1 = dict(page=p.GetDict, res=[])
         else:
-            dblist = await VDataLayer.findAll(limit=(p.offset, p.limit))
-            data1 = dict(page=p.GetDict, res=dblist)
+            list = await VDataLayer.findAll(limit=(p.offset, p.limit))
+            data1 = dict(page=p.GetDict, res=list)
         data = dict(success=True, data=data1)
         return render_json(data)
     except Exception as e:
         data = dict(failure=True, data=e)
         return render_json(data)
 
-async def dbtabletree(request):
+
+async def dbtabletreeQuery(request):
     tabletreelist = await VDBTableTree.findAll()
     data = dict()
     data['success'] = True
@@ -472,7 +505,8 @@ async def dbtabletree(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
-async def DBTableLayerTree(request):
+
+async def DBTableLayerTreeQuery(request):
     tabletreelist = await VDBTableLayerTree.findAll()
     data = dict()
     data['success'] = True
@@ -482,10 +516,35 @@ async def DBTableLayerTree(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
-async def dbtable(request):
+
+async def GetTableQuery(request):
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    else:
+        try:
+            num = await VDBTable.findNumber(selectField='count(*)')
+            p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+            if num == 0:
+                data1 = dict(page=p.GetDict, res=[])
+            else:
+                list = await VDBTable.findAll(limit=(p.offset, p.limit))
+                data1 = dict(page=p.GetDict, res=list)
+            data = dict(success=True, data=data1)
+            return render_json(data)
+        except Exception as e:
+            data = dict(failure=True, data=e)
+            return render_json(data)
+
+
+async def dbtableQuery(request):
     id = request.query.get('id')
-    if not id:tablelist = await VDBTable.findAll()
-    else:tablelist = await VDBTable.findAll(where=f'TABID = "{id}"')
+    if not id:
+        tablelist = await VDBTable.findAll()
+    else:
+        tablelist = await VDBTable.findAll(where=f'TABID = "{id}"')
     data = dict()
     data['success'] = True
     data['data'] = tablelist
@@ -494,7 +553,8 @@ async def dbtable(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
-async def dbtablecolumn(request):
+
+async def dbtablecolumnQuery(request):
     id = request.query.get('id')
     columnlist = await VDBTableColumn.findAll(where=f'TABID = "{id}"')
     data = dict()
@@ -505,29 +565,51 @@ async def dbtablecolumn(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
-async def etlclients(request):
-    clientslist = await VETLClients.findAll()
-    # print(clientslist)
-    for x in clientslist:
-        # print(x['URL'])
-        try:
-            client = ETLCarte(x['URL'])  # 实例化carte类
-            y = client.get_status()  # 获取状态
-            # print(type(y))
-            x['ZT'] = str(y)  # 将Y赋值给ZT字典
-            # print(x)
-        except:
-            x['ZT'] = 'Offline'
-    # print(clientslist)
-    data = dict()
-    data['success'] = True
-    data['data'] = clientslist
-    r = Response()
-    r.content_type = 'application/json'
-    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
-    return r
 
-async def EtlJobs(request):
+async def etlclientsQuery(request):
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    try:
+        num = await VETLClients.findNumber(selectField='count(*)')
+        p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+        if num == 0:
+            data1 = dict(page=p.GetDict, res=[])
+        else:
+            list = await VETLClients.findAll(limit=(p.offset, p.limit))
+            for x in list:
+                try:
+                    client = ETLCarte(x['URL'])  # 实例化carte类
+                    y = client.get_status()  # 获取状态
+                    x['ZT'] = str(y)  # 将Y赋值给ZT字典
+                except:
+                    x['ZT'] = 'Offline'
+            data1 = dict(page=p.GetDict, res=list)
+        data = dict(success=True, data=data1)
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+    # clientslist = await VETLClients.findAll()
+    # for x in clientslist:
+    #     try:
+    #         client = ETLCarte(x['URL'])  # 实例化carte类
+    #         y = client.get_status()  # 获取状态
+    #         x['ZT'] = str(y)  # 将Y赋值给ZT字典
+    #     except:
+    #         x['ZT'] = 'Offline'
+    # data = dict()
+    # data['success'] = True
+    # data['data'] = clientslist
+    # r = Response()
+    # r.content_type = 'application/json'
+    # r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    # return r
+
+
+async def EtlJobsQuery(request):
     clientslist = await VETLClients.findAll()
     jobslist = await VEtlJobs.findAll()
     jbl = []
@@ -552,13 +634,80 @@ async def EtlJobs(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
-#endregion
+
+# endregion
+
+# region metadata update del create
+
+# FrontBase
+async def FrontBaseInsOrUp(request):
+    form = await request.post()
+    # x = dict(form)
+    fbid = form['fbid']
+    name = form['name']
+    ip = form['ip']
+    # usesoftware = form['usesoftware']
+    # location = form['location']
+    # dept = form['dept']
+    # effect = form['effect']
+    # remark = form['remark']
+    # status = form['status']
+    # createuserid = form['createuserid']
+    # createtime = form['createtime']
+    # updateuserid = form['updateuserid']
+    # updatetime = form['updatetime']
+    print(fbid)
+    print(name)
+    print(ip)
+    #effectrows = await FrontBase(fbid='3445').rm()
 
 
-#region websokect
+async def FrontBaseDelete(request):
+    rbid = request.query.get('rbid')
+    if (not rbid):
+        data = dict(failure=True, data="find no id!")
+        return render_json(data)
+    try:
+        effectrows = await FrontBase(fbid=rbid).rm()
+        if effectrows >= 1:
+            data = dict(success=True, res=list)
+        else:
+            data = dict(failure=True, data='delete fuilure!')
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+
+
+# ResourceBase
+async def ResourceBaseInsOrUp(request):
+    form = await request.json()
+    rbid = form['rbid']
+    name = form['name']
+
+
+async def ResourceBaseDelete(request):
+    rbid = request.query.get('rbid')
+    if (not rbid):
+        data = dict(failure=True, data="find no id!")
+        return render_json(data)
+    try:
+        num = await ResourceBase.getValue(key=rbid).rm()
+        if num == 1:
+            data = dict(success=True, res=list)
+        else:
+            data = dict(failure=True, data='delete fuilure!')
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+
+
+# endregion
+
+# region websokect
 
 async def websocket_handler(request):
-
     ws = WebSocketResponse()
     await ws.prepare(request)
 
@@ -576,11 +725,12 @@ async def websocket_handler(request):
 
     return ws
 
+
 import time
 import random
 
-async def websocket_handler_test1(request):
 
+async def websocket_handler_test1(request):
     ws = WebSocketResponse()
     print(ws)
     await ws.prepare(request)
@@ -595,7 +745,7 @@ async def websocket_handler_test1(request):
                 while True:
                     y = x
                     x += random.randint(10, 20)
-                    await ws.send_str(str(x)+','+str(y))
+                    await ws.send_str(str(x) + ',' + str(y))
         elif msg.type == WSMsgType.ERROR:
             print('ws connection closed with exception %s' % ws.exception())
             ws.close()
@@ -604,8 +754,8 @@ async def websocket_handler_test1(request):
 
     return ws
 
-async def websocket_handler_test3(request):
 
+async def websocket_handler_test3(request):
     ws = WebSocketResponse()
     await ws.prepare(request)
     test3 = []
@@ -661,4 +811,4 @@ async def on_shutdown(app):
     for ws in app['sockets']:
         await ws.close()
 
-#endregion
+# endregion

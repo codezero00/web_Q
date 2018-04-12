@@ -325,9 +325,12 @@ class Model(dict, metaclass=ModelMetaclass):
         :return:
         '''
         args = [self.getValue(self.__primary_key__)]
+        log('delete value {}'.format(args))
         rows = await execute(self.__delete__, args)
+        log('delete rows {}'.format(rows))
         if rows != 1:
             logging.warn(
                 'failed to remove by primary key: affected rows: %s' % rows)
+        return rows
 
 #endregion

@@ -1,9 +1,18 @@
-import time, uuid
+"""
+select concat(column_name,"= StringField(ddl='varchar(200)')")
+from INFORMATION_SCHEMA.COLUMNS
+where table_name='etljobs' and table_schema='zyjs_dwc';
+
+"""
+
+import time
+import uuid
 from webQ.q_orm import *
 
 
 def next_id():
     return '%015d%s000' % (int(time.time() * 1000), uuid.uuid4().hex)
+
 
 class User(Model):
     __table__ = 'users'
@@ -15,42 +24,6 @@ class User(Model):
     name = StringField(ddl='varchar(50)')
     image = StringField(ddl='varchar(500)')
     created_at = FloatField(default=time.time)
-
-class MetaDataClass(Model):
-    __table__ = 'metadataclass'
-
-    metaclsid = StringField(primary_key=True, ddl='varchar(200)')
-    parentid = StringField(ddl='varchar(200)')
-    classno = StringField(ddl='varchar(200)')
-    isresource = StringField(ddl='varchar(200)')
-    level = StringField(ddl='varchar(200)')
-    metaclsname = StringField(ddl='varchar(200)')
-    metaclspy = StringField(ddl='varchar(200)')
-    remark = StringField(ddl='varchar(200)')
-    createname = StringField(ddl='varchar(200)')
-    createtime = StringField(ddl='varchar(200)')
-    updatetime = StringField(ddl='varchar(200)')
-
-
-
-class MetaData(Model):
-    __table__ = 'MetaData'
-
-    metaid = StringField(primary_key=True, ddl='varchar(200)')
-    metaclsid = StringField(ddl='varchar(200)')
-    standardno = StringField(ddl='varchar(200)')
-    metaname = StringField(ddl='varchar(200)')
-    metapy = StringField(ddl='varchar(200)')
-    columnname = StringField(ddl='varchar(200)')
-    oldcolumnname = StringField(ddl='varchar(200)')
-    columntype = StringField(ddl='varchar(200)')
-    columnlen = StringField(ddl='varchar(200)')
-    metadefine = StringField(ddl='varchar(200)')
-    remark = StringField(ddl='varchar(200)')
-    createuserid = StringField(ddl='varchar(200)')
-    createtime = StringField(ddl='varchar(200)')
-    updateuserid = StringField(ddl='varchar(200)')
-    updatetime = StringField(ddl='varchar(200)')
 
 
 class VMetadataClass(Model):
@@ -104,6 +77,7 @@ class VDBTableTree(Model):
     NAME = StringField(ddl='varchar(200)')
     ISRESOURCE = StringField(ddl='varchar(200)')
 
+
 class VDBTableLayerTree(Model):
     __table__ = 'v_dbtablelayertree'
 
@@ -111,6 +85,7 @@ class VDBTableLayerTree(Model):
     PID = StringField(ddl='varchar(200)')
     NAME = StringField(ddl='varchar(200)')
     ISRESOURCE = StringField(ddl='varchar(200)')
+
 
 class VDBTable(Model):
     __table__ = 'v_dbtable'
@@ -129,7 +104,6 @@ class VDBTable(Model):
     UPDATETIME = StringField(ddl='varchar(200)')
 
 
-
 class VDBTableColumn(Model):
     __table__ = 'v_dbtablecolumn'
 
@@ -145,6 +119,7 @@ class VDBTableColumn(Model):
     WY = StringField(ddl='varchar(200)')
     ZY = StringField(ddl='varchar(200)')
 
+
 class VETLClients(Model):
     __table__ = 'v_etlclients'
 
@@ -156,6 +131,7 @@ class VETLClients(Model):
     BB = StringField(ddl='varchar(200)')
     WZ = StringField(ddl='varchar(200)')
     MS = StringField(ddl='varchar(200)')
+
 
 class VEtlJobs(Model):
     __table__ = 'v_etljobs'
@@ -178,6 +154,7 @@ class VDataLayer(Model):
     REMARK = StringField(ddl='varchar(200)')
     STATUS = StringField(ddl='varchar(200)')
 
+
 class VFrontBase(Model):
     __table__ = 'v_frontbase'
 
@@ -191,7 +168,159 @@ class VFrontBase(Model):
     REMARK = StringField(ddl='varchar(200)')
     STATUS = StringField(ddl='varchar(200)')
 
-#region ggg
+
+class MetaDataClass(Model):
+    __table__ = 'metadataclass'
+
+    metaclsid = StringField(primary_key=True, ddl='varchar(200)')
+    parentid = StringField(ddl='varchar(200)')
+    classno = StringField(ddl='varchar(200)')
+    isresource = StringField(ddl='varchar(200)')
+    level = StringField(ddl='varchar(200)')
+    metaclsname = StringField(ddl='varchar(200)')
+    metaclspy = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    createname = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+
+
+
+class MetaData(Model):
+    __table__ = 'MetaData'
+
+    metaid = StringField(primary_key=True, ddl='varchar(200)')
+    metaclsid = StringField(ddl='varchar(200)')
+    standardno = StringField(ddl='varchar(200)')
+    metaname = StringField(ddl='varchar(200)')
+    metapy = StringField(ddl='varchar(200)')
+    columnname = StringField(ddl='varchar(200)')
+    oldcolumnname = StringField(ddl='varchar(200)')
+    columntype = StringField(ddl='varchar(200)')
+    columnlen = StringField(ddl='varchar(200)')
+    metadefine = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+
+
+class FrontBase(Model):
+    __table__ = 'frontbase'
+
+    fbid = StringField(primary_key=True, ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    ip = StringField(ddl='varchar(200)')
+    usesoftware = StringField(ddl='varchar(200)')
+    location = StringField(ddl='varchar(200)')
+    dept = StringField(ddl='varchar(200)')
+    effect = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    status = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
+
+class ResourceBase(Model):
+    __table__ = 'resourcebase'
+
+    rbid = StringField(primary_key=True, ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    datasourceunit = StringField(ddl='varchar(200)')
+    createunit = StringField(ddl='varchar(200)')
+    contact = StringField(ddl='varchar(200)')
+    tel = StringField(ddl='varchar(200)')
+    status = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
+
+class DataLayer(Model):
+    __table__ = 'datalayer'
+
+    dlid = StringField(primary_key=True, ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    shortname = StringField(ddl='varchar(200)')
+    effect = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    status = StringField(ddl='varchar(200)')
+    sort = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
+
+class DBTable(Model):
+    __table__ = 'dbtable'
+
+    tabid = StringField(primary_key=True, ddl='varchar(200)')
+    rbid = StringField(ddl='varchar(200)')
+    dlid = StringField(ddl='varchar(200)')
+    tablenameyw = StringField(ddl='varchar(200)')
+    tablenamezw = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
+
+class DBTableColumn(Model):
+    __table__ = 'dbtablecolumn'
+
+    colid = StringField(primary_key=True, ddl='varchar(200)')
+    tabid = StringField(ddl='varchar(200)')
+    metaid = StringField(ddl='varchar(200)')
+    ispk = StringField(ddl='varchar(200)')
+    isnull = StringField(ddl='varchar(200)')
+    isuq = StringField(ddl='varchar(200)')
+    range = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
+
+class ETLClients(Model):
+    __table__ = 'etlclients'
+
+    etlid = StringField(primary_key=True, ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    ip = StringField(ddl='varchar(200)')
+    port = StringField(ddl='varchar(200)')
+    url = StringField(ddl='varchar(200)')
+    version = StringField(ddl='varchar(200)')
+    location = StringField(ddl='varchar(200)')
+    desc = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
+
+class ETLJobs(Model):
+    __table__ = 'etljobs'
+
+    jbid = StringField(primary_key=True, ddl='varchar(200)')
+    etlid = StringField(ddl='varchar(200)')
+    jobnum = StringField(ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    lastlogtime = StringField(ddl='varchar(200)')
+    status = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+
+
+# region ggg
 
 class grils(Model):
     __tablename__ = 'girls'
@@ -213,6 +342,7 @@ class grils(Model):
     detail = TextField()
     createtime = StringField(ddl='varchar(100)')
 
+
 class ggroup(Model):
     __tablename__ = 'ggroup'
     groid = IntegerField(primary_key=True)
@@ -222,12 +352,14 @@ class ggroup(Model):
     url = StringField(ddl='varchar(100)')
     createtime = StringField(ddl='varchar(100)')
 
+
 class gimages(Model):
     __tablename__ = 'gimages'
     imgid = IntegerField(primary_key=True)
     groid = StringField(ddl='varchar(100)')
     url = StringField(ddl='varchar(100)')
     createtime = StringField(ddl='varchar(100)')
+
 
 class ginfo(Model):
     __tablename__ = 'ginfo'
@@ -238,6 +370,7 @@ class ginfo(Model):
     photo = StringField(ddl='varchar(100)')
     type = StringField(ddl='varchar(100)')
 
+
 class gtype(Model):
     __tablename__ = 'gtype'
     idgtype = IntegerField(primary_key=True)
@@ -245,4 +378,4 @@ class gtype(Model):
     type = StringField(ddl='varchar(100)')
     createtime = StringField(ddl='varchar(100)')
 
-#endregion
+# endregion

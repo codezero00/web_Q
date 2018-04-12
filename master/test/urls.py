@@ -16,19 +16,27 @@ urlpatterns = [
     ('login', 'GET', '/api/v1/login', 'view.authenticate'),
     ('reg', 'GET', '/api/v1/reg', 'view.api_register_user'),
     ('islogin', 'GET', '/api/v1/userinfo', 'view.islogin'),
-    ('metaclasstree', 'GET', '/api/v1/metaclasstree', 'view.metaclasstree'),
-    ('metaclass', 'GET', '/api/v1/metaclass', 'view.metaclass'),
-    ('metadata', 'GET', '/api/v1/metadata', 'view.metadatadetail'),
-    ('FrontBase', 'GET', '/api/v1/FrontBase', 'view.FrontBase'),
-    ('ResourceBase', 'GET', '/api/v1/ResourceBase', 'view.ResourceBase'),
-    ('DataLayer', 'GET', '/api/v1/DataLayer', 'view.DataLayer'),
-    ('dbtabletree', 'GET', '/api/v1/dbtabletree', 'view.dbtabletree'),
-    ('DBTableLayerTree', 'GET', '/api/v1/dbtablelayertree', 'view.DBTableLayerTree'),
-    ('dbtable', 'GET', '/api/v1/dbtable', 'view.dbtable'),
-    ('dbtablecolumn', 'GET', '/api/v1/dbtablecolumn', 'view.dbtablecolumn'),
-    ('etlclients', 'GET', '/api/v1/etlclients', 'view.etlclients'),
-    ('etljobs', 'GET', '/api/v1/etljobs', 'view.EtlJobs'),
+    ('metaclasstree', 'GET', '/api/v1/metaclasstree', 'view.metaclasstreeQuery'),
+    ('metaclass', 'GET', '/api/v1/metaclass', 'view.metaclassQuery'),
+    ('metadata', 'GET', '/api/v1/metadata', 'view.metadatadetailQuery'),
+    ('FrontBase', 'GET', '/api/v1/FrontBase', 'view.FrontBaseQuery'),
+    ('ResourceBase', 'GET', '/api/v1/ResourceBase', 'view.ResourceBaseQuery'),
+    ('DataLayer', 'GET', '/api/v1/DataLayer', 'view.DataLayerQuery'),
+    ('dbtabletree', 'GET', '/api/v1/dbtabletree', 'view.dbtabletreeQuery'),
+    ('DBTableLayerTree', 'GET', '/api/v1/dbtablelayertree', 'view.DBTableLayerTreeQuery'),
+    ('GetTable', 'GET', '/api/v1/GetTable', 'view.GetTableQuery'),
+    ('dbtable', 'GET', '/api/v1/dbtable', 'view.dbtableQuery'),
+    ('dbtablecolumn', 'GET', '/api/v1/dbtablecolumn', 'view.dbtablecolumnQuery'),
+    ('etlclients', 'GET', '/api/v1/etlclients', 'view.etlclientsQuery'),
+    ('etljobs', 'GET', '/api/v1/etljobs', 'view.EtlJobsQuery'),
     ('ai', 'GET', '/api/v1/classforecast', 'view.ai'),
+
+    # I U D
+    ('FrontBaseInsOrUp', 'POST', '/api/v1/FrontBaseInsOrUp', 'view.FrontBaseInsOrUp'),
+
+
+    #######
+
 
     ('ws', 'GET', '/api/v1/ws', 'view.websocket_handler'),
     ('ws2', 'GET', '/api/v1/ws2', 'view.websocket_handler_test1'),
