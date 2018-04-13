@@ -2,7 +2,7 @@ import json, time, hashlib, logging, model
 import webQ.q_orm  as orm
 from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json
 from webQ.q_login import _COOKIE_NAME, encode_cookie
-from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page
+from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page, ToMysqlDateTimeNow
 # from model import User, VFrontBase, VDataLayer, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, \
 #     VDBTableLayerTree, VDBTable, VDBTableColumn, VETLClients, VEtlJobs
 from model import *
@@ -637,32 +637,87 @@ async def EtlJobsQuery(request):
 
 # endregion
 
+
 # region metadata update del create
 
 # FrontBase
 async def FrontBaseInsOrUp(request):
-    form = await request.post()
-    # x = dict(form)
-    fbid = form['fbid']
-    name = form['name']
-    ip = form['ip']
-    # usesoftware = form['usesoftware']
-    # location = form['location']
-    # dept = form['dept']
-    # effect = form['effect']
-    # remark = form['remark']
-    # status = form['status']
-    # createuserid = form['createuserid']
-    # createtime = form['createtime']
-    # updateuserid = form['updateuserid']
-    # updatetime = form['updatetime']
-    print(fbid)
-    print(name)
-    print(ip)
-    #effectrows = await FrontBase(fbid='3445').rm()
+    form = await request.json()
+    print(form)
+    print(type(form))
+    fbid = form.get('fbid')
+    name = form.get('name')
+    ip = form.get('ip')
+    usesoftware = form.get('usesoftware')
+    location = form.get('location')
+    dept = form.get('dept')
+    effect = form.get('effect')
+    remark = form.get('remark')
+    status = form.get('status')
+    createuserid = form.get('createuserid')
+    createtime = form.get('createtime')
+    updateuserid = form.get('updateuserid')
+    updatetime = form.get('updatetime')
+    isdel = form.get('isdel', 1)
+    try:
+        # num = await FrontBase.findNumber(selectField='count(*)', where=f"fbid='{fbid}'")
+        # print(num)
+        if fbid and isdel == 1:  # update
+            effectrows = await FrontBase(fbid=fbid,
+                                         name=name,
+                                         ip=ip,
+                                         usesoftware=usesoftware,
+                                         location=location,
+                                         dept=dept,
+                                         effect=effect,
+                                         remark=remark,
+                                         status=status,
+                                         # createuserid=createuserid,
+                                         # createtime=createtime,
+                                         updateuserid=updateuserid,
+                                         updatetime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).upd()
+        elif not fbid:  # create
+            effectrows = await FrontBase(fbid=next_id(),
+                                         name=name,
+                                         ip=ip,
+                                         usesoftware=usesoftware,
+                                         location=location,
+                                         dept=dept,
+                                         effect=effect,
+                                         remark=remark,
+                                         status=status,
+                                         createuserid=createuserid,
+                                         createtime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).save()
+        elif fbid and isdel == 0:  # delete
+            effectrows = FrontBase(fbid=fbid, isdel=isdel)
+            print(effectrows.__mappings__)
+            print(effectrows.__table__)
+            print(effectrows.__primary_key__)
+            print(effectrows.__fields__)
+            print(effectrows.__select__)
+            print(effectrows.__insert__)
+            print(effectrows.__update__)
+            print(effectrows.__delete__)
+            print(effectrows.fbid)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
 
 
 async def FrontBaseDelete(request):
+    """
+    物理删除~暂时不使用
+    :param request:
+    :return:
+    """
     rbid = request.query.get('rbid')
     if (not rbid):
         data = dict(failure=True, data="find no id!")
@@ -670,12 +725,12 @@ async def FrontBaseDelete(request):
     try:
         effectrows = await FrontBase(fbid=rbid).rm()
         if effectrows >= 1:
-            data = dict(success=True, res=list)
+            data = dict(success=True, data=effectrows)
         else:
             data = dict(failure=True, data='delete fuilure!')
         return render_json(data)
     except Exception as e:
-        data = dict(failure=True, data=e)
+        data = dict(failure=True, data=str(e))
         return render_json(data)
 
 
@@ -686,24 +741,8 @@ async def ResourceBaseInsOrUp(request):
     name = form['name']
 
 
-async def ResourceBaseDelete(request):
-    rbid = request.query.get('rbid')
-    if (not rbid):
-        data = dict(failure=True, data="find no id!")
-        return render_json(data)
-    try:
-        num = await ResourceBase.getValue(key=rbid).rm()
-        if num == 1:
-            data = dict(success=True, res=list)
-        else:
-            data = dict(failure=True, data='delete fuilure!')
-        return render_json(data)
-    except Exception as e:
-        data = dict(failure=True, data=e)
-        return render_json(data)
-
-
 # endregion
+
 
 # region websokect
 

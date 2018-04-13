@@ -222,7 +222,7 @@ class FrontBase(Model):
     createtime = StringField(ddl='varchar(200)')
     updateuserid = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-    isdel = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)', default=1)
 
 
 class ResourceBase(Model):
@@ -237,7 +237,7 @@ class ResourceBase(Model):
     status = StringField(ddl='varchar(200)')
     createtime = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-    isdel = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)', default=1)
 
 
 class DataLayer(Model):
@@ -254,7 +254,7 @@ class DataLayer(Model):
     createtime = StringField(ddl='varchar(200)')
     updateuserid = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-    isdel = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)', default=1)
 
 
 class DBTable(Model):
@@ -270,7 +270,7 @@ class DBTable(Model):
     createtime = StringField(ddl='varchar(200)')
     updateuserid = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-    isdel = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)', default=1)
 
 
 class DBTableColumn(Model):
@@ -283,7 +283,7 @@ class DBTableColumn(Model):
     isnull = StringField(ddl='varchar(200)')
     isuq = StringField(ddl='varchar(200)')
     range = StringField(ddl='varchar(200)')
-    isdel = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)', default=1)
 
 
 class ETLClients(Model):
@@ -301,7 +301,7 @@ class ETLClients(Model):
     createtime = StringField(ddl='varchar(200)')
     updateuserid = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-    isdel = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)', default=1)
 
 
 class ETLJobs(Model):

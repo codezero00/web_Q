@@ -40,9 +40,7 @@ async def select(p_sql, param):
             SQL = p_sql
             print(param)
             await cur.execute(SQL, param)
-            #print(cur.description)
             r = await cur.fetchall()
-            # await cur.close()
             return r
 
 
@@ -80,6 +78,7 @@ async def execmany(p_sql, param):
             affected = cur.rowcount
             # await cur.close()
             return affected
+
 
 async def select1(sql, args, size=None):
     log(sql, args)
@@ -278,6 +277,7 @@ class Model(dict, metaclass=ModelMetaclass):
         if where:
             sql.append('where')
             sql.append(where)
+        log(f'findNumber sql ：{sql}')
         rs = await select1(' '.join(sql), args, 1)
         if len(rs) == 0:
             return None
@@ -306,18 +306,39 @@ class Model(dict, metaclass=ModelMetaclass):
         rows = await execute(self.__insert__, args)
         if rows != 1:
             logging.warn('failed to insert record: affected rows: %s' % rows)
+        return rows
 
     async def upd(self):
         '''
         update console
         :return:
         '''
-        args = list(map(self.getValue, self.__fields__))
-        args.append(self.getValue(self.__primary_key__))
+        # args = list(map(self.getValue, self.__fields__))
+        # args.append(self.getValue(self.__primary_key__))
+        args = list(map(self.getValueOrDefault, self.__fields__))
+        args.append(self.getValueOrDefault(self.__primary_key__))
+        log(f'update __update__ {self.__update__}')
+        log(f'update args {args}')
         rows = await execute(self.__update__, args)
         if rows != 1:
             logging.warn(
                 'failed to update by primary key: affected rows: %s' % rows)
+        return rows
+
+    async def upd2(self, **kw):
+        """
+        update
+        :return:
+        """
+        args = list(map(self.getValue, self.__fields__))
+        args.append(self.getValue(self.__primary_key__))
+        log(f'update __update__ {self.__update__}')
+        log(f'update args {args}')
+        rows = 1 #await execute(self.__update__, args)
+        if rows != 1:
+            logging.warn(
+                'failed to update by primary key: affected rows: %s' % rows)
+        return rows
 
     async def rm(self):
         '''
@@ -325,9 +346,9 @@ class Model(dict, metaclass=ModelMetaclass):
         :return:
         '''
         args = [self.getValue(self.__primary_key__)]
-        log('delete value {}'.format(args))
+        log(f'delete value {args}')
         rows = await execute(self.__delete__, args)
-        log('delete rows {}'.format(rows))
+        log(f'delete rows {rows}')
         if rows != 1:
             logging.warn(
                 'failed to remove by primary key: affected rows: %s' % rows)
