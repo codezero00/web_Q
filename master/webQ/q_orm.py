@@ -330,11 +330,14 @@ class Model(dict, metaclass=ModelMetaclass):
         update
         :return:
         """
-        args = list(map(self.getValue, self.__fields__))
-        args.append(self.getValue(self.__primary_key__))
-        log(f'update __update__ {self.__update__}')
-        log(f'update args {args}')
-        rows = 1 #await execute(self.__update__, args)
+        args = ','.join(list(map(lambda f: f'{f}=?', kw.keys())))
+        argsSet = list(kw.values())
+        # argsKey = self.getValue(self.__primary_key__)
+        argsSet.append(self.getValue(self.__primary_key__))
+        updateString = f'update {self.__table__} set {args} where {self.__primary_key__} =?'
+        log(f'upd2 __update__ {updateString}')
+        log(f'upd2 args {argsSet}')
+        rows = await execute(updateString, argsSet)
         if rows != 1:
             logging.warn(
                 'failed to update by primary key: affected rows: %s' % rows)

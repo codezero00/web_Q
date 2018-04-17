@@ -60,7 +60,7 @@ class VMetaData(Model):
 class VResourceBase(Model):
     __table__ = 'v_resourcebase'
 
-    DBID = StringField(primary_key=True, ddl='varchar(200)')
+    rbid = StringField(primary_key=True, ddl='varchar(200)')
     XMMC = StringField(ddl='varchar(200)')
     SJLYDW = StringField(ddl='varchar(200)')
     CJDW = StringField(ddl='varchar(200)')

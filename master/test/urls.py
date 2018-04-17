@@ -33,6 +33,10 @@ urlpatterns = [
 
     # I U D
     ('FrontBaseInsOrUp', 'POST', '/api/v1/FrontBaseInsOrUp', 'view.FrontBaseInsOrUp'),
+    ('ResourceBaseInsOrUp', 'POST', '/api/v1/ResourceBaseInsOrUp', 'view.ResourceBaseInsOrUp'),
+    ('DataLayerInsOrUp', 'POST', '/api/v1/DataLayerInsOrUp', 'view.DataLayerInsOrUp'),
+    ('DBTableInsOrUp', 'POST', '/api/v1/DBTableInsOrUp', 'view.DBTableInsOrUp'),
+    ('ETLClientsInsOrUp', 'POST', '/api/v1/ETLClientsInsOrUp', 'view.ETLClientsInsOrUp'),
 
 
     #######

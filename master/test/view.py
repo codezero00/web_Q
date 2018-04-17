@@ -693,16 +693,7 @@ async def FrontBaseInsOrUp(request):
                                          isdel=isdel
                                          ).save()
         elif fbid and isdel == 0:  # delete
-            effectrows = FrontBase(fbid=fbid, isdel=isdel)
-            print(effectrows.__mappings__)
-            print(effectrows.__table__)
-            print(effectrows.__primary_key__)
-            print(effectrows.__fields__)
-            print(effectrows.__select__)
-            print(effectrows.__insert__)
-            print(effectrows.__update__)
-            print(effectrows.__delete__)
-            print(effectrows.fbid)
+            effectrows = await FrontBase(fbid=fbid).upd2(isdel=0)
 
         data = dict(success=True, data=effectrows)
         return render_json(data)
@@ -737,8 +728,202 @@ async def FrontBaseDelete(request):
 # ResourceBase
 async def ResourceBaseInsOrUp(request):
     form = await request.json()
-    rbid = form['rbid']
-    name = form['name']
+    rbid = form.get('rbid')
+    name = form.get('name')
+    datasourceunit = form.get('datasourceunit')
+    createunit = form.get('createunit')
+    contact = form.get('contact')
+    tel = form.get('tel')
+    status = form.get('status')
+    createtime = form.get('createtime')
+    updatetime = form.get('updatetime')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if rbid and isdel == 1:  # update
+            effectrows = await ResourceBase(rbid=rbid,
+                                         name=name,
+                                         datasourceunit=datasourceunit,
+                                         createunit=createunit,
+                                         contact=contact,
+                                         tel=tel,
+                                         status=status,
+                                         updatetime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).upd()
+        elif not rbid:  # create
+            effectrows = await ResourceBase(rbid=next_id(),
+                                         name=name,
+                                         datasourceunit=datasourceunit,
+                                         createunit=createunit,
+                                         contact=contact,
+                                         tel=tel,
+                                         status=status,
+                                         createtime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).save()
+        elif rbid and isdel == 0:  # delete
+            effectrows = await ResourceBase(rbid=rbid).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+# DataLayer
+async def DataLayerInsOrUp(request):
+    form = await request.json()
+    dlid = form.get('dlid')
+    name = form.get('name')
+    shortname = form.get('shortname')
+    effect = form.get('effect')
+    remark = form.get('remark')
+    status = form.get('status')
+    createuserid = form.get('createuserid')
+    updateuserid = form.get('updateuserid')
+    createtime = form.get('createtime')
+    updatetime = form.get('updatetime')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if dlid and isdel == 1:  # update
+            effectrows = await DataLayer(dlid=dlid,
+                                         name=name,
+                                         shortname=shortname,
+                                         effect=effect,
+                                         remark=remark,
+                                         status=status,
+                                         updateuserid=updateuserid,
+                                         updatetime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).upd()
+        elif not dlid:  # create
+            effectrows = await DataLayer(dlid=next_id(),
+                                         name=name,
+                                         shortname=shortname,
+                                         effect=effect,
+                                         remark=remark,
+                                         status=status,
+                                         createuserid=createuserid,
+                                         createtime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).save()
+        elif dlid and isdel == 0:  # delete
+            effectrows = await DataLayer(dlid=dlid).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+# DBTable
+async def DBTableInsOrUp(request):
+    form = await request.json()
+    tabid = form.get('tabid')
+    rbid = form.get('rbid')
+    dlid = form.get('dlid')
+    tablenameyw = form.get('tablenameyw')
+    tablenamezw = form.get('tablenamezw')
+    remark = form.get('remark')
+    createuserid = form.get('createuserid')
+    updateuserid = form.get('updateuserid')
+    createtime = form.get('createtime')
+    updatetime = form.get('updatetime')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if tabid and isdel == 1:  # update
+            effectrows = await DBTable(tabid=tabid,
+                                         rbid=rbid,
+                                         dlid=dlid,
+                                         tablenameyw=tablenameyw,
+                                         tablenamezw=tablenamezw,
+                                         remark=remark,
+                                         updateuserid=updateuserid,
+                                         updatetime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).upd()
+        elif not tabid:  # create
+            effectrows = await DBTable(tabid=next_id(),
+                                         rbid=rbid,
+                                         dlid=dlid,
+                                         tablenameyw=tablenameyw,
+                                         tablenamezw=tablenamezw,
+                                         remark=remark,
+                                         createuserid=createuserid,
+                                         createtime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).save()
+        elif tabid and isdel == 0:  # delete
+            effectrows = await DBTable(tabid=tabid).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+# ETLClients
+async def ETLClientsInsOrUp(request):
+    form = await request.json()
+    etlid = form.get('etlid')
+    name = form.get('name')
+    ip = form.get('ip')
+    port = form.get('port')
+    url = form.get('url')
+    version = form.get('version')
+    location = form.get('location')
+    desc = form.get('desc')
+    createuserid = form.get('createuserid')
+    updateuserid = form.get('updateuserid')
+    createtime = form.get('createtime')
+    updatetime = form.get('updatetime')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if etlid and isdel == 1:  # update
+            effectrows = await ETLClients(etlid=etlid,
+                                         name=name,
+                                         ip=ip,
+                                         port=port,
+                                         url=url,
+                                         version=version,
+                                         location=location,
+                                         desc=desc,
+                                         updateuserid=updateuserid,
+                                         updatetime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).upd()
+        elif not etlid:  # create
+            effectrows = await ETLClients(etlid=next_id(),
+                                         name=name,
+                                         ip=ip,
+                                         port=port,
+                                         url=url,
+                                         version=version,
+                                         location=location,
+                                         desc=desc,
+                                         createuserid=createuserid,
+                                         createtime=ToMysqlDateTimeNow(),
+                                         isdel=isdel
+                                         ).save()
+        elif etlid and isdel == 0:  # delete
+            effectrows = await ETLClients(etlid=etlid).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
 
 
 # endregion
