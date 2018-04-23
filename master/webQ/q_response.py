@@ -54,7 +54,23 @@ def json_response(data=sentinel, *, text=None, body=None, status=200,
                       headers=headers, content_type=content_type)
 
 def render_json(data):
+    """
+    response josn格式字符串 编码UTF8
+    :param data:
+    :return:
+    """
     res = Response()
     res.content_type = 'application/json'
     res.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return res
+
+def render_image(data):
+    """
+    response 图片默认类型jpeg 可以图片
+    :param data:
+    :return:
+    """
+    res = Response()
+    res.content_type = 'image/jpeg'
+    res.body = data
     return res

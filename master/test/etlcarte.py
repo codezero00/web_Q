@@ -33,3 +33,20 @@ class ETLCarte(object):
         :return: online offline
         """
         return self.client.jobs()
+
+    def get_image(self, id):
+        """
+        id = jobid
+        :param id:
+        :return:
+        """
+        img = self.client.job_image(id=id)
+        return img
+
+    def get_job_status(self, id, log_from):
+        """
+        id = jobid
+        :param id:
+        :return:
+        """
+        return self.client.job_status(id=id, log_from=log_from)

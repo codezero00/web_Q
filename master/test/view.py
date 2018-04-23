@@ -1,6 +1,6 @@
 import json, time, hashlib, logging, model
 import webQ.q_orm  as orm
-from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json
+from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json, render_image
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page, ToMysqlDateTimeNow
 # from model import User, VFrontBase, VDataLayer, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, \
@@ -16,6 +16,12 @@ import pandas as pd
 #     r = Response()
 #     r.content_type = 'application/json'
 #     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+#     return r
+
+# def render_image(data):
+#     r = Response()
+#     r.content_type = 'image/jpeg'
+#     r.body = data
 #     return r
 
 # region ai
@@ -635,6 +641,94 @@ async def EtlJobsQuery(request):
     return r
 
 
+from io import StringIO, BytesIO
+async def EtlJobImage(request):
+    Url = request.query.get('Url')
+    Jobid = request.query.get('Jobid')
+    img = None
+    # try:
+    client = ETLCarte(Url)  # 实例化carte类
+    x = client.get_image(id=Jobid)  # 获取图片 类型 PIL.PNG
+    # z = client.get_job_status(id=Jobid, name='test2')
+    # print(z)
+    buf = BytesIO()
+    x.save(buf, format='png')  # 转2进制bytes类型
+    y = buf.getvalue()
+    # print(y)
+    # print(type(y))
+    img = y
+    # except Exception as e:
+    #     print(e)
+    # r = Response()
+    # r.content_type = 'image/jpeg'
+    # r.body = img
+    return render_image(img)
+
+import aiohttp
+from bs4 import BeautifulSoup
+async def EtlJobLog(request):
+    Url = request.query.get('Url')
+    JobName = request.query.get('JobName')
+    print(Url)
+    print(JobName)
+    auth = aiohttp.BasicAuth(login='cluster', password='cluster', encoding='utf8')
+    async with aiohttp.ClientSession(auth=auth) as session:
+        async with session.get(Url+"jobStatus/?name="+JobName) as r:
+            json_body = await r.text()
+            soup = BeautifulSoup(json_body, "lxml")
+            logtext = soup.find(id='joblog')
+            data = dict()
+            data['success'] = True
+            data['data'] = logtext.contents[0]
+            return render_json(data)
+
+
+async def BloodRelationQuery(request):
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    try:
+        num = await VBloodRelation.findNumber(selectField='count(*)')
+        p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+        if num == 0:
+            data1 = dict(page=p.GetDict, res=[])
+        else:
+            list = await VBloodRelation.findAll(limit=(p.offset, p.limit))
+            data1 = dict(page=p.GetDict, res=list)
+        data = dict(success=True, data=data1)
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+
+
+async def DBTableColumnTreeQuery(request):
+    treelist = await VDBTableColumnTree.findAll()
+    data = dict()
+    data['success'] = True
+    data['data'] = parestree(treelist)
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+
+async def BloodVertexEdgeQuery(request):
+    vertexlist = await VBloodVertex.findAll()
+    edgelist = await VBloodEdge.findAll()
+    graphlist = dict(vertex=vertexlist, edge=edgelist)
+    print(graphlist)
+    data = dict()
+    data['success'] = True
+    data['data'] = graphlist
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+
 # endregion
 
 
@@ -917,6 +1011,41 @@ async def ETLClientsInsOrUp(request):
                                          ).save()
         elif etlid and isdel == 0:  # delete
             effectrows = await ETLClients(etlid=etlid).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+# BloodRrlation
+async def BloodRrlationInsOrUp(request):
+    form = await request.json()
+    beid = form.get('beid')
+    srcid = form.get('srcid')
+    dstid = form.get('dstid')
+    relation = form.get('relation')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if beid and isdel == 1:  # update
+            effectrows = await BloodEdge(beid=beid,
+                                         srcid=srcid,
+                                         dstid=dstid,
+                                         relation=relation,
+                                         isdel=isdel
+                                         ).upd()
+        elif not beid:  # create
+            effectrows = await BloodEdge(beid=next_id(),
+                                         srcid=srcid,
+                                         dstid=dstid,
+                                         relation=relation,
+                                         isdel=isdel
+                                         ).save()
+        elif beid and isdel == 0:  # delete
+            effectrows = await BloodEdge(beid=beid).upd2(isdel=0)
 
         data = dict(success=True, data=effectrows)
         return render_json(data)

@@ -29,6 +29,12 @@ urlpatterns = [
     ('dbtablecolumn', 'GET', '/api/v1/dbtablecolumn', 'view.dbtablecolumnQuery'),
     ('etlclients', 'GET', '/api/v1/etlclients', 'view.etlclientsQuery'),
     ('etljobs', 'GET', '/api/v1/etljobs', 'view.EtlJobsQuery'),
+    ('EtlJobImage', 'GET', '/api/v1/EtlJobImage', 'view.EtlJobImage'),
+    ('EtlJobLog', 'GET', '/api/v1/EtlJobLog', 'view.EtlJobLog'),
+
+    ('BloodRelationQuery', 'GET', '/api/v1/BloodRelationQuery', 'view.BloodRelationQuery'),
+    ('DBTableColumnTreeQuery', 'GET', '/api/v1/DBTableColumnTreeQuery', 'view.DBTableColumnTreeQuery'),
+    ('BloodVertexEdgeQuery', 'GET', '/api/v1/BloodVertexEdgeQuery', 'view.BloodVertexEdgeQuery'),
     ('ai', 'GET', '/api/v1/classforecast', 'view.ai'),
 
     # I U D
@@ -37,7 +43,7 @@ urlpatterns = [
     ('DataLayerInsOrUp', 'POST', '/api/v1/DataLayerInsOrUp', 'view.DataLayerInsOrUp'),
     ('DBTableInsOrUp', 'POST', '/api/v1/DBTableInsOrUp', 'view.DBTableInsOrUp'),
     ('ETLClientsInsOrUp', 'POST', '/api/v1/ETLClientsInsOrUp', 'view.ETLClientsInsOrUp'),
-
+    ('BloodRrlationInsOrUp', 'POST', '/api/v1/BloodRrlationInsOrUp', 'view.BloodRrlationInsOrUp'),
 
     #######
 

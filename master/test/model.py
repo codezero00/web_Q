@@ -169,6 +169,38 @@ class VFrontBase(Model):
     STATUS = StringField(ddl='varchar(200)')
 
 
+class VBloodVertex(Model):
+    __table__ = 'v_bloodvertex'
+
+    ID = StringField(ddl='varchar(200)', primary_key=True)
+    NAME = StringField(ddl='varchar(200)')
+    TYPE = StringField(ddl='varchar(200)')
+    COLOR = StringField(ddl='varchar(200)')
+    SIZE = StringField(ddl='varchar(200)')
+
+
+class VBloodEdge(Model):
+    __table__ = 'v_bloodedge'
+
+    SRCID = StringField(ddl='varchar(200)', primary_key=True)
+    DSTID = StringField(ddl='varchar(200)')
+    RELATION = StringField(ddl='varchar(200)')
+
+
+class VBloodRelation(Model):
+    __table__ = 'v_bloodrelation'
+
+    BEID = StringField(ddl='varchar(200)', primary_key=True)
+    SRCTABLEID = StringField(ddl='varchar(200)')
+    SRCTABLENAME = StringField(ddl='varchar(200)')
+    SRCCOLUMNID = StringField(ddl='varchar(200)')
+    SRCCOLUMNNAME = StringField(ddl='varchar(200)')
+    DSTTABLEID = StringField(ddl='varchar(200)')
+    DSTTABLENAME = StringField(ddl='varchar(200)')
+    DSTCOLUMNID = StringField(ddl='varchar(200)')
+    DSTCOLUMNNAME = StringField(ddl='varchar(200)')
+
+
 class MetaDataClass(Model):
     __table__ = 'metadataclass'
 
@@ -183,7 +215,6 @@ class MetaDataClass(Model):
     createname = StringField(ddl='varchar(200)')
     createtime = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
-
 
 
 class MetaData(Model):
@@ -318,6 +349,24 @@ class ETLJobs(Model):
     updateuserid = StringField(ddl='varchar(200)')
     createtime = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
+
+
+class BloodEdge(Model):
+    __table__ = 'bloodedge'
+
+    beid = StringField(ddl='varchar(200)', primary_key=True)
+    srcid = StringField(ddl='varchar(200)')
+    dstid = StringField(ddl='varchar(200)')
+    relation = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)', default=1)
+
+
+class VDBTableColumnTree(Model):
+    __table__ = 'v_dbtablecolumntree'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+    NAME = StringField(ddl='varchar(200)')
 
 
 # region ggg
