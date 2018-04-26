@@ -19,10 +19,10 @@ app.conf_cors_url = "*"
 app.conf_cors_routes = cors_urls  # 所有url跨域
 
 app.conf_dbsource = dict(
-    host='127.0.0.1',
+    host='172.16.4.110',
     port=3306,
     user='root',
-    password='root',
+    password='zyjs2018!',
     db='zyjs_dwc'
 )
 

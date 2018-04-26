@@ -368,7 +368,7 @@ async def metaclasstreeQuery(request):
     # if request.__user__:
     group = await MetaDataClass.findAll()
     group_list = [
-        {'ID': str(i['metaclsid']), 'PID': str(i['parentid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource']}
+        {'ID': str(i['mcid']), 'PID': str(i['pid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource'], 'METACLSNO': i['metaclsno']}
         for i in group]
     # print(group_list)
     ##
@@ -389,7 +389,7 @@ async def metaclasstreeQuery(request):
 
 async def metaclassQuery(request):
     id = request.query.get('id')
-    upclass = await VMetadataClass.findAll(where=f'FLBM = "{id}"')
+    upclass = await VMetadataClass.findAll(where=f'MCID = "{id}"')
     upclass_list = {'upclass': upclass}
     downclass = await VMetadataClass.findAll(where=f'PID = "{id}"')
     downclass_list = {'downclass': downclass}
@@ -757,21 +757,19 @@ async def FrontBaseInsOrUp(request):
         # num = await FrontBase.findNumber(selectField='count(*)', where=f"fbid='{fbid}'")
         # print(num)
         if fbid and isdel == 1:  # update
-            effectrows = await FrontBase(fbid=fbid,
-                                         name=name,
-                                         ip=ip,
-                                         usesoftware=usesoftware,
-                                         location=location,
-                                         dept=dept,
-                                         effect=effect,
-                                         remark=remark,
-                                         status=status,
-                                         # createuserid=createuserid,
-                                         # createtime=createtime,
-                                         updateuserid=updateuserid,
-                                         updatetime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).upd()
+            effectrows = await FrontBase(fbid=fbid).upd2(name=name,
+                                                         ip=ip,
+                                                         usesoftware=usesoftware,
+                                                         location=location,
+                                                         dept=dept,
+                                                         effect=effect,
+                                                         remark=remark,
+                                                         status=status,
+                                                         # createuserid=createuserid,
+                                                         # createtime=createtime,
+                                                         updateuserid=updateuserid,
+                                                         updatetime=ToMysqlDateTimeNow(),
+                                                         isdel=isdel)
         elif not fbid:  # create
             effectrows = await FrontBase(fbid=next_id(),
                                          name=name,
@@ -835,16 +833,14 @@ async def ResourceBaseInsOrUp(request):
     try:
 
         if rbid and isdel == 1:  # update
-            effectrows = await ResourceBase(rbid=rbid,
-                                         name=name,
-                                         datasourceunit=datasourceunit,
-                                         createunit=createunit,
-                                         contact=contact,
-                                         tel=tel,
-                                         status=status,
-                                         updatetime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).upd()
+            effectrows = await ResourceBase(rbid=rbid).upd2(name=name,
+                                                            datasourceunit=datasourceunit,
+                                                            createunit=createunit,
+                                                            contact=contact,
+                                                            tel=tel,
+                                                            status=status,
+                                                            updatetime=ToMysqlDateTimeNow(),
+                                                            isdel=isdel)
         elif not rbid:  # create
             effectrows = await ResourceBase(rbid=next_id(),
                                          name=name,
@@ -884,16 +880,14 @@ async def DataLayerInsOrUp(request):
     try:
 
         if dlid and isdel == 1:  # update
-            effectrows = await DataLayer(dlid=dlid,
-                                         name=name,
-                                         shortname=shortname,
-                                         effect=effect,
-                                         remark=remark,
-                                         status=status,
-                                         updateuserid=updateuserid,
-                                         updatetime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).upd()
+            effectrows = await DataLayer(dlid=dlid).upd2(name=name,
+                                                         shortname=shortname,
+                                                         effect=effect,
+                                                         remark=remark,
+                                                         status=status,
+                                                         updateuserid=updateuserid,
+                                                         updatetime=ToMysqlDateTimeNow(),
+                                                         isdel=isdel)
         elif not dlid:  # create
             effectrows = await DataLayer(dlid=next_id(),
                                          name=name,
@@ -933,7 +927,7 @@ async def DBTableInsOrUp(request):
     try:
 
         if tabid and isdel == 1:  # update
-            effectrows = await DBTable(tabid=tabid,
+            effectrows = await DBTable(tabid=tabid).upd2(
                                          rbid=rbid,
                                          dlid=dlid,
                                          tablenameyw=tablenameyw,
@@ -941,8 +935,18 @@ async def DBTableInsOrUp(request):
                                          remark=remark,
                                          updateuserid=updateuserid,
                                          updatetime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).upd()
+                                         isdel=isdel)
+
+            # effectrows = await DBTable(tabid=tabid,
+            #                              rbid=rbid,
+            #                              dlid=dlid,
+            #                              tablenameyw=tablenameyw,
+            #                              tablenamezw=tablenamezw,
+            #                              remark=remark,
+            #                              updateuserid=updateuserid,
+            #                              updatetime=ToMysqlDateTimeNow(),
+            #                              isdel=isdel
+            #                              ).upd()
         elif not tabid:  # create
             effectrows = await DBTable(tabid=next_id(),
                                          rbid=rbid,
@@ -984,18 +988,16 @@ async def ETLClientsInsOrUp(request):
     try:
 
         if etlid and isdel == 1:  # update
-            effectrows = await ETLClients(etlid=etlid,
-                                         name=name,
-                                         ip=ip,
-                                         port=port,
-                                         url=url,
-                                         version=version,
-                                         location=location,
-                                         desc=desc,
-                                         updateuserid=updateuserid,
-                                         updatetime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).upd()
+            effectrows = await ETLClients(etlid=etlid).upd2(name=name,
+                                                            ip=ip,
+                                                            port=port,
+                                                            url=url,
+                                                            version=version,
+                                                            location=location,
+                                                            desc=desc,
+                                                            updateuserid=updateuserid,
+                                                            updatetime=ToMysqlDateTimeNow(),
+                                                            isdel=isdel)
         elif not etlid:  # create
             effectrows = await ETLClients(etlid=next_id(),
                                          name=name,
@@ -1046,6 +1048,58 @@ async def BloodRrlationInsOrUp(request):
                                          ).save()
         elif beid and isdel == 0:  # delete
             effectrows = await BloodEdge(beid=beid).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+# MetaDataClass
+async def MetaDataClassInsOrUp(request):
+    form = await request.json()
+    metaclsid = form.get('metaclsid')
+    parentid = form.get('parentid')
+    classno = form.get('classno')
+    isresource = form.get('isresource')
+    level = form.get('level')
+    metaclsname = form.get('metaclsname')
+    metaclspy = form.get('metaclspy')
+    remark = form.get('remark')
+    app = form.get('app')
+    createname = form.get('createname')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if metaclsid and isdel == 1:  # update
+            effectrows = await MetaDataClass(metaclsid=metaclsid).upd(parentid=parentid,
+                                                                      classno=classno,
+                                                                      isresource=isresource,
+                                                                      level=level,
+                                                                      metaclsname=metaclsname,
+                                                                      metaclspy=metaclspy,
+                                                                      remark=remark,
+                                                                      app=app,
+                                                                      createname=createname,
+                                                                      isdel=isdel
+                                                                      )
+        elif not metaclsid:  # create
+            effectrows = await MetaDataClass(metaclsid=next_id(),
+                                             parentid=parentid,
+                                             classno=classno,
+                                             isresource=isresource,
+                                             level=level,
+                                             metaclsname=metaclsname,
+                                             metaclspy=metaclspy,
+                                             remark=remark,
+                                             app=app,
+                                             createname=createname,
+                                             isdel=isdel
+                                             ).save()
+        elif metaclsid and isdel == 0:  # delete
+            effectrows = await MetaDataClass(metaclsid=metaclsid).upd2(isdel=0)
 
         data = dict(success=True, data=effectrows)
         return render_json(data)

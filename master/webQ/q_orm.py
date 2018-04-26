@@ -330,11 +330,11 @@ class Model(dict, metaclass=ModelMetaclass):
         update
         :return:
         """
-        args = ','.join(list(map(lambda f: f'{f}=?', kw.keys())))
+        args = ','.join(list(map(lambda f: f'`{f}`=?', kw.keys())))
         argsSet = list(kw.values())
         # argsKey = self.getValue(self.__primary_key__)
         argsSet.append(self.getValue(self.__primary_key__))
-        updateString = f'update {self.__table__} set {args} where {self.__primary_key__} =?'
+        updateString = f'update `{self.__table__}` set {args} where `{self.__primary_key__}` =?'
         log(f'upd2 __update__ {updateString}')
         log(f'upd2 args {argsSet}')
         rows = await execute(updateString, argsSet)

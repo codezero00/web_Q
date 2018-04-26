@@ -38,6 +38,7 @@ class VMetadataClass(Model):
     FLDY = StringField(ddl='varchar(200)')
     SJKB = StringField(ddl='varchar(200)')
     YSSJKB = StringField(ddl='varchar(200)')
+    MCID = StringField(ddl='varchar(200)')
     PID = StringField(ddl='varchar(200)')
 
 
@@ -204,17 +205,20 @@ class VBloodRelation(Model):
 class MetaDataClass(Model):
     __table__ = 'metadataclass'
 
-    metaclsid = StringField(primary_key=True, ddl='varchar(200)')
-    parentid = StringField(ddl='varchar(200)')
+    mcid = StringField(primary_key=True, ddl='varchar(200)')
+    pid = StringField(ddl='varchar(200)')
+    metaclsno = StringField(ddl='varchar(200)')
     classno = StringField(ddl='varchar(200)')
     isresource = StringField(ddl='varchar(200)')
     level = StringField(ddl='varchar(200)')
     metaclsname = StringField(ddl='varchar(200)')
     metaclspy = StringField(ddl='varchar(200)')
     remark = StringField(ddl='varchar(200)')
+    app = StringField(ddl='varchar(200)')
     createname = StringField(ddl='varchar(200)')
     createtime = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
 
 
 class MetaData(Model):
@@ -222,6 +226,7 @@ class MetaData(Model):
 
     metaid = StringField(primary_key=True, ddl='varchar(200)')
     metaclsid = StringField(ddl='varchar(200)')
+    resourceno = StringField(ddl='varchar(200)')
     standardno = StringField(ddl='varchar(200)')
     metaname = StringField(ddl='varchar(200)')
     metapy = StringField(ddl='varchar(200)')

@@ -44,6 +44,7 @@ urlpatterns = [
     ('DBTableInsOrUp', 'POST', '/api/v1/DBTableInsOrUp', 'view.DBTableInsOrUp'),
     ('ETLClientsInsOrUp', 'POST', '/api/v1/ETLClientsInsOrUp', 'view.ETLClientsInsOrUp'),
     ('BloodRrlationInsOrUp', 'POST', '/api/v1/BloodRrlationInsOrUp', 'view.BloodRrlationInsOrUp'),
+    ('MetaDataClassInsOrUp', 'POST', '/api/v1/MetaDataClassInsOrUp', 'view.MetaDataClassInsOrUp'),
 
     #######
 
