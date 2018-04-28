@@ -46,6 +46,8 @@ urlpatterns = [
     ('BloodRrlationInsOrUp', 'POST', '/api/v1/BloodRrlationInsOrUp', 'view.BloodRrlationInsOrUp'),
     ('MetaDataClassInsOrUp', 'POST', '/api/v1/MetaDataClassInsOrUp', 'view.MetaDataClassInsOrUp'),
 
+    # Upload
+    ('testUploadFile', 'POST', '/api/v1/testUploadFile', 'view.testUploadFile'),
     #######
 
 

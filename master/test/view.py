@@ -366,7 +366,7 @@ async def index12(request):
 # region metadata
 async def metaclasstreeQuery(request):
     # if request.__user__:
-    group = await MetaDataClass.findAll()
+    group = await MetaDataClass.findAll(where=f'isdel = 1')
     group_list = [
         {'ID': str(i['mcid']), 'PID': str(i['pid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource'], 'METACLSNO': i['metaclsno']}
         for i in group]
@@ -1060,8 +1060,9 @@ async def BloodRrlationInsOrUp(request):
 # MetaDataClass
 async def MetaDataClassInsOrUp(request):
     form = await request.json()
-    metaclsid = form.get('metaclsid')
-    parentid = form.get('parentid')
+    id = form.get('mcid')
+    pid = form.get('pid')
+    metaclsno = form.get('metaclsno')
     classno = form.get('classno')
     isresource = form.get('isresource')
     level = form.get('level')
@@ -1073,21 +1074,17 @@ async def MetaDataClassInsOrUp(request):
     isdel = form.get('isdel', 1)
     try:
 
-        if metaclsid and isdel == 1:  # update
-            effectrows = await MetaDataClass(metaclsid=metaclsid).upd(parentid=parentid,
-                                                                      classno=classno,
-                                                                      isresource=isresource,
-                                                                      level=level,
-                                                                      metaclsname=metaclsname,
-                                                                      metaclspy=metaclspy,
-                                                                      remark=remark,
-                                                                      app=app,
-                                                                      createname=createname,
-                                                                      isdel=isdel
-                                                                      )
-        elif not metaclsid:  # create
-            effectrows = await MetaDataClass(metaclsid=next_id(),
-                                             parentid=parentid,
+        if id and isdel == 1:  # update
+            effectrows = await MetaDataClass(mcid=id).upd2(isresource=isresource,
+                                                           metaclsname=metaclsname,
+                                                           metaclspy=metaclspy,
+                                                           remark=remark,
+                                                           app=app,
+                                                           createname=createname)
+        elif not id:  # create
+            effectrows = await MetaDataClass(mcid=next_id(),
+                                             pid=pid,
+                                             metaclsno=metaclsno,
                                              classno=classno,
                                              isresource=isresource,
                                              level=level,
@@ -1098,8 +1095,8 @@ async def MetaDataClassInsOrUp(request):
                                              createname=createname,
                                              isdel=isdel
                                              ).save()
-        elif metaclsid and isdel == 0:  # delete
-            effectrows = await MetaDataClass(metaclsid=metaclsid).upd2(isdel=0)
+        elif id and isdel == 0:  # delete
+            effectrows = await MetaDataClass(mcid=id).upd2(isdel=0)
 
         data = dict(success=True, data=effectrows)
         return render_json(data)
@@ -1111,6 +1108,31 @@ async def MetaDataClassInsOrUp(request):
 
 # endregion
 
+# region upload
+
+async def testUploadFile(request):
+    print(request)
+    form = await request.post()
+    form = dict(**form)
+    img = form.get('file').file
+    image = img.read()
+    print(image)
+    print(img)
+    print(form)
+
+    Url = request.message
+    content = request.content
+    x = request.query_string
+    y = await content.read()
+    # z = await request.post()
+    # m = await request.json()
+    print(Url)
+    print(y)
+    print(x)
+    with open('test.png','wb') as f:
+        f.write(image)
+
+# endregion
 
 # region websokect
 
