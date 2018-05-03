@@ -3,13 +3,13 @@ import webQ.q_orm  as orm
 from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json, render_image
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page, ToMysqlDateTimeNow
-# from model import User, VFrontBase, VDataLayer, MetaDataClass, VMetadataClass, VMetaData, VResourceBase, VDBTableTree, \
-#     VDBTableLayerTree, VDBTable, VDBTableColumn, VETLClients, VEtlJobs
 from model import *
 from utils import parestree
 from etlcarte import ETLCarte
 from cls_dnn import forecast
 import pandas as pd
+from gfs import GFS
+from bson.objectid import ObjectId
 
 
 # def render_json(data):
@@ -23,6 +23,7 @@ import pandas as pd
 #     r.content_type = 'image/jpeg'
 #     r.body = data
 #     return r
+
 
 # region ai
 
@@ -368,7 +369,8 @@ async def metaclasstreeQuery(request):
     # if request.__user__:
     group = await MetaDataClass.findAll(where=f'isdel = 1')
     group_list = [
-        {'ID': str(i['mcid']), 'PID': str(i['pid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource'], 'METACLSNO': i['metaclsno']}
+        {'ID': str(i['mcid']), 'PID': str(i['pid']), 'NAME': i['metaclsname'], 'ISRESOURCE': i['isresource'],
+         'METACLSNO': i['metaclsno']}
         for i in group]
     # print(group_list)
     ##
@@ -642,6 +644,8 @@ async def EtlJobsQuery(request):
 
 
 from io import StringIO, BytesIO
+
+
 async def EtlJobImage(request):
     Url = request.query.get('Url')
     Jobid = request.query.get('Jobid')
@@ -664,8 +668,11 @@ async def EtlJobImage(request):
     # r.body = img
     return render_image(img)
 
+
 import aiohttp
 from bs4 import BeautifulSoup
+
+
 async def EtlJobLog(request):
     Url = request.query.get('Url')
     JobName = request.query.get('JobName')
@@ -673,7 +680,7 @@ async def EtlJobLog(request):
     print(JobName)
     auth = aiohttp.BasicAuth(login='cluster', password='cluster', encoding='utf8')
     async with aiohttp.ClientSession(auth=auth) as session:
-        async with session.get(Url+"jobStatus/?name="+JobName) as r:
+        async with session.get(Url + "jobStatus/?name=" + JobName) as r:
             json_body = await r.text()
             soup = BeautifulSoup(json_body, "lxml")
             logtext = soup.find(id='joblog')
@@ -727,6 +734,28 @@ async def BloodVertexEdgeQuery(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
+
+
+async def NosqlDatabaseQuery(request):
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    else:
+        try:
+            num = await VNosqlDatabase.findNumber(selectField='count(*)')
+            p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+            if num == 0:
+                data1 = dict(page=p.GetDict, res=[])
+            else:
+                list = await VNosqlDatabase.findAll(limit=(p.offset, p.limit))
+                data1 = dict(page=p.GetDict, res=list)
+            data = dict(success=True, data=data1)
+            return render_json(data)
+        except Exception as e:
+            data = dict(failure=True, data=e)
+            return render_json(data)
 
 
 # endregion
@@ -843,15 +872,15 @@ async def ResourceBaseInsOrUp(request):
                                                             isdel=isdel)
         elif not rbid:  # create
             effectrows = await ResourceBase(rbid=next_id(),
-                                         name=name,
-                                         datasourceunit=datasourceunit,
-                                         createunit=createunit,
-                                         contact=contact,
-                                         tel=tel,
-                                         status=status,
-                                         createtime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).save()
+                                            name=name,
+                                            datasourceunit=datasourceunit,
+                                            createunit=createunit,
+                                            contact=contact,
+                                            tel=tel,
+                                            status=status,
+                                            createtime=ToMysqlDateTimeNow(),
+                                            isdel=isdel
+                                            ).save()
         elif rbid and isdel == 0:  # delete
             effectrows = await ResourceBase(rbid=rbid).upd2(isdel=0)
 
@@ -928,14 +957,14 @@ async def DBTableInsOrUp(request):
 
         if tabid and isdel == 1:  # update
             effectrows = await DBTable(tabid=tabid).upd2(
-                                         rbid=rbid,
-                                         dlid=dlid,
-                                         tablenameyw=tablenameyw,
-                                         tablenamezw=tablenamezw,
-                                         remark=remark,
-                                         updateuserid=updateuserid,
-                                         updatetime=ToMysqlDateTimeNow(),
-                                         isdel=isdel)
+                rbid=rbid,
+                dlid=dlid,
+                tablenameyw=tablenameyw,
+                tablenamezw=tablenamezw,
+                remark=remark,
+                updateuserid=updateuserid,
+                updatetime=ToMysqlDateTimeNow(),
+                isdel=isdel)
 
             # effectrows = await DBTable(tabid=tabid,
             #                              rbid=rbid,
@@ -949,15 +978,15 @@ async def DBTableInsOrUp(request):
             #                              ).upd()
         elif not tabid:  # create
             effectrows = await DBTable(tabid=next_id(),
-                                         rbid=rbid,
-                                         dlid=dlid,
-                                         tablenameyw=tablenameyw,
-                                         tablenamezw=tablenamezw,
-                                         remark=remark,
-                                         createuserid=createuserid,
-                                         createtime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).save()
+                                       rbid=rbid,
+                                       dlid=dlid,
+                                       tablenameyw=tablenameyw,
+                                       tablenamezw=tablenamezw,
+                                       remark=remark,
+                                       createuserid=createuserid,
+                                       createtime=ToMysqlDateTimeNow(),
+                                       isdel=isdel
+                                       ).save()
         elif tabid and isdel == 0:  # delete
             effectrows = await DBTable(tabid=tabid).upd2(isdel=0)
 
@@ -1000,17 +1029,17 @@ async def ETLClientsInsOrUp(request):
                                                             isdel=isdel)
         elif not etlid:  # create
             effectrows = await ETLClients(etlid=next_id(),
-                                         name=name,
-                                         ip=ip,
-                                         port=port,
-                                         url=url,
-                                         version=version,
-                                         location=location,
-                                         desc=desc,
-                                         createuserid=createuserid,
-                                         createtime=ToMysqlDateTimeNow(),
-                                         isdel=isdel
-                                         ).save()
+                                          name=name,
+                                          ip=ip,
+                                          port=port,
+                                          url=url,
+                                          version=version,
+                                          location=location,
+                                          desc=desc,
+                                          createuserid=createuserid,
+                                          createtime=ToMysqlDateTimeNow(),
+                                          isdel=isdel
+                                          ).save()
         elif etlid and isdel == 0:  # delete
             effectrows = await ETLClients(etlid=etlid).upd2(isdel=0)
 
@@ -1106,9 +1135,62 @@ async def MetaDataClassInsOrUp(request):
         return render_json(data)
 
 
+# NosqlDatabase
+async def NosqlDatabaseInsOrUp(request):
+    form = await request.json()
+    id = form.get('ndid')
+    name = form.get('name')
+    describe = form.get('describe')
+    ip = form.get('ip')
+    port = form.get('port')
+    accountnumber = form.get('accountnumber')
+    password = form.get('password')
+    remark = form.get('remark')
+    createuserid = form.get('createuserid ')
+    updateuserid = form.get('updateuserid ')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if id and isdel == 1:  # update
+            effectrows = await NosqlDatabase(ndid=id).upd2(name=name,
+                                                           describe=describe,
+                                                           ip=ip,
+                                                           port=port,
+                                                           accountnumber=accountnumber,
+                                                           password=password,
+                                                           remark=remark,
+                                                           updateuserid=updateuserid,
+                                                           updatetime=ToMysqlDateTimeNow(),
+                                                           isdel=isdel)
+        elif not id:  # create
+            effectrows = await NosqlDatabase(ndid=next_id(),
+                                             name=name,
+                                             describe=describe,
+                                             ip=ip,
+                                             port=port,
+                                             accountnumber=accountnumber,
+                                             password=password,
+                                             remark=remark,
+                                             createuserid=createuserid,
+                                             createtime=ToMysqlDateTimeNow(),
+                                             isdel=isdel
+                                             ).save()
+        elif id and isdel == 0:  # delete
+            effectrows = await NosqlDatabase(ndid=id).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+
 # endregion
 
-# region upload
+
+# region nosql mongodb
 
 async def testUploadFile(request):
     print(request)
@@ -1129,10 +1211,99 @@ async def testUploadFile(request):
     print(Url)
     print(y)
     print(x)
-    with open('test.png','wb') as f:
+    with open('test.png', 'wb') as f:
         f.write(image)
 
+
+async def UploadFile(request):
+    """
+    use: action=http://127.0.0.1:9000/api/v1/UploadFile
+    :param request:
+    :return:
+    """
+    form = await request.post()
+    form = dict(**form)
+    file = form.get('file')
+    print(file)
+    namelist = file.filename.split('.')
+    filename = namelist[:-1]
+    file = file.file
+    # content_type = file.content_type
+    image = file.read()
+    try:
+        gfs = GFS()
+        effectrows = gfs.putBytes(bytes=image, name=filename)
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def GetImage(request):
+    """
+    use: http://127.0.0.1:9000/api/v1/GetImage?FileID=xxxxxxxxxxxxxxx
+    :param request:
+    :return:
+    """
+    # form = await request.post()
+    FileID = request.query.get('FileID')
+    gfs = GFS()
+    # x,y = gfs.get('5ae3d6299f6b8f1714c7fdb5')
+    x, y = gfs.get(FileID)
+    # print(x)
+    # print(y)
+    return render_image(x)
+
+
+async def NosqlQuery(request):
+    """
+    example x = gfs.find(query={"filename": "1.png"}, projection={"filename":1}).sort([('uploadDate', -1)]).limit(1)
+    :param reqest:
+    :return:
+    """
+    FileName = request.query.get('FileName')
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    print(FileName)
+    if FileName:
+        query = {"filename": FileName}
+    else:
+        query = None
+    gfs = GFS()
+    # res = gfs.find(query={"filename": FileName}, projection={"chunkSize": 0}).sort([('uploadDate', -1)]).skip(int(CurrentPage)).limit(int(PageSize))
+    # reslist = list(res)
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    else:
+        try:
+            num = gfs.find(query=query).count()
+            p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+            if num == 0:
+                data1 = dict(page=p.GetDict, res=[])
+            else:
+                # list = await VDBTable.findAll(limit=(p.offset, p.limit))
+                reslist = list(
+                    gfs.find(query=query, projection={"chunkSize": 0}).sort([('uploadDate', -1)]).skip(
+                        p.offset).limit(p.limit))
+                reslistmap = list(map(lambda x: {"_id": str(x['_id']),
+                                                 "filename": x['filename'],
+                                                 "format": x.get("format", ""),
+                                                 "uploadDate": str(x['uploadDate']),
+                                                 "length": round(x['length']/1024/1024, 2)}, reslist))
+
+                data1 = dict(page=p.GetDict, res=reslistmap)
+            data = dict(success=True, data=data1)
+            return render_json(data)
+        except Exception as e:
+            data = dict(failure=True, data=e)
+            return render_json(data)
+
+
 # endregion
+
 
 # region websokect
 

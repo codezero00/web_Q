@@ -35,6 +35,9 @@ urlpatterns = [
     ('BloodRelationQuery', 'GET', '/api/v1/BloodRelationQuery', 'view.BloodRelationQuery'),
     ('DBTableColumnTreeQuery', 'GET', '/api/v1/DBTableColumnTreeQuery', 'view.DBTableColumnTreeQuery'),
     ('BloodVertexEdgeQuery', 'GET', '/api/v1/BloodVertexEdgeQuery', 'view.BloodVertexEdgeQuery'),
+
+    ('NosqlDatabaseQuery', 'GET', '/api/v1/NosqlDatabaseQuery', 'view.NosqlDatabaseQuery'),
+
     ('ai', 'GET', '/api/v1/classforecast', 'view.ai'),
 
     # I U D
@@ -45,9 +48,12 @@ urlpatterns = [
     ('ETLClientsInsOrUp', 'POST', '/api/v1/ETLClientsInsOrUp', 'view.ETLClientsInsOrUp'),
     ('BloodRrlationInsOrUp', 'POST', '/api/v1/BloodRrlationInsOrUp', 'view.BloodRrlationInsOrUp'),
     ('MetaDataClassInsOrUp', 'POST', '/api/v1/MetaDataClassInsOrUp', 'view.MetaDataClassInsOrUp'),
-
-    # Upload
+    ('NosqlDatabaseInsOrUp', 'POST', '/api/v1/NosqlDatabaseInsOrUp', 'view.NosqlDatabaseInsOrUp'),
+    # nosql
     ('testUploadFile', 'POST', '/api/v1/testUploadFile', 'view.testUploadFile'),
+    ('UploadFile', 'POST', '/api/v1/UploadFile', 'view.UploadFile'),
+    ('GetImage', 'GET', '/api/v1/GetImage', 'view.GetImage'),
+    ('NosqlQuery', 'GET', '/api/v1/NosqlQuery', 'view.NosqlQuery'),
     #######
 
 

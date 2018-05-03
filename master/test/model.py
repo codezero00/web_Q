@@ -374,6 +374,41 @@ class VDBTableColumnTree(Model):
     NAME = StringField(ddl='varchar(200)')
 
 
+class NosqlDatabase(Model):
+    __table__ = 'nosqlbase'
+
+    ndid = StringField(primary_key=True, ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    describe = StringField(ddl='varchar(200)')
+    ip = StringField(ddl='varchar(200)')
+    port = StringField(ddl='varchar(200)')
+    accountnumber = StringField(ddl='varchar(200)')
+    password = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
+
+class VNosqlDatabase(Model):
+    __table__ = 'v_nosqlbase'
+
+    ndid = StringField(primary_key=True, ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    describe = StringField(ddl='varchar(200)')
+    ip = StringField(ddl='varchar(200)')
+    port = StringField(ddl='varchar(200)')
+    accountnumber = StringField(ddl='varchar(200)')
+    password = StringField(ddl='varchar(200)')
+    remark = StringField(ddl='varchar(200)')
+    createuserid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    updateuserid = StringField(ddl='varchar(200)')
+    updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
+
 # region ggg
 
 class grils(Model):
