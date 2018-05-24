@@ -56,7 +56,7 @@ class VMetaData(Model):
     ZYSXDY = StringField(ddl='varchar(200)')
     BZ = StringField(ddl='varchar(200)')
     PID = StringField(ddl='varchar(200)')
-
+    METAID = StringField(ddl='varchar(200)')
 
 class VResourceBase(Model):
     __table__ = 'v_resourcebase'
@@ -240,6 +240,7 @@ class MetaData(Model):
     createtime = StringField(ddl='varchar(200)')
     updateuserid = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
+    isdel = StringField(ddl='varchar(200)')
 
 
 class FrontBase(Model):
@@ -321,6 +322,21 @@ class DBTableColumn(Model):
     range = StringField(ddl='varchar(200)')
     isdel = StringField(ddl='varchar(200)', default=1)
 
+class VDBTableColumn2(Model):
+    __table__ = 'v_dbtablecolumn2'
+
+    colid = StringField(primary_key=True, ddl='varchar(200)')
+    tabid = StringField(ddl='varchar(200)')
+    metaid = StringField(ddl='varchar(200)')
+    columnname = StringField(ddl='varchar(200)')
+    name = StringField(ddl='varchar(200)')
+    type = StringField(ddl='varchar(200)')
+    len = StringField(ddl='varchar(200)')
+    ispk = StringField(ddl='varchar(200)')
+    isnull = StringField(ddl='varchar(200)')
+    isuq = StringField(ddl='varchar(200)')
+    range = StringField(ddl='varchar(200)')
+
 
 class ETLClients(Model):
     __table__ = 'etlclients'
@@ -378,8 +394,8 @@ class NosqlDatabase(Model):
     __table__ = 'nosqlbase'
 
     ndid = StringField(primary_key=True, ddl='varchar(200)')
-    name = StringField(ddl='varchar(200)')
-    describe = StringField(ddl='varchar(200)')
+    dbname = StringField(ddl='varchar(200)')
+    type = StringField(ddl='varchar(200)')
     ip = StringField(ddl='varchar(200)')
     port = StringField(ddl='varchar(200)')
     accountnumber = StringField(ddl='varchar(200)')
@@ -396,8 +412,8 @@ class VNosqlDatabase(Model):
     __table__ = 'v_nosqlbase'
 
     ndid = StringField(primary_key=True, ddl='varchar(200)')
-    name = StringField(ddl='varchar(200)')
-    describe = StringField(ddl='varchar(200)')
+    dbname = StringField(ddl='varchar(200)')
+    type = StringField(ddl='varchar(200)')
     ip = StringField(ddl='varchar(200)')
     port = StringField(ddl='varchar(200)')
     accountnumber = StringField(ddl='varchar(200)')
@@ -408,6 +424,27 @@ class VNosqlDatabase(Model):
     updateuserid = StringField(ddl='varchar(200)')
     updatetime = StringField(ddl='varchar(200)')
     isdel = StringField(ddl='varchar(200)')
+
+
+class VNosqlBaseTree(Model):
+    __table__ = 'v_nosqlbasetree'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+    NAME = StringField(ddl='varchar(200)')
+    ISRESOURCE = StringField(ddl='varchar(200)')
+
+
+class VMetaDataTree(Model):
+    __table__ = 'v_metadatatree'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+    NAME = StringField(ddl='varchar(200)')
+    ISRESOURCE = StringField(ddl='varchar(200)')
+    COLUMNNAME = StringField(ddl='varchar(200)')
+    COLUMNTYPE = StringField(ddl='varchar(200)')
+    COLUMNLEN = StringField(ddl='varchar(200)')
 
 # region ggg
 

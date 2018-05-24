@@ -4,9 +4,10 @@ from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgTyp
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page, ToMysqlDateTimeNow
 from model import *
-from utils import parestree
+from utils import parestree,parescolumntree
 from etlcarte import ETLCarte
 from cls_dnn import forecast
+from cls_word2vec import GenKeywords
 import pandas as pd
 from gfs import GFS
 from bson.objectid import ObjectId
@@ -40,6 +41,18 @@ async def ai(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
+async def Word2vecKeywords(request):
+    content = request.query.get('content')
+    content2 = GenKeywords(content)
+    print(content2)
+
+    data = dict()
+    data['success'] = True
+    data['data'] = content2
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
 
 # endregion
 
@@ -410,7 +423,11 @@ async def metaclassQuery(request):
 
 async def metadatadetailQuery(request):
     id = request.query.get('id')
-    metadata = await VMetaData.findAll(where=f'PID = "{id}"')
+    col = request.query.get('col', 1)
+    str = request.query.get('str', 1)
+    if col.strip() == '' or str.strip() == '':
+        col, str = 1, 1
+    metadata = await VMetaData.findAll(where=f'PID = "{id}" and {col} REGEXP "{str}"')
     ##
     data = dict()
     data['success'] = True
@@ -573,6 +590,16 @@ async def dbtablecolumnQuery(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
+async def dbtablecolumn2Query(request):
+    id = request.query.get('id')
+    columnlist = await VDBTableColumn2.findAll(where=f'TABID = "{id}"')
+    data = dict()
+    data['success'] = True
+    data['data'] = columnlist
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
 
 async def etlclientsQuery(request):
     CurrentPage = request.query.get('CurrentPage')
@@ -756,6 +783,30 @@ async def NosqlDatabaseQuery(request):
         except Exception as e:
             data = dict(failure=True, data=e)
             return render_json(data)
+
+
+async def NosqlBaseTreeQuery(request):
+    tabletreelist = await VNosqlBaseTree.findAll()
+    print(tabletreelist)
+    data = dict()
+    data['success'] = True
+    data['data'] = parestree(tabletreelist)
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
+
+async def MetaDataTreeQuery(request):
+    treelist = await VMetaDataTree.findAll()
+    data = dict()
+    data['success'] = True
+    data['data'] = parescolumntree(treelist)
+    r = Response()
+    r.content_type = 'application/json'
+    r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return r
+
 
 
 # endregion
@@ -1135,6 +1186,66 @@ async def MetaDataClassInsOrUp(request):
         return render_json(data)
 
 
+# MetaData
+async def MetaDataInsOrUp(request):
+    form = await request.json()
+    id = form.get('metaid')
+    metaclsid = form.get('metaclsid')
+    resourceno = form.get('standardno')
+    standardno = form.get('standardno')
+    metaname = form.get('metaname')
+    metapy = form.get('metapy')
+    columnname = form.get('columnname')
+    oldcolumnname = form.get('oldcolumnname')
+    columntype = form.get('columntype')
+    columnlen = form.get('columnlen')
+    metadefine = form.get('metadefine')
+    remark = form.get('remark')
+    createuserid = form.get('createuserid')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if id and isdel == 1:  # update
+            effectrows = await MetaData(metaid=id).upd2(resourceno=resourceno,
+                                                        standardno=standardno,
+                                                        metaname=metaname,
+                                                        metapy=metapy,
+                                                        columnname=columnname,
+                                                        oldcolumnname=oldcolumnname,
+                                                        columntype=columntype,
+                                                        columnlen=columnlen,
+                                                        metadefine=metadefine,
+                                                        remark=remark,
+                                                        updateuserid=createuserid,
+                                                        updatetime=ToMysqlDateTimeNow())
+        elif not id:  # create
+            effectrows = await MetaData(metaid=next_id(),
+                                        metaclsid=metaclsid,
+                                        resourceno=resourceno,
+                                        standardno=standardno,
+                                        metaname=metaname,
+                                        metapy=metapy,
+                                        columnname=columnname,
+                                        oldcolumnname=oldcolumnname,
+                                        columntype=columntype,
+                                        columnlen=columnlen,
+                                        metadefine=metadefine,
+                                        remark=remark,
+                                        createuserid=createuserid,
+                                        createtime=ToMysqlDateTimeNow(),
+                                        isdel=isdel
+                                        ).save()
+        elif id and isdel == 0:  # delete
+            effectrows = await MetaData(metaid=id).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
 # NosqlDatabase
 async def NosqlDatabaseInsOrUp(request):
     form = await request.json()
@@ -1186,6 +1297,45 @@ async def NosqlDatabaseInsOrUp(request):
         return render_json(data)
 
 
+# TableColumn
+async def DBTableColumnInsOrUp(request):
+    form = await request.json()
+    id = form.get('colid')
+    tabid = form.get('tabid')
+    metaid = form.get('metaid')
+    ispk = form.get('ispk')
+    isnull = form.get('isnull')
+    isuq = form.get('isuq')
+    range = form.get('range')
+    isdel = form.get('isdel', 1)
+    try:
+
+        if id and isdel == 1:  # update
+            effectrows = await DBTableColumn(colid=id).upd2(ispk=ispk,
+                                                            isnull=isnull,
+                                                            isuq=isuq,
+                                                            range=range,
+                                                            isdel=isdel)
+        elif not id:  # create
+            effectrows = await DBTableColumn(colid=next_id(),
+                                             tabid=tabid,
+                                             metaid=metaid,
+                                             ispk=ispk,
+                                             isnull=isnull,
+                                             isuq=isuq,
+                                             range=range,
+                                             isdel=isdel
+                                             ).save()
+        elif id and isdel == 0:  # delete
+            effectrows = await DBTableColumn(colid=id).upd2(isdel=0)
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
 
 # endregion
 
@@ -1223,15 +1373,16 @@ async def UploadFile(request):
     """
     form = await request.post()
     form = dict(**form)
+    DBName = request.query.get('DBName')
     file = form.get('file')
     print(file)
     namelist = file.filename.split('.')
-    filename = namelist[:-1]
+    filename = namelist[:-1][0]
     file = file.file
     # content_type = file.content_type
     image = file.read()
     try:
-        gfs = GFS()
+        gfs = GFS(dbname=DBName)
         effectrows = gfs.putBytes(bytes=image, name=filename)
         data = dict(success=True, data=effectrows)
         return render_json(data)
@@ -1248,8 +1399,9 @@ async def GetImage(request):
     :return:
     """
     # form = await request.post()
+    DBName = request.query.get('DBName')
     FileID = request.query.get('FileID')
-    gfs = GFS()
+    gfs = GFS(dbname=DBName)
     # x,y = gfs.get('5ae3d6299f6b8f1714c7fdb5')
     x, y = gfs.get(FileID)
     # print(x)
@@ -1263,15 +1415,17 @@ async def NosqlQuery(request):
     :param reqest:
     :return:
     """
+    DBName = request.query.get('DBName')
     FileName = request.query.get('FileName')
     CurrentPage = request.query.get('CurrentPage')
     PageSize = request.query.get('PageSize')
     print(FileName)
     if FileName:
-        query = {"filename": FileName}
+        query = {"filename": {'$regex': FileName}}   # '$regex' 模糊查询
     else:
         query = None
-    gfs = GFS()
+    print(query)
+    gfs = GFS(dbname=DBName)
     # res = gfs.find(query={"filename": FileName}, projection={"chunkSize": 0}).sort([('uploadDate', -1)]).skip(int(CurrentPage)).limit(int(PageSize))
     # reslist = list(res)
     if (not CurrentPage or not PageSize):

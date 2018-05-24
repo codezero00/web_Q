@@ -8,15 +8,25 @@ from PIL import Image
 from bson.objectid import ObjectId
 from io import StringIO, BytesIO
 import threading, time
+from pymongo.errors import (AutoReconnect,
+                            ConfigurationError,
+                            ConnectionFailure,
+                            InvalidOperation,
+                            InvalidURI,
+                            NetworkTimeout,
+                            NotMasterError,
+                            OperationFailure)
 
 
 # 文件处理系统
 class GFS:
     # 初始化
-    def __init__(self, username=None, password=None):
+    def __init__(self, username=None, password=None,dbname = 'gridfs'):
         # print("__init__")
         # self.db = MongoClient("localhost", 27017).gridfs
-        self.db = MongoClient('mongodb://127.0.0.1:27017').gridfs
+        self.client = MongoClient('mongodb://127.0.0.1:27017')
+        # self.db = self.client['gridfs']
+        self.db = self.client[dbname]
         self.fs = gridfs.GridFS(self.db)
         self.col = self.db.fs.files
         # print("server info " + " * " * 40)
@@ -52,6 +62,13 @@ class GFS:
 
     # 写入2进制流
     def putBytes(self, bytes, name, format="png"):
+        """
+        用于前端上传文件
+        :param bytes: 文件二进制流
+        :param name: 文件名称
+        :param format: 文件类型
+        :return:
+        """
         gf = None
         try:
             # data = BytesIO()
@@ -70,8 +87,6 @@ class GFS:
         gf = None
         try:
             gf = self.fs.get(ObjectId(id))
-            # print("kkkk")
-            # print(gf)
             im = gf.read()  # read the data in the GridFS
             dic = {}
             dic["chunk_size"] = gf.chunk_size
@@ -98,8 +113,15 @@ if __name__ == '__main__':
     # x=gfs.fs.find({"filename":"1.png"},{}).limit(10).skip(1)
     # print(x)
     # x = gfs.find()
-    x = gfs.find(query={"filename": "1.png"}, projection={"filename": 1}).sort([('uploadDate', -1)]).limit(1)
+    # x = gfs.find(query={"filename": "1.png"}, projection={"filename": 1}).sort([('uploadDate', -1)]).limit(1)
+    # print(x)
+    # print(list(x))
+    # for y in x:
+    #     print(y)
+
+    try:
+        # The ismaster command is cheap and does not require auth.
+        x = gfs.client.admin.command('listDatabases')
+    except ConnectionFailure:
+        print("Server not available")
     print(x)
-    print(list(x))
-    for y in x:
-        print(y)

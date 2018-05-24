@@ -7,14 +7,14 @@ from webQ.webq import webQ
 from webQ.q_login import LoginManager
 from model import User
 from urls import urlpatterns
-from dnnmodel import MultiCNNTextBNDeep
+from dnnmodel import MultiCNNTextBNDeep  # 必须要有
 
 cors_urls = tuple(x[0] for x in urlpatterns)
 
 
 app = webQ(urlpatterns)
 app.conf_multiports = (9001, 9002, 9003, 9004)
-app.conf_cors_url = "*"
+app.conf_cors_url = "*"  # 允许跨域的域名
 # app.conf_cors_routes = ('name11', 'name13', 'login', 'reg', 'islogin', 'metaclasstree', 'metaclass')
 app.conf_cors_routes = cors_urls  # 所有url跨域
 

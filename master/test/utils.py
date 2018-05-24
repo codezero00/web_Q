@@ -22,7 +22,7 @@ from pprint import pprint
 
 def parestree(lis):
     l = []
-    entities = {d['ID']: {'id': d['ID'], 'pid': d['PID'], 'label': d['NAME'], 'isresource': d.get('ISRESOURCE'),'metaclsno': d.get('METACLSNO')} for d in lis}
+    entities = {d['ID']: {'id': d['ID'], 'pid': d['PID'], 'label': d['NAME'], 'isresource': d.get('ISRESOURCE'),'metaclsno': d.get('METACLSNO'),'columnname': d.get('COLUMNNAME')} for d in lis}
     # pprint(entities)
     for e_id in entities:
         #print(e_id)
@@ -38,3 +38,19 @@ def parestree(lis):
 # x = parestree(list2)
 # #
 # pprint(x)
+
+
+def parescolumntree(lis):
+    l = []
+    entities = {d['ID']: {'id': d['ID'], 'pid': d['PID'], 'label': d['NAME'], 'isresource': d.get('ISRESOURCE'),'columnname': d.get('COLUMNNAME'),'columntype': d.get('COLUMNTYPE'),'columnlen': d.get('COLUMNLEN')} for d in lis}
+    # pprint(entities)
+    for e_id in entities:
+        #print(e_id)
+        entitiy = entities[e_id]
+        #print(entitiy)
+        fid = entitiy['pid']
+        if fid == '-1':
+            l.append(entitiy)
+        else:
+            entities[fid].setdefault('children', []).append(entitiy)
+    return l

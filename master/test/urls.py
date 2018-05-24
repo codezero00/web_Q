@@ -1,7 +1,7 @@
 urlpatterns = [
     ('name1', 'GET', '/', 'view.index'),
     # ('name2', 'GET', '/1', 'view.index1'),
-    # ('name3', 'GET', '/2/{gid}/', 'view.index2'),
+    ('name3', 'GET', '/2/{gid}/', 'view.index2'),
     # ('name4', 'GET', '/3', 'view.index3'),
     # ('name5', 'GET', '/4', 'view.index4'),
     # ('name6', 'GET', '/5', 'view.index5'),
@@ -27,6 +27,7 @@ urlpatterns = [
     ('GetTable', 'GET', '/api/v1/GetTable', 'view.GetTableQuery'),
     ('dbtable', 'GET', '/api/v1/dbtable', 'view.dbtableQuery'),
     ('dbtablecolumn', 'GET', '/api/v1/dbtablecolumn', 'view.dbtablecolumnQuery'),
+    ('dbtablecolumn2', 'GET', '/api/v1/dbtablecolumn2', 'view.dbtablecolumn2Query'),
     ('etlclients', 'GET', '/api/v1/etlclients', 'view.etlclientsQuery'),
     ('etljobs', 'GET', '/api/v1/etljobs', 'view.EtlJobsQuery'),
     ('EtlJobImage', 'GET', '/api/v1/EtlJobImage', 'view.EtlJobImage'),
@@ -37,8 +38,14 @@ urlpatterns = [
     ('BloodVertexEdgeQuery', 'GET', '/api/v1/BloodVertexEdgeQuery', 'view.BloodVertexEdgeQuery'),
 
     ('NosqlDatabaseQuery', 'GET', '/api/v1/NosqlDatabaseQuery', 'view.NosqlDatabaseQuery'),
+    ('NosqlBaseTreeQuery', 'GET', '/api/v1/NosqlBaseTreeQuery', 'view.NosqlBaseTreeQuery'),
 
+    ('MetaDataTreeQuery', 'GET', '/api/v1/MetaDataTreeQuery', 'view.MetaDataTreeQuery'),
+
+
+    # AI
     ('ai', 'GET', '/api/v1/classforecast', 'view.ai'),
+    ('Word2vecKeywords', 'GET', '/api/v1/Word2vecKeywords', 'view.Word2vecKeywords'),
 
     # I U D
     ('FrontBaseInsOrUp', 'POST', '/api/v1/FrontBaseInsOrUp', 'view.FrontBaseInsOrUp'),
@@ -48,7 +55,10 @@ urlpatterns = [
     ('ETLClientsInsOrUp', 'POST', '/api/v1/ETLClientsInsOrUp', 'view.ETLClientsInsOrUp'),
     ('BloodRrlationInsOrUp', 'POST', '/api/v1/BloodRrlationInsOrUp', 'view.BloodRrlationInsOrUp'),
     ('MetaDataClassInsOrUp', 'POST', '/api/v1/MetaDataClassInsOrUp', 'view.MetaDataClassInsOrUp'),
+    ('MetaDataInsOrUp', 'POST', '/api/v1/MetaDataInsOrUp', 'view.MetaDataInsOrUp'),
     ('NosqlDatabaseInsOrUp', 'POST', '/api/v1/NosqlDatabaseInsOrUp', 'view.NosqlDatabaseInsOrUp'),
+    ('DBTableColumnInsOrUp', 'POST', '/api/v1/DBTableColumnInsOrUp', 'view.DBTableColumnInsOrUp'),
+
     # nosql
     ('testUploadFile', 'POST', '/api/v1/testUploadFile', 'view.testUploadFile'),
     ('UploadFile', 'POST', '/api/v1/UploadFile', 'view.UploadFile'),
