@@ -488,7 +488,7 @@ class gimages(Model):
 
 
 class ginfo(Model):
-    __tablename__ = 'v_ginfo'
+    __tablename__ = 'ginfo'
     infid = IntegerField(primary_key=True)
     createtime = StringField(ddl='varchar(100)')
     content = TextField()
@@ -503,5 +503,16 @@ class gtype(Model):
     girid = IntegerField()
     type = StringField(ddl='varchar(100)')
     createtime = StringField(ddl='varchar(100)')
+
+# view
+
+class v_ginfo(Model):
+    __tablename__ = 'v_ginfo'
+    infid = IntegerField(primary_key=True)
+    createtime = StringField(ddl='varchar(100)')
+    content = TextField()
+    title = StringField(ddl='varchar(100)')
+    photo = StringField(ddl='varchar(100)')
+    type = StringField(ddl='varchar(100)')
 
 # endregion
