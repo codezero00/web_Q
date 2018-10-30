@@ -58,6 +58,7 @@ class VMetaData(Model):
     PID = StringField(ddl='varchar(200)')
     METAID = StringField(ddl='varchar(200)')
 
+
 class VResourceBase(Model):
     __table__ = 'v_resourcebase'
 
@@ -67,7 +68,7 @@ class VResourceBase(Model):
     CJDW = StringField(ddl='varchar(200)')
     LXR = StringField(ddl='varchar(200)')
     LXFS = StringField(ddl='varchar(200)')
-    ZT = StringField(ddl='varchar(200)')
+    # ZT = StringField(ddl='varchar(200)')
 
 
 class VDBTableTree(Model):
@@ -222,10 +223,10 @@ class MetaDataClass(Model):
 
 
 class MetaData(Model):
-    __table__ = 'MetaData'
+    __table__ = 'metadata'
 
     metaid = StringField(primary_key=True, ddl='varchar(200)')
-    metaclsid = StringField(ddl='varchar(200)')
+    mcid = StringField(ddl='varchar(200)')
     resourceno = StringField(ddl='varchar(200)')
     standardno = StringField(ddl='varchar(200)')
     metaname = StringField(ddl='varchar(200)')
@@ -446,6 +447,44 @@ class VMetaDataTree(Model):
     COLUMNTYPE = StringField(ddl='varchar(200)')
     COLUMNLEN = StringField(ddl='varchar(200)')
 
+class NLPCaseType(Model):
+    __table__ = 'nlpcasetype'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+    DICTCODE = StringField(ddl='varchar(200)')
+    DICTNAME = StringField(ddl='varchar(200)')
+    SOURCE = StringField(ddl='varchar(200)')
+
+class VNLPClassTree(Model):
+    __table__ = 'v_nlpclasstree'
+
+    ID = StringField(primary_key=True, ddl='varchar(200)')
+    PID = StringField(ddl='varchar(200)')
+    DICTCODE = StringField(ddl='varchar(200)')
+    DICTNAME = StringField(ddl='varchar(200)')
+    SOURCE = StringField(ddl='varchar(200)')
+    ACCURACY = StringField(ddl='varchar(200)')
+
+class VNLPCaseDetail(Model):
+    __table__ = 'v_nlpcasedetail'
+
+    id = StringField(primary_key=True, ddl='varchar(200)')
+    content = StringField(ddl='varchar(200)')
+    aicaseclassid = StringField(ddl='varchar(200)')
+    truecaseclassid = StringField(ddl='varchar(200)')
+    createtime = StringField(ddl='varchar(200)')
+    aidictname = StringField(ddl='varchar(200)')
+    truedictname = StringField(ddl='varchar(200)')
+
+class NLPAccuracy(Model):
+    __table__ = 'nlpaccuracy'
+
+    id = StringField(primary_key=True, ddl='varchar(200)')
+    loss = StringField(ddl='varchar(200)')
+    accuracy = StringField(ddl='varchar(200)')
+    step = StringField(ddl='varchar(200)')
+
 # region ggg
 
 class grils(Model):
@@ -488,7 +527,7 @@ class gimages(Model):
 
 
 class ginfo(Model):
-    __tablename__ = 'ginfo'
+    __tablename__ = 'v_ginfo'
     infid = IntegerField(primary_key=True)
     createtime = StringField(ddl='varchar(100)')
     content = TextField()
@@ -503,16 +542,5 @@ class gtype(Model):
     girid = IntegerField()
     type = StringField(ddl='varchar(100)')
     createtime = StringField(ddl='varchar(100)')
-
-# view
-
-class v_ginfo(Model):
-    __tablename__ = 'v_ginfo'
-    infid = IntegerField(primary_key=True)
-    createtime = StringField(ddl='varchar(100)')
-    content = TextField()
-    title = StringField(ddl='varchar(100)')
-    photo = StringField(ddl='varchar(100)')
-    type = StringField(ddl='varchar(100)')
 
 # endregion

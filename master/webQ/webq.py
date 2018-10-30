@@ -1,4 +1,5 @@
 import logging
+
 logging.basicConfig(level=logging.INFO)
 
 from .q_orm import *
@@ -12,17 +13,18 @@ from multiprocessing import Pool
 from .q_helpers import *
 from .q_login import _COOKIE_NAME, _COOKIE_KEY, decode_cookie, LoginManager
 
+from aiohttp_swagger import *
+
 
 class webQ(object):
-    def __init__(self,
-                 patterns=None
-                 ):
+    def __init__(self, patterns=None):
         self.patterns = patterns
         self._others = None
         self._dbsource = None
         self._portlist = None
         self._cors_url = None
         self._cors_routes = None
+        self._swagger_conf = {}
 
     def init_jinja2(self, app, **kw):
         logging.info('init jinja2...')
@@ -46,17 +48,23 @@ class webQ(object):
                 env.filters[name] = f
         app['__templating__'] = env
 
+    """
+    工厂模式
+    """
+
     async def logger_factory(self, app, handler):
         async def logger(request):
             logging.info('request from: %s,%s' %
                          (request.method, request.path))
             return await handler(request)
+
         return logger
 
     async def response_factory(self, app, handler):
-        '''
+        """
         中间件
-        '''
+        """
+
         async def response(request):
             logging.info('Response handler...')
             r = await handler(request)
@@ -87,6 +95,7 @@ class webQ(object):
             resp = web.Response(body=str(r).encode('utf-8'))
             resp.content_type = 'text/plain;charset=utf-8'
             return resp
+
         return response
 
     async def auth_factory(self, app, handler):
@@ -105,6 +114,17 @@ class webQ(object):
 
         return auth
 
+    """
+    class function
+    """
+    def init_swagger(self, app, **kwargs):
+        logging.info('init swagger...')
+        # if not kwargs:
+        #     raise ValueError('init_swagger kwargs can not be None')
+        confpath = kwargs.get('swagger_from_file', None)
+        setup_swagger(app=app, swagger_from_file=confpath, api_base_url='/')
+        logging.info('init swagger successful...')
+
     def add_url_rule(self, app, method, path, name, view_func=None):
         logging.info('add_url_rule : {} {} call funcation: {} '.format(
             method, path, view_func.__name__))
@@ -122,7 +142,7 @@ class webQ(object):
 
     def setup_routes(self, app, patterns):
         for attr in patterns:
-            #logging.info('func_name: %s' % str(attr))
+            # logging.info('func_name: %s' % str(attr))
             _name = attr[0]
             _method = attr[1]
             _path = attr[2]
@@ -130,6 +150,19 @@ class webQ(object):
             n = _fnc1.split('.')
             _module = n[-2]
             _fuc2 = n[-1]
+            """
+            __import__ python内置函数
+            1. 函数功能用于动态的导入模块，主要用于反射或者延迟加载模块。
+            2. __import__(module)相当于import module
+            
+            返回 对象obj module
+            
+            getattr(object, name[, default])
+            
+            getattr() 函数用于返回一个对象属性值。
+            
+            
+            """
             weqapp = __import__(_module)
             _fuc3 = getattr(weqapp, _fuc2)
             self.add_url_rule(app, method=_method, path=_path,
@@ -137,32 +170,33 @@ class webQ(object):
 
     async def setup(self, loop, port):
         # await orm.create_pool(loop=loop)   ### 创建数据库连接池
-        await create_pool(loop=loop, **self._dbsource)  # 创建数据库连接池
+        if self._dbsource is not None:
+            await create_pool(loop=loop, **self._dbsource)  # 创建数据库连接池
         app = web.Application(loop=loop, middlewares=[self.logger_factory, self.response_factory, self.auth_factory])
         app['sockets'] = []
         self.init_jinja2(app, **self._others)
         self.add_static(app, **self._others)
         self.setup_routes(app, self.patterns)
-        cors = self.aio_cors(app)
+
         # Configure CORS on all routes. 配置所有router都可以跨域（配置touter name=name13 , name11 的router的可以跨域）
-        # cors_routes = filter(lambda x:x.name in ('name13','name11'),list(app.router.routes()))
-        # for route in cors_routes:
-        #     cors.add(route)
+        cors = self.aio_cors(app)
         cors_routes = filter(
             lambda x: x.name in self._cors_routes, list(app.router.routes()))
         for route in cors_routes:
             cors.add(route)
-        # for route in list(app.router.routes()):
-            #cors.add(route)
+
+        # 注册url到swagger,必须放在add_router 后面
+        self.init_swagger(app=app, **self._swagger_conf)
+
         # 端口
-        srv = await loop.create_server(app.make_handler(), '127.0.0.1', port)
-        logging.info('server started at http://127.0.0.1: %s ...' % (port))
+        srv = await loop.create_server(app.make_handler(), '0.0.0.0', port)
+        logging.info('server started at http://0.0.0.0: %s ...' % (port))
         return srv
 
     def aio_cors(self, app, **kw):
-        '''
-        aiohttp不支持跨域，这是是跨域插件
-        '''
+        """
+        aio_http不支持跨域，这是是跨域插件
+        """
         # Configure default CORS settings.
         cors = aiohttp_cors.setup(app, defaults={
             self._cors_url: aiohttp_cors.ResourceOptions(
@@ -174,22 +208,22 @@ class webQ(object):
         return cors
 
     def run(self, port):
-        '''
+        """
         单进程
         :param port:
         :return:
-        '''
+        """
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.setup(loop, port))
         loop.run_forever()
 
     def multi_run(self):
-        '''
+        """
         多进程
         :return:
-        '''
+        """
         print('Parent process %s.' % os.getpid())
-        #p = Pool(3)
+        # p = Pool(3)
         # for i in (9000,9001,9002):
         #     p.apply_async(self.run, args=(i,))
         p = Pool(len(self._portlist))
@@ -200,7 +234,11 @@ class webQ(object):
         p.join()
         print('All subprocesses done.')
 
-    @property  # Python内置的@property装饰器就是负责把一个方法变成属性调用的
+    """
+    Python内置的@property装饰器就是负责把一个方法变成属性调用的
+    """
+
+    @property
     def conf_multiports(self):
         return self._portlist
 
@@ -236,7 +274,7 @@ class webQ(object):
 
     @conf_dbsource.setter
     def conf_dbsource(self, value):
-        if not isinstance(value, dict):
+        if value and not isinstance(value, dict):
             raise ValueError('conf_dbsource must be dict!')
         self._dbsource = value
 
@@ -249,3 +287,22 @@ class webQ(object):
         if not isinstance(value, dict):
             raise ValueError('conf_others must be dict!')
         self._others = value
+
+    @property
+    def conf_swagger(self):
+        """
+        可以不用提前定义 _swagger_conf
+        :return:
+        """
+        return self._swagger_conf
+
+    @conf_swagger.setter
+    def conf_swagger(self, value):
+        """
+        python版本getter,setter  动态给class赋值~ 必须先用setter 赋值，然后getter
+        :param value: dict
+        :return: dict
+        """
+        if not isinstance(value, dict):
+            raise ValueError('conf_swagger must be dict!')
+        self._swagger_conf = value

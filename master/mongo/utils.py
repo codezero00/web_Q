@@ -54,3 +54,16 @@ def parescolumntree(lis):
         else:
             entities[fid].setdefault('children', []).append(entitiy)
     return l
+
+
+def parescasetypetree(lis):
+    l = []
+    entities = {d['id']: {'id': d['id'], 'pid': d['pid'], 'label': d['dictname'], 'dictcode': d.get('dictcode'), 'accuracy': d.get('accuracy')} for d in lis}
+    for e_id in entities:
+        entitiy = entities[e_id]
+        fid = entitiy['pid']
+        if fid == '-1':
+            l.append(entitiy)
+        else:
+            entities[fid].setdefault('children', []).append(entitiy)
+    return l

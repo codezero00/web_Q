@@ -74,3 +74,14 @@ def render_image(data):
     res.content_type = 'image/jpeg'
     res.body = data
     return res
+
+def render_file(data,format = 'image/jpeg'):
+    """
+    format
+    :param data:
+    :return:
+    """
+    res = Response()
+    res.content_type = format
+    res.body = data
+    return res

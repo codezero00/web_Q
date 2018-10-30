@@ -7,24 +7,25 @@ from webQ.webq import webQ
 from webQ.q_login import LoginManager
 from model import User
 from urls import urlpatterns
-# from dnnmodel import MultiCNNTextBNDeep  # 必须要有
 
 cors_urls = tuple(x[0] for x in urlpatterns)
 
 
 app = webQ(urlpatterns)
-app.conf_multiports = (9001, 9002, 9003, 9004)
+app.conf_multiports = (7001, 7002, 7003, 7004)
 app.conf_cors_url = "*"  # 允许跨域的域名
 # app.conf_cors_routes = ('name11', 'name13', 'login', 'reg', 'islogin', 'metaclasstree', 'metaclass')
 app.conf_cors_routes = cors_urls  # 所有url跨域
 
-app.conf_dbsource = dict(
-    host='127.0.0.1',
-    port=3306,
-    user='root',
-    password='root',
-    db='akeec'
-)
+app.conf_dbsource = None
+# app.conf_dbsource = dict(
+#     host='172.16.4.110',
+#     port=3306,
+#     user='root',
+#     password='zyjs2018!',
+#     db='zyjs_dwc'
+# )
+
 
 app.conf_others = dict(
     static_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'),
@@ -52,5 +53,5 @@ def init_login():
 init_login()
 
 if __name__ == '__main__':
-    app.run(9000)
+    app.run(7000)
     # app.multi_run()
