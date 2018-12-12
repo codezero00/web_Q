@@ -30,10 +30,10 @@ class webQ(object):
         logging.info('init jinja2...')
         options = dict(
             autoescape=kw.get('autoescape', True),
-            block_start_string=kw.get('block_start_string', '{%'),
-            block_end_string=kw.get('block_end_string', '%}'),
-            variable_start_string=kw.get('variable_start_string', '{{{'),
-            variable_end_string=kw.get('variable_end_string', '}}}'),
+            # block_start_string=kw.get('block_start_string', '{%'),
+            # block_end_string=kw.get('block_end_string', '%}'),
+            # variable_start_string=kw.get('variable_start_string', '{{'),
+            # variable_end_string=kw.get('variable_end_string', '}}'),
             auto_reload=kw.get('auto_reload', True)
         )
         path = kw.get('templates_path', None)

@@ -2,7 +2,7 @@ import asyncio
 import aiomysql
 import logging
 # import aiofiles
-from string import Template
+from jinja2 import Template, Environment, FileSystemLoader
 
 
 async def create_pool(loop, **kw):
@@ -91,11 +91,15 @@ def read_template(dict_string):
     :param dict_string: {'models_string':xxxx}
     :return:
     """
-    with open('model.template', 'r') as f:
-        template_string = f.read()
-    model_temlplate = Template(template=template_string)
-    genmodel = model_temlplate.substitute(dict_string)
+    env = Environment(loader=FileSystemLoader('../templates'))
+    template = env.get_template('model.template')
+    genmodel = template.render(dict_string)
     return genmodel
+    # with open('model.template', 'r') as f:
+    #     template_string = f.read()
+    # model_temlplate = Template(template=template_string)
+    # genmodel = model_temlplate.substitute(dict_string)
+    # return genmodel
 
 
 async def run(loop):
@@ -118,7 +122,7 @@ async def run(loop):
         models_string += '\n\n'
     dict_string = dict(models_string=models_string)
     print(dict_string)
-    with open('mymodel.py', 'w') as f:
+    with open('../generated_file/mymodel.py', 'w', encoding='utf8') as f:
         f.write(read_template(dict_string=dict_string))
 
 

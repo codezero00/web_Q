@@ -1,0 +1,48 @@
+import json, logging, model
+import webQ.q_orm  as orm
+from webQ.q_response import Response, json_response, render_json, render_image
+from webQ.q_helpers import next_id, Page, ToMysqlDateTimeNow
+from model import *
+from utils import parestree, parescolumntree, parescasetypetree
+import re
+
+
+{% for table in tables %}
+async def {{table.table_name}}_BatchDel(request):
+    """
+    Description end-point
+    ---
+    description: {{table.table_name}}批量删除
+    tags:
+    - batch delete
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: {{table.table_name}}批量删除
+      required: True
+      schema:
+        type: object
+        properties:
+          batchid:
+            type: string
+            description: ['xxx','xxx','xxx',...]
+    """
+    form = await request.json()
+    batchid = form.get('batchid')
+    x = re.search(r'^\[(.*?)\]$', str(batchid))
+    try:
+        sql = f'delete from {{table.table_name}} where {{table.pri_key}} in ({x.group(1)})'
+
+        print(sql)
+        effectrows = await orm.execute(sql=sql, args=())
+        logging.info(effectrows)
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+{% endfor %}

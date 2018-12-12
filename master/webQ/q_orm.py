@@ -309,10 +309,10 @@ class Model(dict, metaclass=ModelMetaclass):
         return rows
 
     async def upd(self):
-        '''
-        update console
+        """
+        全字段更新
         :return:
-        '''
+        """
         # args = list(map(self.getValue, self.__fields__))
         # args.append(self.getValue(self.__primary_key__))
         args = list(map(self.getValueOrDefault, self.__fields__))
@@ -327,6 +327,7 @@ class Model(dict, metaclass=ModelMetaclass):
 
     async def upd2(self, **kw):
         """
+        选择字段更新
         update
         :return:
         """

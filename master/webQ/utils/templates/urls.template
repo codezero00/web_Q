@@ -1,0 +1,17 @@
+urlpatterns = [
+
+    ('helloworld', 'GET', '/', 'app.helloworld'),
+
+
+
+    # I U
+    #('FRONTBASE_InsOrUp', 'POST', '/api/v1/FRONTBASE_InsOrUp', 'view_insorup.FRONTBASE_InsOrUp'),
+    {% for table in tables %}('{{table.table_name}}_InsOrUp', 'POST', '/api/v1/{{table.table_name}}_InsOrUp', 'view_insorup.{{table.table_name}}_InsOrUp'),
+    {% endfor %}
+
+    # BabchDel
+    #('BLOODEDGE_BatchDel', 'POST', '/api/v1/BLOODEDGE_BatchDel', 'view_del.BLOODEDGE_BatchDel'),
+    {% for table in tables %}('{{table.table_name}}_BatchDel', 'POST', '/api/v1/{{table.table_name}}_BatchDel', 'view_del.{{table.table_name}}_BatchDel'),
+    {% endfor %}
+
+]
