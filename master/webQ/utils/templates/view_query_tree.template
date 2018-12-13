@@ -1,0 +1,27 @@
+import json, time, hashlib, logging, model
+import webQ.q_orm  as orm
+from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json, render_image
+from webQ.q_helpers import Page
+from model_view import *
+from utils import parestree, parescolumntree, parescasetypetree
+
+
+{% for table in tables %}
+async def {{table.table_name}}_Query_Tree(request):
+    """
+    ---
+    description: {{table.table_name}}树查询！
+    tags:
+    - select
+    produces:
+    - application/json
+    """
+    try:
+        treelist = await {{table.table_name}}.findAll()
+        data = dict(success=True, data=parestree(treelist))
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+
+{% endfor %}

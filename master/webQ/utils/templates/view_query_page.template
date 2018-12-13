@@ -1,0 +1,48 @@
+import json, time, hashlib, logging, model
+import webQ.q_orm  as orm
+from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgType, render_json, render_image
+from webQ.q_helpers import Page
+from model_view import *
+
+{% for table in tables %}
+async def {{table.table_name}}_Query_Page(request):
+    """
+    Description end-point
+    ---
+    description: {{table.table_name}}分页查询
+    tags:
+    - select
+    produces:
+    - application/json
+    parameters:
+    - name: CurrentPage
+      in: query
+      type: string
+      required: true
+      description: 当前页
+    - name: PageSize
+      in: query
+      type: string
+      required: true
+      description: 每一页条数
+    """
+    CurrentPage = request.query.get('CurrentPage')
+    PageSize = request.query.get('PageSize')
+    if (not CurrentPage or not PageSize):
+        data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
+        return render_json(data)
+    try:
+        num = await {{table.table_name}}.findNumber(selectField='count(*)')
+        p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
+        if num == 0:
+            data1 = dict(page=p.GetDict, res=[])
+        else:
+            list = await {{table.table_name}}.findAll(limit=(p.offset, p.limit))
+            data1 = dict(page=p.GetDict, res=list)
+        data = dict(success=True, data=data1)
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=e)
+        return render_json(data)
+
+{% endfor %}
