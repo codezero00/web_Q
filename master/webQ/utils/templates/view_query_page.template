@@ -11,7 +11,7 @@ async def {{table.table_name}}_Query_Page(request):
     ---
     description: {{table.table_name}}分页查询
     tags:
-    - select
+    - select page
     produces:
     - application/json
     parameters:

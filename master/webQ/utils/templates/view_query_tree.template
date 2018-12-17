@@ -12,7 +12,7 @@ async def {{table.table_name}}_Query_Tree(request):
     ---
     description: {{table.table_name}}树查询！
     tags:
-    - select
+    - select tree
     produces:
     - application/json
     """

@@ -19,7 +19,7 @@ from aiohttp_swagger import *
 class webQ(object):
     def __init__(self, patterns=None):
         self.patterns = patterns
-        self._others = None
+        self._others = {}
         self._dbsource = None
         self._portlist = None
         self._cors_url = None

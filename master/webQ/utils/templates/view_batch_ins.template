@@ -1,0 +1,52 @@
+import json, logging, model
+import webQ.q_orm  as orm
+from webQ.q_response import Response, json_response, render_json, render_image
+from webQ.q_helpers import next_id, Page, ToMysqlDateTimeNow
+from model import *
+
+{% for table in tables %}
+async def {{table.table_name}}_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: {{table.table_name}}批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: {{table.table_name}}插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                {{table.pri_key}}:
+                  type: string
+                {% for column in table.columns %}{{column}}:
+                  type: string
+                {% endfor %}
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await {{table.table_name}}({{table.pri_key}}=next_id(),
+            {% for column in table.columns %}{{column}}=n.get('{{column}}'),
+            {% endfor %}).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+{% endfor %}
