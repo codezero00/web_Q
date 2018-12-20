@@ -21,7 +21,7 @@ def get_model_attr():
         # print(f'{table_name}:{pri_key}:{columns}')
         table = dict(table_name=table_name, pri_key=pri_key, columns=columns)
         tables.append(table)
-    dict_string = dict(v_tables=tables)
+    dict_string = dict(tables=tables)
     return dict_string
 
 

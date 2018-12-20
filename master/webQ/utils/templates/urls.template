@@ -2,7 +2,9 @@ urlpatterns = [
 
     ('helloworld', 'GET', '/', 'app.helloworld'),
 
-
+    # BatchIns
+    {% for table in tables %}('{{table.table_name}}_BatchIns', 'POST', '/api/v1/{{table.table_name}}_BatchIns', 'view_batch_ins.{{table.table_name}}_BatchIns'),
+    {% endfor %}
 
     # I U
     #('FRONTBASE_InsOrUp', 'POST', '/api/v1/FRONTBASE_InsOrUp', 'view_insorup.FRONTBASE_InsOrUp'),
@@ -12,6 +14,18 @@ urlpatterns = [
     # BabchDel
     #('BLOODEDGE_BatchDel', 'POST', '/api/v1/BLOODEDGE_BatchDel', 'view_del.BLOODEDGE_BatchDel'),
     {% for table in tables %}('{{table.table_name}}_BatchDel', 'POST', '/api/v1/{{table.table_name}}_BatchDel', 'view_del.{{table.table_name}}_BatchDel'),
+    {% endfor %}
+
+    # Query_page
+    {% for table in tables_v %}('{{table.table_name}}_Query_page', 'GET', '/api/v1/{{table.table_name}}_Query_Page', 'view_query_page.{{table.table_name}}_Query_Page'),
+    {% endfor %}
+
+    # Query_detail
+    {% for table in tables_v %}('{{table.table_name}}_Query_detail', 'GET', '/api/v1/{{table.table_name}}_Query_Detail', 'view_query_detail.{{table.table_name}}_Query_Detail'),
+    {% endfor %}
+
+    # Query_tree
+    {% for table in tables_v_tree %}('{{table.table_name}}_Query_Tree', 'GET', '/api/v1/{{table.table_name}}_Query_Tree', 'view_query_tree.{{table.table_name}}_Query_Tree'),
     {% endfor %}
 
 ]

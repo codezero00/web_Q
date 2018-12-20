@@ -37,7 +37,7 @@ async def {{table.table_name}}_Query_Page(request):
         if num == 0:
             data1 = dict(page=p.GetDict, res=[])
         else:
-            list = await {{table.table_name}}.findAll(limit=(p.offset, p.limit))
+            list = await {{table.table_name}}.findAll(selectField='*', limit=(p.offset, p.limit))
             data1 = dict(page=p.GetDict, res=list)
         data = dict(success=True, data=data1)
         return render_json(data)

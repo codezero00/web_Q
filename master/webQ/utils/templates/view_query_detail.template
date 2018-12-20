@@ -16,7 +16,7 @@ async def {{table.table_name}}_Query_Detail(request):
     produces:
     - application/json
     parameters:
-    - name: {{table.pri_key}}
+    - name: id
       in: query
       type: string
       required: true
@@ -25,9 +25,9 @@ async def {{table.table_name}}_Query_Detail(request):
     id = request.query.get('id')
     try:
         if not id:
-            tablelist = await {{table.table_name}}.findAll()
+            tablelist = await {{table.table_name}}.findAll(selectField='*')
         else:
-            tablelist = await {{table.table_name}}.findAll(where=f'{{table.pri_key}} = "{id}"')
+            tablelist = await {{table.table_name}}.findAll(selectField='*', where=f'{{table.pri_key}} = "{id}"')
         data = dict(success=True, data=tablelist)
         return render_json(data)
     except Exception as e:

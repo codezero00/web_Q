@@ -30,6 +30,7 @@ async def create_pool(loop, **kw):
         loop=loop
     )
 
+
 async def select(p_sql, param):
     '''
     execute your sql what's input
@@ -55,7 +56,7 @@ async def proc(p_sql, param):
             SQL = p_sql
             print(param)
             await cur.callproc(SQL, param)
-            #print(cur.description)
+            # print(cur.description)
             r = await cur.fetchall()
             # await cur.close()
             logging.info('rows returned: %s' % len(r))
@@ -73,7 +74,7 @@ async def execmany(p_sql, param):
             SQL = p_sql
             print(param)
             await cur.executemany(SQL, param)
-            #print(cur.description)
+            # print(cur.description)
             r = await cur.fetchall()
             affected = cur.rowcount
             # await cur.close()
@@ -117,8 +118,7 @@ async def execute(sql, args, autocommit=True):
             return affected
 
 
-
-#region main
+# region main
 
 
 def create_args_string(num):
@@ -244,9 +244,12 @@ class Model(dict, metaclass=ModelMetaclass):
         return value
 
     @classmethod
-    async def findAll(cls, where=None, args=None, **kw):
+    async def findAll(cls, selectField, where=None, args=None, **kw):
         ' find objects by where clause. '
-        sql = [cls.__select__]
+        if selectField:
+            sql = ['select %s from `%s`' % (selectField, cls.__table__)]
+        else:
+            sql = [cls.__select__]
         if where:
             sql.append('where')
             sql.append(where)
@@ -358,4 +361,4 @@ class Model(dict, metaclass=ModelMetaclass):
                 'failed to remove by primary key: affected rows: %s' % rows)
         return rows
 
-#endregion
+# endregion
