@@ -33,7 +33,7 @@ async def {{table.table_name}}_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from {{table.table_name}} where {{table.pri_key}} in ({x.group(1)})'
+        sql = f'delete from {{table.table_name.lower()}} where {{table.pri_key}} in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())

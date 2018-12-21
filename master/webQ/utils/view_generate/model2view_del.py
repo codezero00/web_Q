@@ -14,10 +14,10 @@ def get_model_attr():
 
     tables = []
     for k, v in class_list:
+        table_name = k
         q = dict(v.__dict__)
         pri_key = q['__primary_key__']
         columns = q['__fields__']
-        table_name = q['__table__']
         # print(f'{table_name}:{pri_key}:{columns}')
         table = dict(table_name=table_name, pri_key=pri_key, columns=columns)
         tables.append(table)
