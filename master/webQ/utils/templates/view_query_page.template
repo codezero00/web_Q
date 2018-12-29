@@ -25,9 +25,19 @@ async def {{table.table_name}}_Query_Page(request):
       type: string
       required: true
       description: 每一页条数
+    - name: Where
+      in: query
+      type: string
+      description: where条件
+    - name: OrderBy
+      in: query
+      type: string
+      description: 排序
     """
     CurrentPage = request.query.get('CurrentPage')
     PageSize = request.query.get('PageSize')
+    Where = request.query.get('Where')
+    OrderBy = request.query.get('OrderBy')
     if (not CurrentPage or not PageSize):
         data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
         return render_json(data)
@@ -37,7 +47,7 @@ async def {{table.table_name}}_Query_Page(request):
         if num == 0:
             data1 = dict(page=p.GetDict, res=[])
         else:
-            list = await {{table.table_name}}.findAll(selectField='*', limit=(p.offset, p.limit))
+            list = await {{table.table_name}}.findAll(selectField='*',where=Where,orderBy=OrderBy, limit=(p.offset, p.limit))
             data1 = dict(page=p.GetDict, res=list)
         data = dict(success=True, data=data1)
         return render_json(data)
