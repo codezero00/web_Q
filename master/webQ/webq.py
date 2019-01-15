@@ -121,8 +121,9 @@ class webQ(object):
         logging.info('init swagger...')
         # if not kwargs:
         #     raise ValueError('init_swagger kwargs can not be None')
-        confpath = kwargs.get('swagger_from_file', None)
-        setup_swagger(app=app, swagger_from_file=confpath, api_base_url='/')
+        swagger_from_file = kwargs.get('swagger_from_file', None)
+        swagger_url = kwargs.get('swagger_url', None)
+        setup_swagger(app=app, swagger_from_file=swagger_from_file, swagger_url=swagger_url, api_base_url='/')
         logging.info('init swagger successful...')
 
     def add_url_rule(self, app, method, path, name, view_func=None):
