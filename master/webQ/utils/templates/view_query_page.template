@@ -42,7 +42,7 @@ async def {{table.table_name}}_Query_Page(request):
         data = dict(failure=True, data="find no parameters CurrentPage or PageSize !")
         return render_json(data)
     try:
-        num = await {{table.table_name}}.findNumber(selectField='count(*)')
+        num = await {{table.table_name}}.findNumber(selectField='count(*)',where=Where)
         p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
         if num == 0:
             data1 = dict(page=p.GetDict, res=[])

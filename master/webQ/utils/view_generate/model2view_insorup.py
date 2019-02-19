@@ -19,7 +19,7 @@ def get_model_attr():
         pri_key = q['__primary_key__']
         columns = q['__fields__']
         # print(f'{table_name}:{pri_key}:{columns}')
-        table = dict(table_name=table_name, pri_key=pri_key, columns=columns)
+        table = dict(table_name=table_name, pri_key=pri_key, columns=[x for x in columns if x !='createtime' and x !='updatetime'])
         tables.append(table)
     dict_string = dict(tables=tables)
     return dict_string

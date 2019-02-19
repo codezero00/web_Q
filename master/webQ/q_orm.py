@@ -86,7 +86,8 @@ async def select1(sql, args, size=None):
     global __pool
     async with __pool.acquire() as conn:
         cur = await conn.cursor(aiomysql.DictCursor)
-        await cur.execute(sql.replace('?', '%s'), args or ())
+        sql = sql.replace('?', '%s')
+        await cur.execute(sql, args or ())
         if size:
             rs = await cur.fetchmany(size)
         else:
@@ -307,6 +308,21 @@ class Model(dict, metaclass=ModelMetaclass):
         args = list(map(self.getValueOrDefault, self.__fields__))
         args.append(self.getValueOrDefault(self.__primary_key__))
         rows = await execute(self.__insert__, args)
+        if rows != 1:
+            logging.warn('failed to insert record: affected rows: %s' % rows)
+        return rows
+
+    async def save2(self, **kw):
+        '''
+        选择字段插入
+        :return:
+        '''
+        args = ','.join(list(kw.keys()))
+        argsSet = list(kw.values())
+        insertString = f' insert into `{self.__table__}` ({args}) values ({create_args_string(len(kw))}) '
+        log(f'save2 __insert__ {insertString}')
+        log(f'save2 args {argsSet}')
+        rows = await execute(insertString, argsSet)
         if rows != 1:
             logging.warn('failed to insert record: affected rows: %s' % rows)
         return rows
