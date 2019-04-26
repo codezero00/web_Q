@@ -33,15 +33,17 @@ async def {{table.table_name}}_InsOrUp(request):
     id = form.get('{{table.pri_key}}')
 {% for column in table.columns %}    {{column}} = form.get('{{column}}')
 {% endfor %}
+
+    up_dict = {x:y for (x,y) in form.items() if x in ({% for column in table.columns %} '{{column}}',{% endfor %})}
+
     try:
         if id:  # update
-            effectrows = await {{table.table_name}}({{table.pri_key}}=id).upd2({% for column in table.columns %}{{column}}={{column}},
-            {% endfor %})
+            effectrows = await {{table.table_name}}({{table.pri_key}}=id).upd2(**up_dict)
         elif not id:  # create
             id = next_id()
-            effectrows = await {{table.table_name}}({{table.pri_key}}=id,
+            effectrows = await {{table.table_name}}().save2({{table.pri_key}}=id,
             {% for column in table.columns %}{{column}}={{column}},
-            {% endfor %}).save()
+            {% endfor %})
         data = dict(success=True, data=(effectrows,id))
         return render_json(data)
     except Exception as e:

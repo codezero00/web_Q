@@ -317,7 +317,8 @@ class Model(dict, metaclass=ModelMetaclass):
         选择字段插入
         :return:
         '''
-        args = ','.join(list(kw.keys()))
+        # args = ','.join(list(kw.keys()))
+        args = ','.join(list(map(lambda f: f'`{f}`', kw.keys())))
         argsSet = list(kw.values())
         insertString = f' insert into `{self.__table__}` ({args}) values ({create_args_string(len(kw))}) '
         log(f'save2 __insert__ {insertString}')
