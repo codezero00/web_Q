@@ -1,0 +1,64 @@
+image: docker:stable # 指定容器镜像
+
+
+variables:
+   DOCKER_HOST: tcp://172.16.4.110:2375
+   VERSION: v.2.2
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script: 
+    # - sleep 1h
+    - echo "start Building the webq_meta:${VERSION}"
+    - docker version
+    - docker -H $DOCKER_HOST build -t webq_meta:${VERSION} .
+  tags:
+    - k8s-helm # 必须要有，指定runner tag
+
+test:
+  stage: test
+  script: 
+    - echo "Running tests"
+    - cid=$(docker ps -qa --filter name=webq_meta_${CI_COMMIT_REF_NAME}_${VERSION})
+    - if [ -n "${cid}" ];then docker rm -f ${cid};else echo "cid is null";fi
+    - docker -H $DOCKER_HOST run --name webq_meta_${CI_COMMIT_REF_NAME}_${VERSION} -p 7001:7000 -d webq_meta:$VERSION
+  environment:
+    name: test_${VERSION}
+    url: http://172.16.4.110:7001/api/v2/doc
+  tags:
+    - k8s-helm # 必须要有，指定runner tag
+
+
+# deploy_staging:
+#   stage: deploy
+#   script:
+#     - echo "Deploy to staging server"
+#   environment:
+#     name: staging
+#     url: https://staging.example.com
+#   only:
+#   - master
+#   tags:
+#     - k8s # 必须要有，指定runner tag
+
+
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+    - cid=$(docker ps -qa --filter name=webq_meta_prod_$VERSION)
+    - if [ -n "${cid}" ];then docker rm -f ${cid};else echo "cid is null";fi
+    - docker -H $DOCKER_HOST run --name webq_meta_prod_$VERSION -p 7002:7000 -d webq_meta:$VERSION
+  environment:
+    name: production
+    url: http://172.16.4.110:7002/api/v2/doc
+  # when: manual
+  only:
+  - master
+  tags:
+    - k8s-helm # 必须要有，指定runner tag
