@@ -5,11 +5,11 @@ from webQ.q_helpers import next_id, Page, ToMysqlDateTimeNow
 from model import *
 
 
-async def BLOODEDGE_BatchIns(request):
+async def SYS_ACTION_BatchIns(request):
     """
     Description end-point
     ---
-    description: BLOODEDGE批量插入
+    description: SYS_ACTION批量插入
     tags:
     - insert batch
     produces:
@@ -17,7 +17,7 @@ async def BLOODEDGE_BatchIns(request):
     parameters:
     - in: body
       name: body
-      description: BLOODEDGE插入/更新
+      description: SYS_ACTION插入/更新
       required: True
       schema:
         type: object
@@ -27,78 +27,21 @@ async def BLOODEDGE_BatchIns(request):
             items:
               type: object
               properties:
-                beid:
+                id:
                   type: string
-                srcid:
+                createuserid:
                   type: string
-                dstid:
+                createtime:
                   type: string
-                relation:
+                updateuserid:
                   type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await BLOODEDGE(beid=next_id(),
-            srcid=n.get('srcid'),
-            dstid=n.get('dstid'),
-            relation=n.get('relation'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def DATALAYER_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: DATALAYER批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: DATALAYER插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                dlid:
+                updatetime:
                   type: string
                 name:
                   type: string
-                shortname:
+                value:
                   type: string
-                effect:
-                  type: string
-                remark:
-                  type: string
-                status:
-                  type: string
-                sort:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
+                menu_id:
                   type: string
                 
     """
@@ -107,17 +50,14 @@ async def DATALAYER_BatchIns(request):
 
     try:
         for n in data_list:
-            effectrows = await DATALAYER(dlid=next_id(),
+            effectrows = await SYS_ACTION(id=next_id(),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
             name=n.get('name'),
-            shortname=n.get('shortname'),
-            effect=n.get('effect'),
-            remark=n.get('remark'),
-            status=n.get('status'),
-            sort=n.get('sort'),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
+            value=n.get('value'),
+            menu_id=n.get('menu_id'),
             ).save()
 
         data = dict(success=True, data=effectrows)
@@ -128,11 +68,11 @@ async def DATALAYER_BatchIns(request):
         return render_json(data)
 
 
-async def DBTABLE_BatchIns(request):
+async def SYS_DICT_BatchIns(request):
     """
     Description end-point
     ---
-    description: DBTABLE批量插入
+    description: SYS_DICT批量插入
     tags:
     - insert batch
     produces:
@@ -140,76 +80,7 @@ async def DBTABLE_BatchIns(request):
     parameters:
     - in: body
       name: body
-      description: DBTABLE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                tabid:
-                  type: string
-                rbid:
-                  type: string
-                dlid:
-                  type: string
-                tablenameyw:
-                  type: string
-                tablenamezw:
-                  type: string
-                remark:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await DBTABLE(tabid=next_id(),
-            rbid=n.get('rbid'),
-            dlid=n.get('dlid'),
-            tablenameyw=n.get('tablenameyw'),
-            tablenamezw=n.get('tablenamezw'),
-            remark=n.get('remark'),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def DBTABLE_RELATION_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: DBTABLE_RELATION批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: DBTABLE_RELATION插入/更新
+      description: SYS_DICT插入/更新
       required: True
       schema:
         type: object
@@ -221,647 +92,25 @@ async def DBTABLE_RELATION_BatchIns(request):
               properties:
                 id:
                   type: string
-                primary_table_id:
+                createuserid:
                   type: string
-                slave_talbe_id:
+                createtime:
                   type: string
-                type:
+                updateuserid:
+                  type: string
+                updatetime:
+                  type: string
+                code:
                   type: string
                 name:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await DBTABLE_RELATION(id=next_id(),
-            primary_table_id=n.get('primary_table_id'),
-            slave_talbe_id=n.get('slave_talbe_id'),
-            type=n.get('type'),
-            name=n.get('name'),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def DBTABLECOLUMN_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: DBTABLECOLUMN批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: DBTABLECOLUMN插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                colid:
-                  type: string
-                tabid:
-                  type: string
-                metaid:
-                  type: string
-                ispk:
-                  type: string
-                isnull:
-                  type: string
-                isuq:
-                  type: string
-                range:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await DBTABLECOLUMN(colid=next_id(),
-            tabid=n.get('tabid'),
-            metaid=n.get('metaid'),
-            ispk=n.get('ispk'),
-            isnull=n.get('isnull'),
-            isuq=n.get('isuq'),
-            range=n.get('range'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def FRONTBASE_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: FRONTBASE批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: FRONTBASE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                fbid:
-                  type: string
-                name:
-                  type: string
-                ip:
-                  type: string
-                usesoftware:
-                  type: string
-                location:
-                  type: string
-                dept:
-                  type: string
-                effect:
-                  type: string
-                remark:
-                  type: string
-                status:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await FRONTBASE(fbid=next_id(),
-            name=n.get('name'),
-            ip=n.get('ip'),
-            usesoftware=n.get('usesoftware'),
-            location=n.get('location'),
-            dept=n.get('dept'),
-            effect=n.get('effect'),
-            remark=n.get('remark'),
-            status=n.get('status'),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def IC_JOB_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: IC_JOB批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: IC_JOB插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await IC_JOB(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def IC_RESOURCE_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: IC_RESOURCE批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: IC_RESOURCE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await IC_RESOURCE(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def IC_RESOURCE_GROUP_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: IC_RESOURCE_GROUP批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: IC_RESOURCE_GROUP插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await IC_RESOURCE_GROUP(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def IC_SOURCE_DATABASE_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: IC_SOURCE_DATABASE批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: IC_SOURCE_DATABASE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await IC_SOURCE_DATABASE(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def IC_SOURCE_DATABASE_TABLE_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: IC_SOURCE_DATABASE_TABLE批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: IC_SOURCE_DATABASE_TABLE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                ic_source_database_id:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await IC_SOURCE_DATABASE_TABLE(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ic_source_database_id=n.get('ic_source_database_id'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def IC_SOURCE_DATABASE_TABLE_COLUMN_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: IC_SOURCE_DATABASE_TABLE_COLUMN批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: IC_SOURCE_DATABASE_TABLE_COLUMN插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await IC_SOURCE_DATABASE_TABLE_COLUMN(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def METADATA_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: METADATA批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: METADATA插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                metaid:
-                  type: string
-                mcid:
-                  type: string
-                resourceno:
-                  type: string
-                standardno:
-                  type: string
-                columnname:
-                  type: string
-                oldcolumnname:
-                  type: string
-                metaname:
-                  type: string
-                metapy:
-                  type: string
-                columntype:
-                  type: string
-                columnlen:
-                  type: string
-                metadefine:
-                  type: string
-                remark:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await METADATA(metaid=next_id(),
-            mcid=n.get('mcid'),
-            resourceno=n.get('resourceno'),
-            standardno=n.get('standardno'),
-            columnname=n.get('columnname'),
-            oldcolumnname=n.get('oldcolumnname'),
-            metaname=n.get('metaname'),
-            metapy=n.get('metapy'),
-            columntype=n.get('columntype'),
-            columnlen=n.get('columnlen'),
-            metadefine=n.get('metadefine'),
-            remark=n.get('remark'),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def METADATACLASS_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: METADATACLASS批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: METADATACLASS插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                mcid:
-                  type: string
-                pid:
-                  type: string
-                metaclsno:
-                  type: string
-                classno:
-                  type: string
-                isresource:
                   type: string
                 level:
                   type: string
-                metaclsname:
-                  type: string
-                metaclspy:
-                  type: string
-                app:
-                  type: string
                 remark:
                   type: string
-                createname:
+                sort:
                   type: string
-                createtime:
-                  type: string
-                updatetime:
+                pid:
                   type: string
                 
     """
@@ -870,160 +119,17 @@ async def METADATACLASS_BatchIns(request):
 
     try:
         for n in data_list:
-            effectrows = await METADATACLASS(mcid=next_id(),
-            pid=n.get('pid'),
-            metaclsno=n.get('metaclsno'),
-            classno=n.get('classno'),
-            isresource=n.get('isresource'),
-            level=n.get('level'),
-            metaclsname=n.get('metaclsname'),
-            metaclspy=n.get('metaclspy'),
-            app=n.get('app'),
-            remark=n.get('remark'),
-            createname=n.get('createname'),
-            createtime=n.get('createtime'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def NOSQLBASE_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: NOSQLBASE批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: NOSQLBASE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                ndid:
-                  type: string
-                dbname:
-                  type: string
-                type:
-                  type: string
-                ip:
-                  type: string
-                port:
-                  type: string
-                accountnumber:
-                  type: string
-                password:
-                  type: string
-                remark:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await NOSQLBASE(ndid=next_id(),
-            dbname=n.get('dbname'),
-            type=n.get('type'),
-            ip=n.get('ip'),
-            port=n.get('port'),
-            accountnumber=n.get('accountnumber'),
-            password=n.get('password'),
-            remark=n.get('remark'),
+            effectrows = await SYS_DICT(id=next_id(),
             createuserid=n.get('createuserid'),
             createtime=n.get('createtime'),
             updateuserid=n.get('updateuserid'),
             updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def RESOURCEBASE_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: RESOURCEBASE批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: RESOURCEBASE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                rbid:
-                  type: string
-                name:
-                  type: string
-                datasourceunit:
-                  type: string
-                createunit:
-                  type: string
-                contact:
-                  type: string
-                tel:
-                  type: string
-                status:
-                  type: string
-                createtime:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await RESOURCEBASE(rbid=next_id(),
+            code=n.get('code'),
             name=n.get('name'),
-            datasourceunit=n.get('datasourceunit'),
-            createunit=n.get('createunit'),
-            contact=n.get('contact'),
-            tel=n.get('tel'),
-            status=n.get('status'),
-            createtime=n.get('createtime'),
-            updatetime=n.get('updatetime'),
+            level=n.get('level'),
+            remark=n.get('remark'),
+            sort=n.get('sort'),
+            pid=n.get('pid'),
             ).save()
 
         data = dict(success=True, data=effectrows)
@@ -1034,11 +140,11 @@ async def RESOURCEBASE_BatchIns(request):
         return render_json(data)
 
 
-async def SC_APPLICATION_RECORD_BatchIns(request):
+async def SYS_ELEMENT_BatchIns(request):
     """
     Description end-point
     ---
-    description: SC_APPLICATION_RECORD批量插入
+    description: SYS_ELEMENT批量插入
     tags:
     - insert batch
     produces:
@@ -1046,223 +152,7 @@ async def SC_APPLICATION_RECORD_BatchIns(request):
     parameters:
     - in: body
       name: body
-      description: SC_APPLICATION_RECORD插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await SC_APPLICATION_RECORD(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def SC_GROUP_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: SC_GROUP批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: SC_GROUP插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await SC_GROUP(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def SC_LOG_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: SC_LOG批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: SC_LOG插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await SC_LOG(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def SC_SERVICE_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: SC_SERVICE批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: SC_SERVICE插入/更新
-      required: True
-      schema:
-        type: object
-        properties:
-          batch_data:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                createuserid:
-                  type: string
-                createtime:
-                  type: string
-                updateuserid:
-                  type: string
-                updatetime:
-                  type: string
-                
-    """
-    form = await request.json()
-    data_list = form.get('batch_data')
-
-    try:
-        for n in data_list:
-            effectrows = await SC_SERVICE(id=next_id(),
-            createuserid=n.get('createuserid'),
-            createtime=n.get('createtime'),
-            updateuserid=n.get('updateuserid'),
-            updatetime=n.get('updatetime'),
-            ).save()
-
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def SC_SERVICE_REQUEST_PARAMETERS_BatchIns(request):
-    """
-    Description end-point
-    ---
-    description: SC_SERVICE_REQUEST_PARAMETERS批量插入
-    tags:
-    - insert batch
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: SC_SERVICE_REQUEST_PARAMETERS插入/更新
+      description: SYS_ELEMENT插入/更新
       required: True
       schema:
         type: object
@@ -1283,20 +173,217 @@ async def SC_SERVICE_REQUEST_PARAMETERS_BatchIns(request):
                 updatetime:
                   type: string
                 name:
+                  type: string
+                value:
+                  type: string
+                menu_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_ELEMENT(id=next_id(),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
+            name=n.get('name'),
+            value=n.get('value'),
+            menu_id=n.get('menu_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_FILE_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_FILE批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_FILE插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                createuserid:
+                  type: string
+                createtime:
+                  type: string
+                updateuserid:
+                  type: string
+                updatetime:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_FILE(id=next_id(),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_MENU_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_MENU批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_MENU插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                createuserid:
+                  type: string
+                createtime:
+                  type: string
+                updateuserid:
+                  type: string
+                updatetime:
+                  type: string
+                namezh:
+                  type: string
+                name:
+                  type: string
+                path:
+                  type: string
+                component:
+                  type: string
+                title:
+                  type: string
+                icon:
+                  type: string
+                level:
+                  type: string
+                pid:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_MENU(id=next_id(),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
+            namezh=n.get('namezh'),
+            name=n.get('name'),
+            path=n.get('path'),
+            component=n.get('component'),
+            title=n.get('title'),
+            icon=n.get('icon'),
+            level=n.get('level'),
+            pid=n.get('pid'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_ORGANIZATION_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_ORGANIZATION批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_ORGANIZATION插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                createuserid:
+                  type: string
+                createtime:
+                  type: string
+                updateuserid:
+                  type: string
+                updatetime:
+                  type: string
+                code:
+                  type: string
+                name:
+                  type: string
+                fullname:
                   type: string
                 location:
                   type: string
-                type:
+                x:
                   type: string
-                example:
+                y:
                   type: string
-                default:
+                remark:
                   type: string
-                required:
+                isvalid:
                   type: string
-                rmark:
-                  type: string
-                sc_service_id:
+                pid:
                   type: string
                 
     """
@@ -1305,19 +392,20 @@ async def SC_SERVICE_REQUEST_PARAMETERS_BatchIns(request):
 
     try:
         for n in data_list:
-            effectrows = await SC_SERVICE_REQUEST_PARAMETERS(id=next_id(),
+            effectrows = await SYS_ORGANIZATION(id=next_id(),
             createuserid=n.get('createuserid'),
             createtime=n.get('createtime'),
             updateuserid=n.get('updateuserid'),
             updatetime=n.get('updatetime'),
+            code=n.get('code'),
             name=n.get('name'),
+            fullname=n.get('fullname'),
             location=n.get('location'),
-            type=n.get('type'),
-            example=n.get('example'),
-            default=n.get('default'),
-            required=n.get('required'),
-            rmark=n.get('rmark'),
-            sc_service_id=n.get('sc_service_id'),
+            x=n.get('x'),
+            y=n.get('y'),
+            remark=n.get('remark'),
+            isvalid=n.get('isvalid'),
+            pid=n.get('pid'),
             ).save()
 
         data = dict(success=True, data=effectrows)
@@ -1328,11 +416,11 @@ async def SC_SERVICE_REQUEST_PARAMETERS_BatchIns(request):
         return render_json(data)
 
 
-async def USERS_BatchIns(request):
+async def SYS_PERMISSION_BatchIns(request):
     """
     Description end-point
     ---
-    description: USERS批量插入
+    description: SYS_PERMISSION批量插入
     tags:
     - insert batch
     produces:
@@ -1340,7 +428,7 @@ async def USERS_BatchIns(request):
     parameters:
     - in: body
       name: body
-      description: USERS插入/更新
+      description: SYS_PERMISSION插入/更新
       required: True
       schema:
         type: object
@@ -1352,17 +440,17 @@ async def USERS_BatchIns(request):
               properties:
                 id:
                   type: string
-                email:
+                createuserid:
                   type: string
-                passwd:
+                createtime:
                   type: string
-                admin:
+                updateuserid:
                   type: string
-                name:
+                updatetime:
                   type: string
-                image:
+                type:
                   type: string
-                created_at:
+                remark:
                   type: string
                 
     """
@@ -1371,13 +459,649 @@ async def USERS_BatchIns(request):
 
     try:
         for n in data_list:
-            effectrows = await USERS(id=next_id(),
-            email=n.get('email'),
-            passwd=n.get('passwd'),
-            admin=n.get('admin'),
+            effectrows = await SYS_PERMISSION(id=next_id(),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
+            type=n.get('type'),
+            remark=n.get('remark'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_PERMISSION_HAS_SYS_ACTION_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_PERMISSION_HAS_SYS_ACTION批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_PERMISSION_HAS_SYS_ACTION插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_permission_id:
+                  type: string
+                sys_action_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_PERMISSION_HAS_SYS_ACTION(id=next_id(),
+            sys_permission_id=n.get('sys_permission_id'),
+            sys_action_id=n.get('sys_action_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_PERMISSION_HAS_SYS_ELEMENT_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_PERMISSION_HAS_SYS_ELEMENT批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_PERMISSION_HAS_SYS_ELEMENT插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_permission_id:
+                  type: string
+                sys_element_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_PERMISSION_HAS_SYS_ELEMENT(id=next_id(),
+            sys_permission_id=n.get('sys_permission_id'),
+            sys_element_id=n.get('sys_element_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_PERMISSION_HAS_SYS_FILE_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_PERMISSION_HAS_SYS_FILE批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_PERMISSION_HAS_SYS_FILE插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_permission_id:
+                  type: string
+                sys_file_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_PERMISSION_HAS_SYS_FILE(id=next_id(),
+            sys_permission_id=n.get('sys_permission_id'),
+            sys_file_id=n.get('sys_file_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_PERMISSION_HAS_SYS_MENU_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_PERMISSION_HAS_SYS_MENU批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_PERMISSION_HAS_SYS_MENU插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_permission_id:
+                  type: string
+                sys_menu_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_PERMISSION_HAS_SYS_MENU(id=next_id(),
+            sys_permission_id=n.get('sys_permission_id'),
+            sys_menu_id=n.get('sys_menu_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_ROLES_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_ROLES批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_ROLES插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                createuserid:
+                  type: string
+                createtime:
+                  type: string
+                updateuserid:
+                  type: string
+                updatetime:
+                  type: string
+                name:
+                  type: string
+                code:
+                  type: string
+                remark:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_ROLES(id=next_id(),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
             name=n.get('name'),
-            image=n.get('image'),
-            created_at=n.get('created_at'),
+            code=n.get('code'),
+            remark=n.get('remark'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_ROLES_HAS_SYS_PERMISSION_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_ROLES_HAS_SYS_PERMISSION批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_ROLES_HAS_SYS_PERMISSION插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_roles_id:
+                  type: string
+                sys_permission_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_ROLES_HAS_SYS_PERMISSION(id=next_id(),
+            sys_roles_id=n.get('sys_roles_id'),
+            sys_permission_id=n.get('sys_permission_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_USER_GROUP_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_USER_GROUP批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_USER_GROUP插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                pid:
+                  type: string
+                createuserid:
+                  type: string
+                createtime:
+                  type: string
+                updateuserid:
+                  type: string
+                updatetime:
+                  type: string
+                code:
+                  type: string
+                name:
+                  type: string
+                remark:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_USER_GROUP(id=next_id(),
+            pid=n.get('pid'),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
+            code=n.get('code'),
+            name=n.get('name'),
+            remark=n.get('remark'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_USER_GROUP_HAS_SYS_ROLES_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_USER_GROUP_HAS_SYS_ROLES批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_USER_GROUP_HAS_SYS_ROLES插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_user_group_id:
+                  type: string
+                sys_roles_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_USER_GROUP_HAS_SYS_ROLES(id=next_id(),
+            sys_user_group_id=n.get('sys_user_group_id'),
+            sys_roles_id=n.get('sys_roles_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_USERS_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_USERS批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_USERS插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                createuserid:
+                  type: string
+                createtime:
+                  type: string
+                updateuserid:
+                  type: string
+                updatetime:
+                  type: string
+                name:
+                  type: string
+                sex:
+                  type: string
+                job:
+                  type: string
+                tel:
+                  type: string
+                account:
+                  type: string
+                expiredtime:
+                  type: string
+                oauth2_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_USERS(id=next_id(),
+            createuserid=n.get('createuserid'),
+            createtime=n.get('createtime'),
+            updateuserid=n.get('updateuserid'),
+            updatetime=n.get('updatetime'),
+            name=n.get('name'),
+            sex=n.get('sex'),
+            job=n.get('job'),
+            tel=n.get('tel'),
+            account=n.get('account'),
+            expiredtime=n.get('expiredtime'),
+            oauth2_id=n.get('oauth2_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_USERS_HAS_SYS_ORGANIZATION_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_USERS_HAS_SYS_ORGANIZATION批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_USERS_HAS_SYS_ORGANIZATION插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_users_id:
+                  type: string
+                sys_organization_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_USERS_HAS_SYS_ORGANIZATION(id=next_id(),
+            sys_users_id=n.get('sys_users_id'),
+            sys_organization_id=n.get('sys_organization_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_USERS_HAS_SYS_ROLES_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_USERS_HAS_SYS_ROLES批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_USERS_HAS_SYS_ROLES插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_users_id:
+                  type: string
+                sys_roles_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_USERS_HAS_SYS_ROLES(id=next_id(),
+            sys_users_id=n.get('sys_users_id'),
+            sys_roles_id=n.get('sys_roles_id'),
+            ).save()
+
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def SYS_USERS_HAS_SYS_USER_GROUP_BatchIns(request):
+    """
+    Description end-point
+    ---
+    description: SYS_USERS_HAS_SYS_USER_GROUP批量插入
+    tags:
+    - insert batch
+    produces:
+    - application/json
+    parameters:
+    - in: body
+      name: body
+      description: SYS_USERS_HAS_SYS_USER_GROUP插入/更新
+      required: True
+      schema:
+        type: object
+        properties:
+          batch_data:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                sys_users_id:
+                  type: string
+                sys_user_group_id:
+                  type: string
+                
+    """
+    form = await request.json()
+    data_list = form.get('batch_data')
+
+    try:
+        for n in data_list:
+            effectrows = await SYS_USERS_HAS_SYS_USER_GROUP(id=next_id(),
+            sys_users_id=n.get('sys_users_id'),
+            sys_user_group_id=n.get('sys_user_group_id'),
             ).save()
 
         data = dict(success=True, data=effectrows)

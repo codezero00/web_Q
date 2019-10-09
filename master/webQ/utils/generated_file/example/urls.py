@@ -1,0 +1,116 @@
+urlpatterns = [
+
+    ('helloworld', 'GET', '/', 'app.helloworld'),
+
+    # BatchIns
+    ('SYS_ACTION_BatchIns', 'POST', '/api/v1/SYS_ACTION_BatchIns', 'view_batch_ins.SYS_ACTION_BatchIns'),
+    ('SYS_DICT_BatchIns', 'POST', '/api/v1/SYS_DICT_BatchIns', 'view_batch_ins.SYS_DICT_BatchIns'),
+    ('SYS_ELEMENT_BatchIns', 'POST', '/api/v1/SYS_ELEMENT_BatchIns', 'view_batch_ins.SYS_ELEMENT_BatchIns'),
+    ('SYS_FILE_BatchIns', 'POST', '/api/v1/SYS_FILE_BatchIns', 'view_batch_ins.SYS_FILE_BatchIns'),
+    ('SYS_MENU_BatchIns', 'POST', '/api/v1/SYS_MENU_BatchIns', 'view_batch_ins.SYS_MENU_BatchIns'),
+    ('SYS_ORGANIZATION_BatchIns', 'POST', '/api/v1/SYS_ORGANIZATION_BatchIns', 'view_batch_ins.SYS_ORGANIZATION_BatchIns'),
+    ('SYS_PERMISSION_BatchIns', 'POST', '/api/v1/SYS_PERMISSION_BatchIns', 'view_batch_ins.SYS_PERMISSION_BatchIns'),
+    ('SYS_PERMISSION_HAS_SYS_ACTION_BatchIns', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_ACTION_BatchIns', 'view_batch_ins.SYS_PERMISSION_HAS_SYS_ACTION_BatchIns'),
+    ('SYS_PERMISSION_HAS_SYS_ELEMENT_BatchIns', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_ELEMENT_BatchIns', 'view_batch_ins.SYS_PERMISSION_HAS_SYS_ELEMENT_BatchIns'),
+    ('SYS_PERMISSION_HAS_SYS_FILE_BatchIns', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_FILE_BatchIns', 'view_batch_ins.SYS_PERMISSION_HAS_SYS_FILE_BatchIns'),
+    ('SYS_PERMISSION_HAS_SYS_MENU_BatchIns', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_MENU_BatchIns', 'view_batch_ins.SYS_PERMISSION_HAS_SYS_MENU_BatchIns'),
+    ('SYS_ROLES_BatchIns', 'POST', '/api/v1/SYS_ROLES_BatchIns', 'view_batch_ins.SYS_ROLES_BatchIns'),
+    ('SYS_ROLES_HAS_SYS_PERMISSION_BatchIns', 'POST', '/api/v1/SYS_ROLES_HAS_SYS_PERMISSION_BatchIns', 'view_batch_ins.SYS_ROLES_HAS_SYS_PERMISSION_BatchIns'),
+    ('SYS_USER_GROUP_BatchIns', 'POST', '/api/v1/SYS_USER_GROUP_BatchIns', 'view_batch_ins.SYS_USER_GROUP_BatchIns'),
+    ('SYS_USER_GROUP_HAS_SYS_ROLES_BatchIns', 'POST', '/api/v1/SYS_USER_GROUP_HAS_SYS_ROLES_BatchIns', 'view_batch_ins.SYS_USER_GROUP_HAS_SYS_ROLES_BatchIns'),
+    ('SYS_USERS_BatchIns', 'POST', '/api/v1/SYS_USERS_BatchIns', 'view_batch_ins.SYS_USERS_BatchIns'),
+    ('SYS_USERS_HAS_SYS_ORGANIZATION_BatchIns', 'POST', '/api/v1/SYS_USERS_HAS_SYS_ORGANIZATION_BatchIns', 'view_batch_ins.SYS_USERS_HAS_SYS_ORGANIZATION_BatchIns'),
+    ('SYS_USERS_HAS_SYS_ROLES_BatchIns', 'POST', '/api/v1/SYS_USERS_HAS_SYS_ROLES_BatchIns', 'view_batch_ins.SYS_USERS_HAS_SYS_ROLES_BatchIns'),
+    ('SYS_USERS_HAS_SYS_USER_GROUP_BatchIns', 'POST', '/api/v1/SYS_USERS_HAS_SYS_USER_GROUP_BatchIns', 'view_batch_ins.SYS_USERS_HAS_SYS_USER_GROUP_BatchIns'),
+    
+
+    # I U
+    #('FRONTBASE_InsOrUp', 'POST', '/api/v1/FRONTBASE_InsOrUp', 'view_insorup.FRONTBASE_InsOrUp'),
+    ('SYS_ACTION_InsOrUp', 'POST', '/api/v1/SYS_ACTION_InsOrUp', 'view_insorup.SYS_ACTION_InsOrUp'),
+    ('SYS_DICT_InsOrUp', 'POST', '/api/v1/SYS_DICT_InsOrUp', 'view_insorup.SYS_DICT_InsOrUp'),
+    ('SYS_ELEMENT_InsOrUp', 'POST', '/api/v1/SYS_ELEMENT_InsOrUp', 'view_insorup.SYS_ELEMENT_InsOrUp'),
+    ('SYS_FILE_InsOrUp', 'POST', '/api/v1/SYS_FILE_InsOrUp', 'view_insorup.SYS_FILE_InsOrUp'),
+    ('SYS_MENU_InsOrUp', 'POST', '/api/v1/SYS_MENU_InsOrUp', 'view_insorup.SYS_MENU_InsOrUp'),
+    ('SYS_ORGANIZATION_InsOrUp', 'POST', '/api/v1/SYS_ORGANIZATION_InsOrUp', 'view_insorup.SYS_ORGANIZATION_InsOrUp'),
+    ('SYS_PERMISSION_InsOrUp', 'POST', '/api/v1/SYS_PERMISSION_InsOrUp', 'view_insorup.SYS_PERMISSION_InsOrUp'),
+    ('SYS_PERMISSION_HAS_SYS_ACTION_InsOrUp', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_ACTION_InsOrUp', 'view_insorup.SYS_PERMISSION_HAS_SYS_ACTION_InsOrUp'),
+    ('SYS_PERMISSION_HAS_SYS_ELEMENT_InsOrUp', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_ELEMENT_InsOrUp', 'view_insorup.SYS_PERMISSION_HAS_SYS_ELEMENT_InsOrUp'),
+    ('SYS_PERMISSION_HAS_SYS_FILE_InsOrUp', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_FILE_InsOrUp', 'view_insorup.SYS_PERMISSION_HAS_SYS_FILE_InsOrUp'),
+    ('SYS_PERMISSION_HAS_SYS_MENU_InsOrUp', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_MENU_InsOrUp', 'view_insorup.SYS_PERMISSION_HAS_SYS_MENU_InsOrUp'),
+    ('SYS_ROLES_InsOrUp', 'POST', '/api/v1/SYS_ROLES_InsOrUp', 'view_insorup.SYS_ROLES_InsOrUp'),
+    ('SYS_ROLES_HAS_SYS_PERMISSION_InsOrUp', 'POST', '/api/v1/SYS_ROLES_HAS_SYS_PERMISSION_InsOrUp', 'view_insorup.SYS_ROLES_HAS_SYS_PERMISSION_InsOrUp'),
+    ('SYS_USER_GROUP_InsOrUp', 'POST', '/api/v1/SYS_USER_GROUP_InsOrUp', 'view_insorup.SYS_USER_GROUP_InsOrUp'),
+    ('SYS_USER_GROUP_HAS_SYS_ROLES_InsOrUp', 'POST', '/api/v1/SYS_USER_GROUP_HAS_SYS_ROLES_InsOrUp', 'view_insorup.SYS_USER_GROUP_HAS_SYS_ROLES_InsOrUp'),
+    ('SYS_USERS_InsOrUp', 'POST', '/api/v1/SYS_USERS_InsOrUp', 'view_insorup.SYS_USERS_InsOrUp'),
+    ('SYS_USERS_HAS_SYS_ORGANIZATION_InsOrUp', 'POST', '/api/v1/SYS_USERS_HAS_SYS_ORGANIZATION_InsOrUp', 'view_insorup.SYS_USERS_HAS_SYS_ORGANIZATION_InsOrUp'),
+    ('SYS_USERS_HAS_SYS_ROLES_InsOrUp', 'POST', '/api/v1/SYS_USERS_HAS_SYS_ROLES_InsOrUp', 'view_insorup.SYS_USERS_HAS_SYS_ROLES_InsOrUp'),
+    ('SYS_USERS_HAS_SYS_USER_GROUP_InsOrUp', 'POST', '/api/v1/SYS_USERS_HAS_SYS_USER_GROUP_InsOrUp', 'view_insorup.SYS_USERS_HAS_SYS_USER_GROUP_InsOrUp'),
+    
+
+    # BabchDel
+    #('BLOODEDGE_BatchDel', 'POST', '/api/v1/BLOODEDGE_BatchDel', 'view_del.BLOODEDGE_BatchDel'),
+    ('SYS_ACTION_BatchDel', 'POST', '/api/v1/SYS_ACTION_BatchDel', 'view_del.SYS_ACTION_BatchDel'),
+    ('SYS_DICT_BatchDel', 'POST', '/api/v1/SYS_DICT_BatchDel', 'view_del.SYS_DICT_BatchDel'),
+    ('SYS_ELEMENT_BatchDel', 'POST', '/api/v1/SYS_ELEMENT_BatchDel', 'view_del.SYS_ELEMENT_BatchDel'),
+    ('SYS_FILE_BatchDel', 'POST', '/api/v1/SYS_FILE_BatchDel', 'view_del.SYS_FILE_BatchDel'),
+    ('SYS_MENU_BatchDel', 'POST', '/api/v1/SYS_MENU_BatchDel', 'view_del.SYS_MENU_BatchDel'),
+    ('SYS_ORGANIZATION_BatchDel', 'POST', '/api/v1/SYS_ORGANIZATION_BatchDel', 'view_del.SYS_ORGANIZATION_BatchDel'),
+    ('SYS_PERMISSION_BatchDel', 'POST', '/api/v1/SYS_PERMISSION_BatchDel', 'view_del.SYS_PERMISSION_BatchDel'),
+    ('SYS_PERMISSION_HAS_SYS_ACTION_BatchDel', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_ACTION_BatchDel', 'view_del.SYS_PERMISSION_HAS_SYS_ACTION_BatchDel'),
+    ('SYS_PERMISSION_HAS_SYS_ELEMENT_BatchDel', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_ELEMENT_BatchDel', 'view_del.SYS_PERMISSION_HAS_SYS_ELEMENT_BatchDel'),
+    ('SYS_PERMISSION_HAS_SYS_FILE_BatchDel', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_FILE_BatchDel', 'view_del.SYS_PERMISSION_HAS_SYS_FILE_BatchDel'),
+    ('SYS_PERMISSION_HAS_SYS_MENU_BatchDel', 'POST', '/api/v1/SYS_PERMISSION_HAS_SYS_MENU_BatchDel', 'view_del.SYS_PERMISSION_HAS_SYS_MENU_BatchDel'),
+    ('SYS_ROLES_BatchDel', 'POST', '/api/v1/SYS_ROLES_BatchDel', 'view_del.SYS_ROLES_BatchDel'),
+    ('SYS_ROLES_HAS_SYS_PERMISSION_BatchDel', 'POST', '/api/v1/SYS_ROLES_HAS_SYS_PERMISSION_BatchDel', 'view_del.SYS_ROLES_HAS_SYS_PERMISSION_BatchDel'),
+    ('SYS_USER_GROUP_BatchDel', 'POST', '/api/v1/SYS_USER_GROUP_BatchDel', 'view_del.SYS_USER_GROUP_BatchDel'),
+    ('SYS_USER_GROUP_HAS_SYS_ROLES_BatchDel', 'POST', '/api/v1/SYS_USER_GROUP_HAS_SYS_ROLES_BatchDel', 'view_del.SYS_USER_GROUP_HAS_SYS_ROLES_BatchDel'),
+    ('SYS_USERS_BatchDel', 'POST', '/api/v1/SYS_USERS_BatchDel', 'view_del.SYS_USERS_BatchDel'),
+    ('SYS_USERS_HAS_SYS_ORGANIZATION_BatchDel', 'POST', '/api/v1/SYS_USERS_HAS_SYS_ORGANIZATION_BatchDel', 'view_del.SYS_USERS_HAS_SYS_ORGANIZATION_BatchDel'),
+    ('SYS_USERS_HAS_SYS_ROLES_BatchDel', 'POST', '/api/v1/SYS_USERS_HAS_SYS_ROLES_BatchDel', 'view_del.SYS_USERS_HAS_SYS_ROLES_BatchDel'),
+    ('SYS_USERS_HAS_SYS_USER_GROUP_BatchDel', 'POST', '/api/v1/SYS_USERS_HAS_SYS_USER_GROUP_BatchDel', 'view_del.SYS_USERS_HAS_SYS_USER_GROUP_BatchDel'),
+    
+
+    # Query_page
+    ('V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ACTION_Query_page', 'GET', '/api/v1/V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ACTION_Query_Page', 'view_query_page.V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ACTION_Query_Page'),
+    ('V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ELEMENT_Query_page', 'GET', '/api/v1/V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ELEMENT_Query_Page', 'view_query_page.V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ELEMENT_Query_Page'),
+    ('V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_MENU_Query_page', 'GET', '/api/v1/V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_MENU_Query_Page', 'view_query_page.V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_MENU_Query_Page'),
+    ('V_MN_JOIN_SYS_ROLES_JOIN_SYS_PERMISSION_Query_page', 'GET', '/api/v1/V_MN_JOIN_SYS_ROLES_JOIN_SYS_PERMISSION_Query_Page', 'view_query_page.V_MN_JOIN_SYS_ROLES_JOIN_SYS_PERMISSION_Query_Page'),
+    ('V_MN_JOIN_SYS_USERS_JOIN_SYS_ORGANIZATION_Query_page', 'GET', '/api/v1/V_MN_JOIN_SYS_USERS_JOIN_SYS_ORGANIZATION_Query_Page', 'view_query_page.V_MN_JOIN_SYS_USERS_JOIN_SYS_ORGANIZATION_Query_Page'),
+    ('V_MN_JOIN_SYS_USERS_JOIN_SYS_ROLES_Query_page', 'GET', '/api/v1/V_MN_JOIN_SYS_USERS_JOIN_SYS_ROLES_Query_Page', 'view_query_page.V_MN_JOIN_SYS_USERS_JOIN_SYS_ROLES_Query_Page'),
+    ('V_MN_JOIN_SYS_USERS_JOIN_SYS_USER_GROUP_Query_page', 'GET', '/api/v1/V_MN_JOIN_SYS_USERS_JOIN_SYS_USER_GROUP_Query_Page', 'view_query_page.V_MN_JOIN_SYS_USERS_JOIN_SYS_USER_GROUP_Query_Page'),
+    ('V_MULTIJOIN_USERS_ROLES_PERMISSION_MENU_ELEMENT_ACTION_Query_page', 'GET', '/api/v1/V_MULTIJOIN_USERS_ROLES_PERMISSION_MENU_ELEMENT_ACTION_Query_Page', 'view_query_page.V_MULTIJOIN_USERS_ROLES_PERMISSION_MENU_ELEMENT_ACTION_Query_Page'),
+    ('V_SYS_ACTION_Query_page', 'GET', '/api/v1/V_SYS_ACTION_Query_Page', 'view_query_page.V_SYS_ACTION_Query_Page'),
+    ('V_SYS_DICT_Query_page', 'GET', '/api/v1/V_SYS_DICT_Query_Page', 'view_query_page.V_SYS_DICT_Query_Page'),
+    ('V_SYS_ELEMENT_Query_page', 'GET', '/api/v1/V_SYS_ELEMENT_Query_Page', 'view_query_page.V_SYS_ELEMENT_Query_Page'),
+    ('V_SYS_MENU_Query_page', 'GET', '/api/v1/V_SYS_MENU_Query_Page', 'view_query_page.V_SYS_MENU_Query_Page'),
+    ('V_SYS_ORGANIZATION_Query_page', 'GET', '/api/v1/V_SYS_ORGANIZATION_Query_Page', 'view_query_page.V_SYS_ORGANIZATION_Query_Page'),
+    ('V_SYS_PERMISSION_Query_page', 'GET', '/api/v1/V_SYS_PERMISSION_Query_Page', 'view_query_page.V_SYS_PERMISSION_Query_Page'),
+    ('V_SYS_ROLES_Query_page', 'GET', '/api/v1/V_SYS_ROLES_Query_Page', 'view_query_page.V_SYS_ROLES_Query_Page'),
+    ('V_SYS_USER_GROUP_Query_page', 'GET', '/api/v1/V_SYS_USER_GROUP_Query_Page', 'view_query_page.V_SYS_USER_GROUP_Query_Page'),
+    ('V_SYS_USERS_Query_page', 'GET', '/api/v1/V_SYS_USERS_Query_Page', 'view_query_page.V_SYS_USERS_Query_Page'),
+    
+
+    # Query_detail
+    ('V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ACTION_Query_detail', 'GET', '/api/v1/V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ACTION_Query_Detail', 'view_query_detail.V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ACTION_Query_Detail'),
+    ('V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ELEMENT_Query_detail', 'GET', '/api/v1/V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ELEMENT_Query_Detail', 'view_query_detail.V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_ELEMENT_Query_Detail'),
+    ('V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_MENU_Query_detail', 'GET', '/api/v1/V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_MENU_Query_Detail', 'view_query_detail.V_MN_JOIN_SYS_PERMISSION_JOIN_SYS_MENU_Query_Detail'),
+    ('V_MN_JOIN_SYS_ROLES_JOIN_SYS_PERMISSION_Query_detail', 'GET', '/api/v1/V_MN_JOIN_SYS_ROLES_JOIN_SYS_PERMISSION_Query_Detail', 'view_query_detail.V_MN_JOIN_SYS_ROLES_JOIN_SYS_PERMISSION_Query_Detail'),
+    ('V_MN_JOIN_SYS_USERS_JOIN_SYS_ORGANIZATION_Query_detail', 'GET', '/api/v1/V_MN_JOIN_SYS_USERS_JOIN_SYS_ORGANIZATION_Query_Detail', 'view_query_detail.V_MN_JOIN_SYS_USERS_JOIN_SYS_ORGANIZATION_Query_Detail'),
+    ('V_MN_JOIN_SYS_USERS_JOIN_SYS_ROLES_Query_detail', 'GET', '/api/v1/V_MN_JOIN_SYS_USERS_JOIN_SYS_ROLES_Query_Detail', 'view_query_detail.V_MN_JOIN_SYS_USERS_JOIN_SYS_ROLES_Query_Detail'),
+    ('V_MN_JOIN_SYS_USERS_JOIN_SYS_USER_GROUP_Query_detail', 'GET', '/api/v1/V_MN_JOIN_SYS_USERS_JOIN_SYS_USER_GROUP_Query_Detail', 'view_query_detail.V_MN_JOIN_SYS_USERS_JOIN_SYS_USER_GROUP_Query_Detail'),
+    ('V_MULTIJOIN_USERS_ROLES_PERMISSION_MENU_ELEMENT_ACTION_Query_detail', 'GET', '/api/v1/V_MULTIJOIN_USERS_ROLES_PERMISSION_MENU_ELEMENT_ACTION_Query_Detail', 'view_query_detail.V_MULTIJOIN_USERS_ROLES_PERMISSION_MENU_ELEMENT_ACTION_Query_Detail'),
+    ('V_SYS_ACTION_Query_detail', 'GET', '/api/v1/V_SYS_ACTION_Query_Detail', 'view_query_detail.V_SYS_ACTION_Query_Detail'),
+    ('V_SYS_DICT_Query_detail', 'GET', '/api/v1/V_SYS_DICT_Query_Detail', 'view_query_detail.V_SYS_DICT_Query_Detail'),
+    ('V_SYS_ELEMENT_Query_detail', 'GET', '/api/v1/V_SYS_ELEMENT_Query_Detail', 'view_query_detail.V_SYS_ELEMENT_Query_Detail'),
+    ('V_SYS_MENU_Query_detail', 'GET', '/api/v1/V_SYS_MENU_Query_Detail', 'view_query_detail.V_SYS_MENU_Query_Detail'),
+    ('V_SYS_ORGANIZATION_Query_detail', 'GET', '/api/v1/V_SYS_ORGANIZATION_Query_Detail', 'view_query_detail.V_SYS_ORGANIZATION_Query_Detail'),
+    ('V_SYS_PERMISSION_Query_detail', 'GET', '/api/v1/V_SYS_PERMISSION_Query_Detail', 'view_query_detail.V_SYS_PERMISSION_Query_Detail'),
+    ('V_SYS_ROLES_Query_detail', 'GET', '/api/v1/V_SYS_ROLES_Query_Detail', 'view_query_detail.V_SYS_ROLES_Query_Detail'),
+    ('V_SYS_USER_GROUP_Query_detail', 'GET', '/api/v1/V_SYS_USER_GROUP_Query_Detail', 'view_query_detail.V_SYS_USER_GROUP_Query_Detail'),
+    ('V_SYS_USERS_Query_detail', 'GET', '/api/v1/V_SYS_USERS_Query_Detail', 'view_query_detail.V_SYS_USERS_Query_Detail'),
+    
+
+    # Query_tree
+    
+
+]

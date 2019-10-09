@@ -8,11 +8,11 @@ import re
 
 
 
-async def BLOODEDGE_BatchDel(request):
+async def SYS_ACTION_BatchDel(request):
     """
     Description end-point
     ---
-    description: BLOODEDGE批量删除
+    description: SYS_ACTION批量删除
     tags:
     - batch delete
     produces:
@@ -20,7 +20,7 @@ async def BLOODEDGE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: BLOODEDGE批量删除
+      description: SYS_ACTION批量删除
       required: True
       schema:
         type: object
@@ -33,7 +33,7 @@ async def BLOODEDGE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from BLOODEDGE where beid in ({x.group(1)})'
+        sql = f'delete from sys_action where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -46,11 +46,11 @@ async def BLOODEDGE_BatchDel(request):
         return render_json(data)
 
 
-async def DATALAYER_BatchDel(request):
+async def SYS_DICT_BatchDel(request):
     """
     Description end-point
     ---
-    description: DATALAYER批量删除
+    description: SYS_DICT批量删除
     tags:
     - batch delete
     produces:
@@ -58,7 +58,7 @@ async def DATALAYER_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: DATALAYER批量删除
+      description: SYS_DICT批量删除
       required: True
       schema:
         type: object
@@ -71,7 +71,7 @@ async def DATALAYER_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from DATALAYER where dlid in ({x.group(1)})'
+        sql = f'delete from sys_dict where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -84,11 +84,11 @@ async def DATALAYER_BatchDel(request):
         return render_json(data)
 
 
-async def DBTABLE_BatchDel(request):
+async def SYS_ELEMENT_BatchDel(request):
     """
     Description end-point
     ---
-    description: DBTABLE批量删除
+    description: SYS_ELEMENT批量删除
     tags:
     - batch delete
     produces:
@@ -96,7 +96,7 @@ async def DBTABLE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: DBTABLE批量删除
+      description: SYS_ELEMENT批量删除
       required: True
       schema:
         type: object
@@ -109,7 +109,7 @@ async def DBTABLE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from DBTABLE where tabid in ({x.group(1)})'
+        sql = f'delete from sys_element where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -122,11 +122,11 @@ async def DBTABLE_BatchDel(request):
         return render_json(data)
 
 
-async def DBTABLE_RELATION_BatchDel(request):
+async def SYS_FILE_BatchDel(request):
     """
     Description end-point
     ---
-    description: DBTABLE_RELATION批量删除
+    description: SYS_FILE批量删除
     tags:
     - batch delete
     produces:
@@ -134,7 +134,7 @@ async def DBTABLE_RELATION_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: DBTABLE_RELATION批量删除
+      description: SYS_FILE批量删除
       required: True
       schema:
         type: object
@@ -147,7 +147,7 @@ async def DBTABLE_RELATION_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from DBTABLE_RELATION where id in ({x.group(1)})'
+        sql = f'delete from sys_file where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -160,11 +160,11 @@ async def DBTABLE_RELATION_BatchDel(request):
         return render_json(data)
 
 
-async def DBTABLECOLUMN_BatchDel(request):
+async def SYS_MENU_BatchDel(request):
     """
     Description end-point
     ---
-    description: DBTABLECOLUMN批量删除
+    description: SYS_MENU批量删除
     tags:
     - batch delete
     produces:
@@ -172,7 +172,7 @@ async def DBTABLECOLUMN_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: DBTABLECOLUMN批量删除
+      description: SYS_MENU批量删除
       required: True
       schema:
         type: object
@@ -185,7 +185,7 @@ async def DBTABLECOLUMN_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from DBTABLECOLUMN where colid in ({x.group(1)})'
+        sql = f'delete from sys_menu where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -198,11 +198,11 @@ async def DBTABLECOLUMN_BatchDel(request):
         return render_json(data)
 
 
-async def FRONTBASE_BatchDel(request):
+async def SYS_ORGANIZATION_BatchDel(request):
     """
     Description end-point
     ---
-    description: FRONTBASE批量删除
+    description: SYS_ORGANIZATION批量删除
     tags:
     - batch delete
     produces:
@@ -210,7 +210,7 @@ async def FRONTBASE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: FRONTBASE批量删除
+      description: SYS_ORGANIZATION批量删除
       required: True
       schema:
         type: object
@@ -223,7 +223,7 @@ async def FRONTBASE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from FRONTBASE where fbid in ({x.group(1)})'
+        sql = f'delete from sys_organization where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -236,11 +236,11 @@ async def FRONTBASE_BatchDel(request):
         return render_json(data)
 
 
-async def IC_JOB_BatchDel(request):
+async def SYS_PERMISSION_BatchDel(request):
     """
     Description end-point
     ---
-    description: IC_JOB批量删除
+    description: SYS_PERMISSION批量删除
     tags:
     - batch delete
     produces:
@@ -248,7 +248,7 @@ async def IC_JOB_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: IC_JOB批量删除
+      description: SYS_PERMISSION批量删除
       required: True
       schema:
         type: object
@@ -261,7 +261,7 @@ async def IC_JOB_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from IC_JOB where id in ({x.group(1)})'
+        sql = f'delete from sys_permission where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -274,11 +274,11 @@ async def IC_JOB_BatchDel(request):
         return render_json(data)
 
 
-async def IC_RESOURCE_BatchDel(request):
+async def SYS_PERMISSION_HAS_SYS_ACTION_BatchDel(request):
     """
     Description end-point
     ---
-    description: IC_RESOURCE批量删除
+    description: SYS_PERMISSION_HAS_SYS_ACTION批量删除
     tags:
     - batch delete
     produces:
@@ -286,7 +286,7 @@ async def IC_RESOURCE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: IC_RESOURCE批量删除
+      description: SYS_PERMISSION_HAS_SYS_ACTION批量删除
       required: True
       schema:
         type: object
@@ -299,7 +299,7 @@ async def IC_RESOURCE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from IC_RESOURCE where id in ({x.group(1)})'
+        sql = f'delete from sys_permission_has_sys_action where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -312,11 +312,11 @@ async def IC_RESOURCE_BatchDel(request):
         return render_json(data)
 
 
-async def IC_RESOURCE_GROUP_BatchDel(request):
+async def SYS_PERMISSION_HAS_SYS_ELEMENT_BatchDel(request):
     """
     Description end-point
     ---
-    description: IC_RESOURCE_GROUP批量删除
+    description: SYS_PERMISSION_HAS_SYS_ELEMENT批量删除
     tags:
     - batch delete
     produces:
@@ -324,7 +324,7 @@ async def IC_RESOURCE_GROUP_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: IC_RESOURCE_GROUP批量删除
+      description: SYS_PERMISSION_HAS_SYS_ELEMENT批量删除
       required: True
       schema:
         type: object
@@ -337,7 +337,7 @@ async def IC_RESOURCE_GROUP_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from IC_RESOURCE_GROUP where id in ({x.group(1)})'
+        sql = f'delete from sys_permission_has_sys_element where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -350,11 +350,11 @@ async def IC_RESOURCE_GROUP_BatchDel(request):
         return render_json(data)
 
 
-async def IC_SOURCE_DATABASE_BatchDel(request):
+async def SYS_PERMISSION_HAS_SYS_FILE_BatchDel(request):
     """
     Description end-point
     ---
-    description: IC_SOURCE_DATABASE批量删除
+    description: SYS_PERMISSION_HAS_SYS_FILE批量删除
     tags:
     - batch delete
     produces:
@@ -362,7 +362,7 @@ async def IC_SOURCE_DATABASE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: IC_SOURCE_DATABASE批量删除
+      description: SYS_PERMISSION_HAS_SYS_FILE批量删除
       required: True
       schema:
         type: object
@@ -375,7 +375,7 @@ async def IC_SOURCE_DATABASE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from IC_SOURCE_DATABASE where id in ({x.group(1)})'
+        sql = f'delete from sys_permission_has_sys_file where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -388,11 +388,11 @@ async def IC_SOURCE_DATABASE_BatchDel(request):
         return render_json(data)
 
 
-async def IC_SOURCE_DATABASE_TABLE_BatchDel(request):
+async def SYS_PERMISSION_HAS_SYS_MENU_BatchDel(request):
     """
     Description end-point
     ---
-    description: IC_SOURCE_DATABASE_TABLE批量删除
+    description: SYS_PERMISSION_HAS_SYS_MENU批量删除
     tags:
     - batch delete
     produces:
@@ -400,7 +400,7 @@ async def IC_SOURCE_DATABASE_TABLE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: IC_SOURCE_DATABASE_TABLE批量删除
+      description: SYS_PERMISSION_HAS_SYS_MENU批量删除
       required: True
       schema:
         type: object
@@ -413,7 +413,7 @@ async def IC_SOURCE_DATABASE_TABLE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from IC_SOURCE_DATABASE_TABLE where id in ({x.group(1)})'
+        sql = f'delete from sys_permission_has_sys_menu where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -426,11 +426,11 @@ async def IC_SOURCE_DATABASE_TABLE_BatchDel(request):
         return render_json(data)
 
 
-async def IC_SOURCE_DATABASE_TABLE_COLUMN_BatchDel(request):
+async def SYS_ROLES_BatchDel(request):
     """
     Description end-point
     ---
-    description: IC_SOURCE_DATABASE_TABLE_COLUMN批量删除
+    description: SYS_ROLES批量删除
     tags:
     - batch delete
     produces:
@@ -438,7 +438,7 @@ async def IC_SOURCE_DATABASE_TABLE_COLUMN_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: IC_SOURCE_DATABASE_TABLE_COLUMN批量删除
+      description: SYS_ROLES批量删除
       required: True
       schema:
         type: object
@@ -451,7 +451,7 @@ async def IC_SOURCE_DATABASE_TABLE_COLUMN_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from IC_SOURCE_DATABASE_TABLE_COLUMN where id in ({x.group(1)})'
+        sql = f'delete from sys_roles where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -464,11 +464,11 @@ async def IC_SOURCE_DATABASE_TABLE_COLUMN_BatchDel(request):
         return render_json(data)
 
 
-async def METADATA_BatchDel(request):
+async def SYS_ROLES_HAS_SYS_PERMISSION_BatchDel(request):
     """
     Description end-point
     ---
-    description: METADATA批量删除
+    description: SYS_ROLES_HAS_SYS_PERMISSION批量删除
     tags:
     - batch delete
     produces:
@@ -476,7 +476,7 @@ async def METADATA_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: METADATA批量删除
+      description: SYS_ROLES_HAS_SYS_PERMISSION批量删除
       required: True
       schema:
         type: object
@@ -489,7 +489,7 @@ async def METADATA_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from METADATA where metaid in ({x.group(1)})'
+        sql = f'delete from sys_roles_has_sys_permission where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -502,11 +502,11 @@ async def METADATA_BatchDel(request):
         return render_json(data)
 
 
-async def METADATACLASS_BatchDel(request):
+async def SYS_USER_GROUP_BatchDel(request):
     """
     Description end-point
     ---
-    description: METADATACLASS批量删除
+    description: SYS_USER_GROUP批量删除
     tags:
     - batch delete
     produces:
@@ -514,7 +514,7 @@ async def METADATACLASS_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: METADATACLASS批量删除
+      description: SYS_USER_GROUP批量删除
       required: True
       schema:
         type: object
@@ -527,7 +527,7 @@ async def METADATACLASS_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from METADATACLASS where mcid in ({x.group(1)})'
+        sql = f'delete from sys_user_group where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -540,11 +540,11 @@ async def METADATACLASS_BatchDel(request):
         return render_json(data)
 
 
-async def NOSQLBASE_BatchDel(request):
+async def SYS_USER_GROUP_HAS_SYS_ROLES_BatchDel(request):
     """
     Description end-point
     ---
-    description: NOSQLBASE批量删除
+    description: SYS_USER_GROUP_HAS_SYS_ROLES批量删除
     tags:
     - batch delete
     produces:
@@ -552,7 +552,7 @@ async def NOSQLBASE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: NOSQLBASE批量删除
+      description: SYS_USER_GROUP_HAS_SYS_ROLES批量删除
       required: True
       schema:
         type: object
@@ -565,7 +565,7 @@ async def NOSQLBASE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from NOSQLBASE where ndid in ({x.group(1)})'
+        sql = f'delete from sys_user_group_has_sys_roles where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -578,11 +578,11 @@ async def NOSQLBASE_BatchDel(request):
         return render_json(data)
 
 
-async def RESOURCEBASE_BatchDel(request):
+async def SYS_USERS_BatchDel(request):
     """
     Description end-point
     ---
-    description: RESOURCEBASE批量删除
+    description: SYS_USERS批量删除
     tags:
     - batch delete
     produces:
@@ -590,7 +590,7 @@ async def RESOURCEBASE_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: RESOURCEBASE批量删除
+      description: SYS_USERS批量删除
       required: True
       schema:
         type: object
@@ -603,7 +603,7 @@ async def RESOURCEBASE_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from RESOURCEBASE where rbid in ({x.group(1)})'
+        sql = f'delete from sys_users where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -616,11 +616,11 @@ async def RESOURCEBASE_BatchDel(request):
         return render_json(data)
 
 
-async def SC_APPLICATION_RECORD_BatchDel(request):
+async def SYS_USERS_HAS_SYS_ORGANIZATION_BatchDel(request):
     """
     Description end-point
     ---
-    description: SC_APPLICATION_RECORD批量删除
+    description: SYS_USERS_HAS_SYS_ORGANIZATION批量删除
     tags:
     - batch delete
     produces:
@@ -628,7 +628,7 @@ async def SC_APPLICATION_RECORD_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: SC_APPLICATION_RECORD批量删除
+      description: SYS_USERS_HAS_SYS_ORGANIZATION批量删除
       required: True
       schema:
         type: object
@@ -641,7 +641,7 @@ async def SC_APPLICATION_RECORD_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from SC_APPLICATION_RECORD where id in ({x.group(1)})'
+        sql = f'delete from sys_users_has_sys_organization where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -654,11 +654,11 @@ async def SC_APPLICATION_RECORD_BatchDel(request):
         return render_json(data)
 
 
-async def SC_GROUP_BatchDel(request):
+async def SYS_USERS_HAS_SYS_ROLES_BatchDel(request):
     """
     Description end-point
     ---
-    description: SC_GROUP批量删除
+    description: SYS_USERS_HAS_SYS_ROLES批量删除
     tags:
     - batch delete
     produces:
@@ -666,7 +666,7 @@ async def SC_GROUP_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: SC_GROUP批量删除
+      description: SYS_USERS_HAS_SYS_ROLES批量删除
       required: True
       schema:
         type: object
@@ -679,7 +679,7 @@ async def SC_GROUP_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from SC_GROUP where id in ({x.group(1)})'
+        sql = f'delete from sys_users_has_sys_roles where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
@@ -692,11 +692,11 @@ async def SC_GROUP_BatchDel(request):
         return render_json(data)
 
 
-async def SC_LOG_BatchDel(request):
+async def SYS_USERS_HAS_SYS_USER_GROUP_BatchDel(request):
     """
     Description end-point
     ---
-    description: SC_LOG批量删除
+    description: SYS_USERS_HAS_SYS_USER_GROUP批量删除
     tags:
     - batch delete
     produces:
@@ -704,7 +704,7 @@ async def SC_LOG_BatchDel(request):
     parameters:
     - in: body
       name: body
-      description: SC_LOG批量删除
+      description: SYS_USERS_HAS_SYS_USER_GROUP批量删除
       required: True
       schema:
         type: object
@@ -717,121 +717,7 @@ async def SC_LOG_BatchDel(request):
     batchid = form.get('batchid')
     x = re.search(r'^\[(.*?)\]$', str(batchid))
     try:
-        sql = f'delete from SC_LOG where id in ({x.group(1)})'
-
-        print(sql)
-        effectrows = await orm.execute(sql=sql, args=())
-        logging.info(effectrows)
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def SC_SERVICE_BatchDel(request):
-    """
-    Description end-point
-    ---
-    description: SC_SERVICE批量删除
-    tags:
-    - batch delete
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: SC_SERVICE批量删除
-      required: True
-      schema:
-        type: object
-        properties:
-          batchid:
-            type: string
-            description: ['xxx','xxx','xxx',...]
-    """
-    form = await request.json()
-    batchid = form.get('batchid')
-    x = re.search(r'^\[(.*?)\]$', str(batchid))
-    try:
-        sql = f'delete from SC_SERVICE where id in ({x.group(1)})'
-
-        print(sql)
-        effectrows = await orm.execute(sql=sql, args=())
-        logging.info(effectrows)
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def SC_SERVICE_REQUEST_PARAMETERS_BatchDel(request):
-    """
-    Description end-point
-    ---
-    description: SC_SERVICE_REQUEST_PARAMETERS批量删除
-    tags:
-    - batch delete
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: SC_SERVICE_REQUEST_PARAMETERS批量删除
-      required: True
-      schema:
-        type: object
-        properties:
-          batchid:
-            type: string
-            description: ['xxx','xxx','xxx',...]
-    """
-    form = await request.json()
-    batchid = form.get('batchid')
-    x = re.search(r'^\[(.*?)\]$', str(batchid))
-    try:
-        sql = f'delete from SC_SERVICE_REQUEST_PARAMETERS where id in ({x.group(1)})'
-
-        print(sql)
-        effectrows = await orm.execute(sql=sql, args=())
-        logging.info(effectrows)
-        data = dict(success=True, data=effectrows)
-        return render_json(data)
-    except Exception as e:
-        logging.error(e)
-        data = dict(failure=True, data=str(e))
-        return render_json(data)
-
-
-async def USERS_BatchDel(request):
-    """
-    Description end-point
-    ---
-    description: USERS批量删除
-    tags:
-    - batch delete
-    produces:
-    - application/json
-    parameters:
-    - in: body
-      name: body
-      description: USERS批量删除
-      required: True
-      schema:
-        type: object
-        properties:
-          batchid:
-            type: string
-            description: ['xxx','xxx','xxx',...]
-    """
-    form = await request.json()
-    batchid = form.get('batchid')
-    x = re.search(r'^\[(.*?)\]$', str(batchid))
-    try:
-        sql = f'delete from USERS where id in ({x.group(1)})'
+        sql = f'delete from sys_users_has_sys_user_group where id in ({x.group(1)})'
 
         print(sql)
         effectrows = await orm.execute(sql=sql, args=())
