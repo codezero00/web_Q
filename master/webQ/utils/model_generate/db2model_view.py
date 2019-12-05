@@ -4,6 +4,7 @@ import logging
 # import aiofiles
 from jinja2 import Template, Environment, FileSystemLoader
 
+from webQ.utils.config import *
 
 async def create_pool(loop, **kw):
     """
@@ -15,10 +16,10 @@ async def create_pool(loop, **kw):
     logging.info('create database connection pool...')
     global __pool
     __pool = await aiomysql.create_pool(
-        host=kw.get('host', '172.16.4.110'),
-        port=kw.get('port', 3306),
-        user=kw.get('user', 'root'),
-        password=kw.get('password', 'zyjs2018!'),
+        host=kw.get('host', HOST),
+        port=kw.get('port', PORT),
+        user=kw.get('user', USER),
+        password=kw.get('password', PASSWORD),
         db=kw.get('db', ''),
         charset=kw.get('charset', 'utf8'),
         autocommit=kw.get('autocommit', True),
@@ -26,6 +27,18 @@ async def create_pool(loop, **kw):
         minsize=kw.get('minsize', 1),
         loop=loop
     )
+    # __pool = await aiomysql.create_pool(
+    #     host=kw.get('host', '172.16.4.110'),
+    #     port=kw.get('port', 3306),
+    #     user=kw.get('user', 'root'),
+    #     password=kw.get('password', 'zyjs2018!'),
+    #     db=kw.get('db', ''),
+    #     charset=kw.get('charset', 'utf8'),
+    #     autocommit=kw.get('autocommit', True),
+    #     maxsize=kw.get('maxsize', 10),
+    #     minsize=kw.get('minsize', 1),
+    #     loop=loop
+    # )
 
 
 async def select(p_sql, param):
@@ -70,8 +83,12 @@ async def getmodel(table_schema, table_name):
     from INFORMATION_SCHEMA.TABLES
     where table_name='{table_name}' and table_schema='{table_schema}'
     union all
+    select case when instr(table_name,'tree')>0 then "	__tree__ =  True" else "" end  as orm_mid
+    from INFORMATION_SCHEMA.TABLES
+    where table_name='{table_name}' and table_schema='{table_schema}'
+    union all
     select concat("	",column_name, 
-    case when column_key='PRI' then " = StringField(primary_key=True,ddl='varchar(200)')" 
+    case when column_name='id' then " = StringField(primary_key=True,ddl='varchar(200)')" 
     else " = StringField(ddl='varchar(200)')" end) as orm_body
     from INFORMATION_SCHEMA.COLUMNS
     where table_name='{table_name}' and table_schema='{table_schema}'
@@ -103,7 +120,9 @@ def read_template(dict_string):
 
 
 async def run(loop):
-    table_schema = 'zyjs_dwc_20181101'
+    table_schema = SCHEMA
+    # table_schema = 'zyjs_dwc_20181101'
+    # table_schema = 'rbac'
 
     await create_pool(loop=loop, kw={'db': table_schema})  # 创建连接池
 
@@ -121,9 +140,16 @@ async def run(loop):
             models_string += model_row[0] + '\n'
         models_string += '\n\n'
     dict_string = dict(models_string=models_string)
-    print(dict_string)
-    with open('../generated_file/mymodel_view.py', 'w', encoding='utf8') as f:
+    # print(dict_string)
+    # with open('../generated_file/mymodel_view.py', 'w', encoding='utf8') as f:
+    #     f.write(read_template(dict_string=dict_string))
+
+    with open(os.path.join(file_path, 'gen_model_view.py'), 'w', encoding='utf8') as f:
         f.write(read_template(dict_string=dict_string))
+    # 缓存model文件
+    with open(os.path.join(cache_path, 'cache_model_view.py'), 'w', encoding='utf8') as f:
+        f.write(read_template(dict_string=dict_string))
+    logging.info('完成生成！！！')
 
 
 if __name__ == '__main__':
@@ -132,3 +158,4 @@ if __name__ == '__main__':
     # loop.run_until_complete(example_test(loop=loop))
 
     loop.run_until_complete(run(loop=loop))
+

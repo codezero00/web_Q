@@ -1,7 +1,7 @@
-import webQ.utils.generated_file.mymodel as model  # 这里注意要引入需要生成的model
-import webQ.utils.generated_file.mymodel_view as model_v
+import webQ.utils.cache.cache_model as model  # 这里注意要引入需要生成的model
+import webQ.utils.cache.cache_model_view as model_v
 from jinja2 import Template, Environment, FileSystemLoader
-
+from webQ.utils.config import *
 
 def get_model_attr():
     """
@@ -84,9 +84,9 @@ def read_template(dict_string):
 def run():
     dict_string = get_model_attr()
     dict_string = dict(dict_string, **get_model_v_attr(), **get_model_v_tree_attr())
-    with open('../generated_file/myurls.py', 'w', encoding='utf8') as f:
-        f.write(read_template(dict_string=dict_string))
 
+    with open(os.path.join(file_path, 'gen_urls.py'), 'w', encoding='utf8') as f:
+        f.write(read_template(dict_string=dict_string))
 
 if __name__ == '__main__':
     run()
