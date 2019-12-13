@@ -30,7 +30,7 @@ def read_template(dict_string):
     :param dict_string: {'models_string':xxxx}
     :return:
     """
-    env = Environment(loader=FileSystemLoader('../templates'))
+    env = Environment(loader=FileSystemLoader(templates_path))
     template = env.get_template('view_del.template')
     genmodel = template.render(dict_string)
     return genmodel
