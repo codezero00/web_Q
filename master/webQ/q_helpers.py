@@ -82,3 +82,20 @@ class APIPermissionError(APIError):
 
     def __init__(self, message=''):
         super(APIPermissionError, self).__init__('permission:forbidden', 'permission', message)
+
+
+def ColumnCheck(filter_str, fields):
+    """
+    校验where条件数据 检测参数是否存在，防止SQL注入
+    :param filter_str: 'a=1 and b in 2 and c like 3 or d=4 or e=5'
+    :param fields: class instance fields
+    :return: True or False
+    """
+    filter_str = filter_str.lower()
+    conditions = re.split(' and | or ', filter_str)
+    columns = list(map(lambda x: re.split('=| in | like |>|< ', x)[0].strip(), conditions))
+    judge_set = set(map(lambda x: x.strip() in fields, columns))
+    if False in judge_set:
+        return False
+    else:
+        return True

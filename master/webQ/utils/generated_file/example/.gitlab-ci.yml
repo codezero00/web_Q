@@ -3,7 +3,20 @@ image: docker:stable # 指定容器镜像
 
 variables:
    DOCKER_HOST: tcp://172.16.4.110:2375
-   VERSION: v.2.2
+   PROJECT_NAME: ncp_backend
+   VERSION: v.1.0
+
+   # test
+   T_HOST: 172.16.4.110
+   T_DATABASE: ncp
+   T_USER: root
+   T_PASSWORD: zyjs2018!
+
+   # deploy
+   D_HOST: 172.16.4.110
+   D_DATABASE: ncp
+   D_USER: root
+   D_PASSWORD: zyjs2018!
 
 stages:
   - build
@@ -12,24 +25,24 @@ stages:
 
 build:
   stage: build
-  script: 
+  script:
     # - sleep 1h
-    - echo "start Building the webq_meta:${VERSION}"
+    - echo "start Building the ${PROJECT_NAME}:${VERSION}"
     - docker version
-    - docker -H $DOCKER_HOST build -t webq_meta:${VERSION} .
+    - docker -H $DOCKER_HOST build -t ${PROJECT_NAME}:${VERSION} .
   tags:
     - k8s-helm # 必须要有，指定runner tag
 
 test:
   stage: test
-  script: 
+  script:
     - echo "Running tests"
-    - cid=$(docker ps -qa --filter name=webq_meta_${CI_COMMIT_REF_NAME}_${VERSION})
+    - cid=$(docker ps -qa --filter name=${PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${VERSION})
     - if [ -n "${cid}" ];then docker rm -f ${cid};else echo "cid is null";fi
-    - docker -H $DOCKER_HOST run --name webq_meta_${CI_COMMIT_REF_NAME}_${VERSION} -p 7001:7000 -d webq_meta:$VERSION
+    - docker -H $DOCKER_HOST run --env HOST=${T_HOST} --env DATABASE=${T_DATABASE} --env USER=${T_USER} --env PASSWORD=${T_PASSWORD} --name ${PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${VERSION} -p 9001:7000 -d ${PROJECT_NAME}:$VERSION
   environment:
     name: test_${VERSION}
-    url: http://172.16.4.110:7001/api/v2/doc
+    url: http://172.16.4.110:7001/api/v1/doc
   tags:
     - k8s-helm # 必须要有，指定runner tag
 
@@ -51,12 +64,12 @@ deploy_prod:
   stage: deploy
   script:
     - echo "Deploy to production server"
-    - cid=$(docker ps -qa --filter name=webq_meta_prod_$VERSION)
+    - cid=$(docker ps -qa --filter name=${PROJECT_NAME}_prod_$VERSION)
     - if [ -n "${cid}" ];then docker rm -f ${cid};else echo "cid is null";fi
-    - docker -H $DOCKER_HOST run --name webq_meta_prod_$VERSION -p 7002:7000 -d webq_meta:$VERSION
+    - docker -H $DOCKER_HOST run --env HOST=${D_HOST} --env DATABASE=${D_DATABASE} --env USER=${D_USER} --env PASSWORD=${D_PASSWORD} --name ${PROJECT_NAME}_prod_$VERSION -p 9002:7000 -d ${PROJECT_NAME}:$VERSION
   environment:
-    name: production
-    url: http://172.16.4.110:7002/api/v2/doc
+    name: production_${VERSION}
+    url: http://172.16.4.110:7002/api/v1/doc
   # when: manual
   only:
   - master

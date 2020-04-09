@@ -14,8 +14,8 @@ if __name__ == '__main__':
     __query_page_path = os.path.join(view_path, 'model2view_query_page.py')
     __query_tree_path = os.path.join(view_path, 'model2view_query_tree.py')
 
-    # os.system(f'python {__model_path}')
-    # os.system(f'python {__model_view_path}')
+    os.system(f'python {__model_path}')
+    os.system(f'python {__model_view_path}')
 
     os.system(f'python {__batch_ins_path}')
     os.system(f'python {__del_path}')
