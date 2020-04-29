@@ -18,10 +18,10 @@ async def {{table.table_name}}_Query_Tree(request):
     """
     try:
         treelist = await {{table.table_name}}.findAll(selectField='*')
-        data = dict(success=True, data=parestree(treelist))
+        data = dict(code=200,message="", data=parestreedict(treelist))
         return render_json(data)
     except Exception as e:
-        data = dict(failure=True, data=e)
+        data = dict(code=500,message=str(e),data="")
         return render_json(data)
 
 {% endfor %}

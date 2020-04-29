@@ -44,11 +44,11 @@ async def {{table.table_name}}_InsOrUp(request):
             effectrows = await {{table.table_name}}().save2({{table.pri_key}}=id,
             {% for column in table.columns %}{{column}}={{column}},
             {% endfor %})
-        data = dict(success=True, data=(effectrows,id))
+        data = dict(code=200,message="", data=(effectrows,id))
         return render_json(data)
     except Exception as e:
         logging.error(e)
-        data = dict(failure=True, data=str(e))
+        data = dict(code=500,message=str(e),data="")
         return render_json(data)
 
 {% endfor %}

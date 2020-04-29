@@ -93,7 +93,7 @@ def ColumnCheck(filter_str, fields):
     """
     filter_str = filter_str.lower()
     conditions = re.split(' and | or ', filter_str)
-    columns = list(map(lambda x: re.split('=| in | like |>|< ', x)[0].strip(), conditions))
+    columns = list(map(lambda x: re.split('=|!=|<>| in | like |>|< ', x)[0].strip(), conditions))
     judge_set = set(map(lambda x: x.strip() in fields, columns))
     if False in judge_set:
         return False

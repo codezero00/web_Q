@@ -28,10 +28,10 @@ async def {{table.table_name}}_Query_Detail(request):
             tablelist = await {{table.table_name}}.findAll(selectField='*')
         else:
             tablelist = await {{table.table_name}}.findAll(selectField='*', where=f'{{table.pri_key}} = "{id}"')
-        data = dict(success=True, data=tablelist)
+        data = dict(code=200,message="", data=tablelist)
         return render_json(data)
     except Exception as e:
-        data = dict(failure=True, data=e)
+        data = dict(code=500,message=str(e),data="")
         return render_json(data)
 
 {% endfor %}

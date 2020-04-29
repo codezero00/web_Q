@@ -42,11 +42,11 @@ async def {{table.table_name}}_BatchIns(request):
             {% for column in table.columns %}{{column}}=n.get('{{column}}'),
             {% endfor %}).save()
 
-        data = dict(success=True, data=effectrows)
+        data = dict(code=200, message="", data=effectrows)
         return render_json(data)
     except Exception as e:
         logging.error(e)
-        data = dict(failure=True, data=str(e))
+        data = dict(code=500,message=str(e),data="")
         return render_json(data)
 
 {% endfor %}
