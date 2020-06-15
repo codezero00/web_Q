@@ -32,6 +32,11 @@ app.conf_others = dict(
     templates_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 )
 
+app.conf_swagger = dict(
+    # swagger_from_file='swagger.yaml'
+    swagger_url='/api/v1/doc'
+)
+
 
 def init_login():
     # 实例化LoginManager 类

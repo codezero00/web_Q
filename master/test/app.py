@@ -13,7 +13,7 @@ cors_urls = tuple(x[0] for x in urlpatterns)
 
 
 app = webQ(urlpatterns)
-app.conf_multiports = (9001, 9002, 9003, 9004)
+app.conf_multiports = (7001, 7002, 7003, 7004)
 app.conf_cors_url = "*"  # 允许跨域的域名
 # app.conf_cors_routes = ('name11', 'name13', 'login', 'reg', 'islogin', 'metaclasstree', 'metaclass')
 app.conf_cors_routes = cors_urls  # 所有url跨域
@@ -52,5 +52,5 @@ def init_login():
 init_login()
 
 if __name__ == '__main__':
-    app.run(9000)
+    app.run(7000)
     # app.multi_run()

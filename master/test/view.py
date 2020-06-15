@@ -4,13 +4,16 @@ from webQ.q_response import Response, json_response, WebSocketResponse, WSMsgTyp
 from webQ.q_login import _COOKIE_NAME, encode_cookie
 from webQ.q_helpers import _RE_EMAIL, _RE_SHA1, APIValueError, APIError, next_id, Page, ToMysqlDateTimeNow
 from model import *
-from utils import parestree,parescolumntree
+from utils import parestree, parescolumntree
 from etlcarte import ETLCarte
 from cls_dnn import forecast
 from cls_word2vec import GenKeywords
 import pandas as pd
-from gfs import GFS
+# from gfs import GFS
+from aiogfs import GFS
 from bson.objectid import ObjectId
+from cls_face_net import compare_two_bytes
+import re
 
 
 # def render_json(data):
@@ -41,6 +44,7 @@ async def ai(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
+
 async def Word2vecKeywords(request):
     content = request.query.get('content')
     content2 = GenKeywords(content)
@@ -53,6 +57,76 @@ async def Word2vecKeywords(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
+
+
+imgdict = {'sourceimg': None,
+           'targetimg': None
+           }
+
+
+async def SourceUpload(request):
+    form = await request.post()
+    form = dict(**form)
+    file = form.get('file')
+    file = file.file
+    image = file.read()
+    # print(image)
+    imgdict['sourceimg'] = image
+    if image:
+        effectrows = 1
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    else:
+        data = dict(failure=True, data='no data!')
+        return render_json(data)
+
+
+async def TargetUpload(request):
+    form = await request.post()
+    form = dict(**form)
+    file = form.get('file')
+    file = file.file
+    image = file.read()
+    # print(image)
+    imgdict['targetimg'] = image
+    if image:
+        effectrows = 1
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    else:
+        data = dict(failure=True, data='no data!')
+        return render_json(data)
+
+
+async def AIFaceCompare(request):
+    """
+    use: action=http://127.0.0.1:9000/api/v1/AIUploadFile1
+    :param request:
+    :return:
+    """
+    res = ''
+    print(imgdict)
+    if imgdict['targetimg'] and imgdict['sourceimg']:
+        forecastvalue = compare_two_bytes(sourceimgbytes=imgdict['sourceimg'],
+                                          targetimgbytes=imgdict['targetimg'])
+        print(f'forecast value: {forecastvalue}')
+        if forecastvalue > 0.9:
+            res = f'不是同一个人({forecastvalue})'
+        elif forecastvalue >= 0.8 and forecastvalue <= 0.9:
+            res = f'很像({forecastvalue})'
+        elif forecastvalue < 0.8:
+            res = f'是同一个人({forecastvalue})'
+        else:
+            res = '不是同一个人'
+    try:
+        effectrows = res
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
 
 # endregion
 
@@ -423,11 +497,11 @@ async def metaclassQuery(request):
 
 async def metadatadetailQuery(request):
     id = request.query.get('id')
-    col = request.query.get('col', 1)
-    str = request.query.get('str', 1)
-    if col.strip() == '' or str.strip() == '':
-        col, str = 1, 1
-    metadata = await VMetaData.findAll(where=f'PID = "{id}" and {col} REGEXP "{str}"')
+    _col = request.query.get('col', 1)
+    _str = request.query.get('str', 1)
+    if str(_col).strip() == '' or str(_str).strip() == '':
+        _col, _str = 1, 1
+    metadata = await VMetaData.findAll(where=f'PID = "{id}" and {_col} REGEXP "{_str}"')
     ##
     data = dict()
     data['success'] = True
@@ -590,6 +664,7 @@ async def dbtablecolumnQuery(request):
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
 
+
 async def dbtablecolumn2Query(request):
     id = request.query.get('id')
     columnlist = await VDBTableColumn2.findAll(where=f'TABID = "{id}"')
@@ -600,6 +675,7 @@ async def dbtablecolumn2Query(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
+
 
 async def etlclientsQuery(request):
     CurrentPage = request.query.get('CurrentPage')
@@ -806,7 +882,6 @@ async def MetaDataTreeQuery(request):
     r.content_type = 'application/json'
     r.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
     return r
-
 
 
 # endregion
@@ -1040,6 +1115,7 @@ async def DBTableInsOrUp(request):
                                        ).save()
         elif tabid and isdel == 0:  # delete
             effectrows = await DBTable(tabid=tabid).upd2(isdel=0)
+            effectrows2 = await DBTableColumn(tabid=tabid).upd2(isdel=0)
 
         data = dict(success=True, data=effectrows)
         return render_json(data)
@@ -1190,7 +1266,7 @@ async def MetaDataClassInsOrUp(request):
 async def MetaDataInsOrUp(request):
     form = await request.json()
     id = form.get('metaid')
-    metaclsid = form.get('metaclsid')
+    mcid = form.get('metaclsid')
     resourceno = form.get('standardno')
     standardno = form.get('standardno')
     metaname = form.get('metaname')
@@ -1220,7 +1296,7 @@ async def MetaDataInsOrUp(request):
                                                         updatetime=ToMysqlDateTimeNow())
         elif not id:  # create
             effectrows = await MetaData(metaid=next_id(),
-                                        metaclsid=metaclsid,
+                                        mcid=mcid,
                                         resourceno=resourceno,
                                         standardno=standardno,
                                         metaname=metaname,
@@ -1246,11 +1322,34 @@ async def MetaDataInsOrUp(request):
         return render_json(data)
 
 
+async def MetaDataDelete(request):
+    """
+    :param request:
+    :return:
+    """
+    form = await request.json()
+    id = form.get('id')
+    # id = request.query.get('id')
+    if (not id):
+        data = dict(failure=True, data="find no id!")
+        return render_json(data)
+    try:
+        effectrows = await MetaData(metaid=id).rm()
+        if effectrows >= 1:
+            data = dict(success=True, data=effectrows)
+        else:
+            data = dict(failure=True, data='delete fuilure!')
+        return render_json(data)
+    except Exception as e:
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
 # NosqlDatabase
 async def NosqlDatabaseInsOrUp(request):
     form = await request.json()
     id = form.get('ndid')
-    name = form.get('name')
+    dbname = form.get('name')
     describe = form.get('describe')
     ip = form.get('ip')
     port = form.get('port')
@@ -1260,10 +1359,11 @@ async def NosqlDatabaseInsOrUp(request):
     createuserid = form.get('createuserid ')
     updateuserid = form.get('updateuserid ')
     isdel = form.get('isdel', 1)
+    print(form)
     try:
 
         if id and isdel == 1:  # update
-            effectrows = await NosqlDatabase(ndid=id).upd2(name=name,
+            effectrows = await NosqlDatabase(ndid=id).upd2(dbname=dbname,
                                                            describe=describe,
                                                            ip=ip,
                                                            port=port,
@@ -1275,7 +1375,7 @@ async def NosqlDatabaseInsOrUp(request):
                                                            isdel=isdel)
         elif not id:  # create
             effectrows = await NosqlDatabase(ndid=next_id(),
-                                             name=name,
+                                             dbname=dbname,
                                              describe=describe,
                                              ip=ip,
                                              port=port,
@@ -1286,6 +1386,9 @@ async def NosqlDatabaseInsOrUp(request):
                                              createtime=ToMysqlDateTimeNow(),
                                              isdel=isdel
                                              ).save()
+            gfs = GFS(dbname=dbname)
+            await gfs.init()
+
         elif id and isdel == 0:  # delete
             effectrows = await NosqlDatabase(ndid=id).upd2(isdel=0)
 
@@ -1329,6 +1432,29 @@ async def DBTableColumnInsOrUp(request):
         elif id and isdel == 0:  # delete
             effectrows = await DBTableColumn(colid=id).upd2(isdel=0)
 
+        data = dict(success=True, data=effectrows)
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+# TableColumndel
+async def DBTableColumnBatchDel(request):
+    form = await request.json()
+    batchid = form.get('batchid')
+    print(str(batchid))
+    print(type(str(batchid)))
+    x = re.search(r'^\[(.*?)\]$', str(batchid))
+    # print(x.group())
+    # print(x.group(1))
+    try:
+        sql = f'delete from dbtablecolumn where colid in ({x.group(1)})'
+
+        print(sql)
+        effectrows = await orm.execute(sql=sql, args=())
+        logging.info(effectrows)
         data = dict(success=True, data=effectrows)
         return render_json(data)
     except Exception as e:
@@ -1383,7 +1509,7 @@ async def UploadFile(request):
     image = file.read()
     try:
         gfs = GFS(dbname=DBName)
-        effectrows = gfs.putBytes(bytes=image, name=filename)
+        effectrows = await gfs.putBytes(bytes=image, name=filename)
         data = dict(success=True, data=effectrows)
         return render_json(data)
     except Exception as e:
@@ -1403,7 +1529,7 @@ async def GetImage(request):
     FileID = request.query.get('FileID')
     gfs = GFS(dbname=DBName)
     # x,y = gfs.get('5ae3d6299f6b8f1714c7fdb5')
-    x, y = gfs.get(FileID)
+    x, y = await gfs.get(FileID)
     # print(x)
     # print(y)
     return render_image(x)
@@ -1421,7 +1547,7 @@ async def NosqlQuery(request):
     PageSize = request.query.get('PageSize')
     print(FileName)
     if FileName:
-        query = {"filename": {'$regex': FileName}}   # '$regex' 模糊查询
+        query = {"filename": {'$regex': FileName}}  # '$regex' 模糊查询
     else:
         query = None
     print(query)
@@ -1433,20 +1559,24 @@ async def NosqlQuery(request):
         return render_json(data)
     else:
         try:
-            num = gfs.find(query=query).count()
+            num = await gfs.find(query=query).count()
+
             p = Page(num, int(CurrentPage), int(PageSize))  # totalcount  # currentpage  # pagesize
             if num == 0:
                 data1 = dict(page=p.GetDict, res=[])
             else:
                 # list = await VDBTable.findAll(limit=(p.offset, p.limit))
-                reslist = list(
-                    gfs.find(query=query, projection={"chunkSize": 0}).sort([('uploadDate', -1)]).skip(
-                        p.offset).limit(p.limit))
+                reslist = await gfs.find(query=query, projection={"chunkSize": 0})\
+                                .sort([('uploadDate', -1)])\
+                                .skip(p.offset)\
+                                .limit(p.limit)\
+                                .to_list(length=100)
+
                 reslistmap = list(map(lambda x: {"_id": str(x['_id']),
                                                  "filename": x['filename'],
                                                  "format": x.get("format", ""),
                                                  "uploadDate": str(x['uploadDate']),
-                                                 "length": round(x['length']/1024/1024, 2)}, reslist))
+                                                 "length": round(x['length'] / 1024 / 1024, 2)}, reslist))
 
                 data1 = dict(page=p.GetDict, res=reslistmap)
             data = dict(success=True, data=data1)
@@ -1569,7 +1699,6 @@ async def on_shutdown(app):
 
 
 # region ggg
-
 
 
 # endregion

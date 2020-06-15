@@ -10,7 +10,6 @@ async def helloworld(request):
     return "helloworld!!"
 
 
-
 # region login
 
 async def authenticate(request):
@@ -122,7 +121,6 @@ async def islogin(request):
 # endregion
 
 
-
 # region nosql mongodb
 
 async def testUploadFile(request):
@@ -167,6 +165,36 @@ async def UploadFile(request):
     try:
         gfs = GFS(dbname=DBName)
         effectrows = await gfs.putBytes(bytes=image, name=filename)
+        data = dict(success=True, data=effectrows.__str__())
+        return render_json(data)
+    except Exception as e:
+        logging.error(e)
+        data = dict(failure=True, data=str(e))
+        return render_json(data)
+
+
+async def UploadFileLarge(request):
+    """
+    use: action=http://127.0.0.1:9000/api/v1/UploadFileLarge
+    :param request:
+    :return:
+    """
+    DBName = request.query.get('DBName')
+
+    reader = await request.multipart()
+    field = await reader.next()
+    # name = await field.read(decode=True)  # 全读取流
+
+    namelist = field.filename.split('.')
+    filename = namelist[:-1][0]
+
+    image = await field.read()  # 全读取流 字节组
+
+    # image = await field.read_chunk()  # 分桶读取流
+
+    try:
+        gfs = GFS(dbname=DBName)
+        effectrows = await gfs.putBytes(bytes=bytes(image), name=filename)
         data = dict(success=True, data=effectrows.__str__())
         return render_json(data)
     except Exception as e:
@@ -248,11 +276,11 @@ async def NosqlQuery(request):
                 data1 = dict(page=p.GetDict, res=[])
             else:
                 # list = await VDBTable.findAll(limit=(p.offset, p.limit))
-                reslist = await gfs.find(query=query, projection={"chunkSize": 0})\
-                                .sort([('uploadDate', -1)])\
-                                .skip(p.offset)\
-                                .limit(p.limit)\
-                                .to_list(length=100)
+                reslist = await gfs.find(query=query, projection={"chunkSize": 0}) \
+                    .sort([('uploadDate', -1)]) \
+                    .skip(p.offset) \
+                    .limit(p.limit) \
+                    .to_list(length=100)
 
                 reslistmap = list(map(lambda x: {"_id": str(x['_id']),
                                                  "filename": x['filename'],
@@ -267,6 +295,4 @@ async def NosqlQuery(request):
             data = dict(failure=True, data=e)
             return render_json(data)
 
-
 # endregion
-

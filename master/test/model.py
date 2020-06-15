@@ -67,7 +67,7 @@ class VResourceBase(Model):
     CJDW = StringField(ddl='varchar(200)')
     LXR = StringField(ddl='varchar(200)')
     LXFS = StringField(ddl='varchar(200)')
-    ZT = StringField(ddl='varchar(200)')
+    # ZT = StringField(ddl='varchar(200)')
 
 
 class VDBTableTree(Model):
@@ -222,10 +222,10 @@ class MetaDataClass(Model):
 
 
 class MetaData(Model):
-    __table__ = 'MetaData'
+    __table__ = 'metadata'
 
     metaid = StringField(primary_key=True, ddl='varchar(200)')
-    metaclsid = StringField(ddl='varchar(200)')
+    mcid = StringField(ddl='varchar(200)')
     resourceno = StringField(ddl='varchar(200)')
     standardno = StringField(ddl='varchar(200)')
     metaname = StringField(ddl='varchar(200)')

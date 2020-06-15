@@ -12,6 +12,7 @@ from jinja2 import Environment, FileSystemLoader
 from multiprocessing import Pool
 from .q_helpers import *
 from .q_login import _COOKIE_NAME, _COOKIE_KEY, decode_cookie, LoginManager
+from functools import wraps
 
 from aiohttp_swagger import *
 
@@ -25,6 +26,7 @@ class webQ(object):
         self._cors_url = None
         self._cors_routes = None
         self._swagger_conf = {}
+        self._permission_request_func = None
 
     def init_jinja2(self, app, **kw):
         logging.info('init jinja2...')
@@ -114,9 +116,36 @@ class webQ(object):
 
         return auth
 
+
+    def permission_request(self, callback):
+        self._permission_request_func= callback
+        return callback
+
+    async def permission_factory(self, app, handler):
+        """
+        true pass /false nopass rv为True则通过，否则不通过 await handler(request) 触发view（放后面表示before_request 前面表示after_request）
+        :param app:
+        :param handler:
+        :return:
+        """
+        async def wrapper(request):
+            func = self._permission_request_func
+            rv = True
+            if func:
+                rv =await func(request)
+            if not rv:
+                content = json.dumps(dict(code=403, message=str('Permission denied !'), data=""), ensure_ascii=False).encode('utf-8')
+                resp = web.Response(body=content)
+                resp.content_type = 'text/json;charset=utf-8'
+                return resp
+            else:
+                return await handler(request)
+        return wrapper
+
     """
     class function
     """
+
     def init_swagger(self, app, **kwargs):
         logging.info('init swagger...')
         # if not kwargs:
@@ -173,7 +202,7 @@ class webQ(object):
         # await orm.create_pool(loop=loop)   ### 创建数据库连接池
         if self._dbsource is not None:
             await create_pool(loop=loop, **self._dbsource)  # 创建数据库连接池
-        app = web.Application(loop=loop, middlewares=[self.logger_factory, self.response_factory, self.auth_factory])
+        app = web.Application(loop=loop, middlewares=[self.logger_factory, self.permission_factory, self.response_factory, self.auth_factory])
         app['sockets'] = []
         self.init_jinja2(app, **self._others)
         self.add_static(app, **self._others)

@@ -1,3 +1,6 @@
+"""
+异步io mongodb客户端需使用motor http://motor.readthedocs.io
+"""
 from gevent import monkey
 
 monkey.patch_all()
@@ -21,16 +24,13 @@ from pymongo.errors import (AutoReconnect,
 # 文件处理系统
 class GFS:
     # 初始化
-    def __init__(self, username=None, password=None,dbname = 'gridfs'):
-        # print("__init__")
+    def __init__(self, username=None, password=None, dbname='gridfs'):
         # self.db = MongoClient("localhost", 27017).gridfs
-        self.client = MongoClient('mongodb://127.0.0.1:27017')
-        # self.db = self.client['gridfs']
+        self.client = MongoClient('mongodb://172.16.4.110:27017')
         self.db = self.client[dbname]
         self.fs = gridfs.GridFS(self.db)
         self.col = self.db.fs.files
-        # print("server info " + " * " * 40)
-        # print(self.db.server_info)
+
 
     def find(self, query, projection=None):
         """
@@ -108,8 +108,9 @@ class GFS:
 if __name__ == '__main__':
     gfs = GFS()
     # print(gfs.get('5ae3d6299f6b8f1714c7fdb5'))
-    # x = gfs.find(query={"filename":"1.png"}, projection={})
-    # print(x)
+    x = gfs.find(query={"filename":"1.png"}, projection={})
+    print(x)
+    print(list(x))
     # x=gfs.fs.find({"filename":"1.png"},{}).limit(10).skip(1)
     # print(x)
     # x = gfs.find()
@@ -119,9 +120,9 @@ if __name__ == '__main__':
     # for y in x:
     #     print(y)
 
-    try:
-        # The ismaster command is cheap and does not require auth.
-        x = gfs.client.admin.command('listDatabases')
-    except ConnectionFailure:
-        print("Server not available")
-    print(x)
+    # try:
+    #     # The ismaster command is cheap and does not require auth.
+    #     x = gfs.client.admin.command('listDatabases')
+    # except ConnectionFailure:
+    #     print("Server not available")
+    # print(x)

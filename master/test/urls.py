@@ -46,6 +46,9 @@ urlpatterns = [
     # AI
     ('ai', 'GET', '/api/v1/classforecast', 'view.ai'),
     ('Word2vecKeywords', 'GET', '/api/v1/Word2vecKeywords', 'view.Word2vecKeywords'),
+    ('AIFaceCompare', 'GET', '/api/v1/AIFaceCompare', 'view.AIFaceCompare'),
+    ('SourceUpload', 'POST', '/api/v1/SourceUpload', 'view.SourceUpload'),
+    ('TargetUpload', 'POST', '/api/v1/TargetUpload', 'view.TargetUpload'),
 
     # I U D
     ('FrontBaseInsOrUp', 'POST', '/api/v1/FrontBaseInsOrUp', 'view.FrontBaseInsOrUp'),
@@ -56,8 +59,10 @@ urlpatterns = [
     ('BloodRrlationInsOrUp', 'POST', '/api/v1/BloodRrlationInsOrUp', 'view.BloodRrlationInsOrUp'),
     ('MetaDataClassInsOrUp', 'POST', '/api/v1/MetaDataClassInsOrUp', 'view.MetaDataClassInsOrUp'),
     ('MetaDataInsOrUp', 'POST', '/api/v1/MetaDataInsOrUp', 'view.MetaDataInsOrUp'),
+    ('MetaDataDelete', 'POST', '/api/v1/MetaDataDelete', 'view.MetaDataDelete'),
     ('NosqlDatabaseInsOrUp', 'POST', '/api/v1/NosqlDatabaseInsOrUp', 'view.NosqlDatabaseInsOrUp'),
     ('DBTableColumnInsOrUp', 'POST', '/api/v1/DBTableColumnInsOrUp', 'view.DBTableColumnInsOrUp'),
+    ('DBTableColumnBatchDel', 'POST', '/api/v1/DBTableColumnBatchDel', 'view.DBTableColumnBatchDel'),
 
     # nosql
     ('testUploadFile', 'POST', '/api/v1/testUploadFile', 'view.testUploadFile'),
