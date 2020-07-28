@@ -1,0 +1,10 @@
+*.pyc
+.idea
+ai
+generated_obj
+hwai
+meta
+master/mongo/
+generated_file
+master/test/
+master/webQ/utils/cache/

@@ -13,4 +13,4 @@ COPY . /app
 RUN cd /app && python setup.py install
 RUN echo 'Hi, I am in your container'
 EXPOSE 7000
-CMD ["python","/app/meta/app.py"]
+CMD ["python","/app/app.py"]

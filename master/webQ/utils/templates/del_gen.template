@@ -1,0 +1,9 @@
+ren gen_model.py  model.py
+ren gen_model_view.py model_view.py
+ren gen_view_batch_ins.py view_batch_ins.py
+ren gen_view_del.py view_del.py
+ren gen_view_insorup.py view_insorup.py
+ren gen_view_query_detail.py view_query_detail.py
+ren gen_view_query_page.py view_query_page.py
+ren gen_view_query_tree.py view_query_tree.py
+ren gen_urls.py urls.py

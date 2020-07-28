@@ -69,6 +69,28 @@ app.conf_swagger = dict(
 
 # init_login()
 
+@app.permission_request
+async def permission(request):
+    print(request)
+    opa_url = 'http://172.16.4.106:8181/v1/data/app/rbac'
+    inputjson = {
+        "input": {
+            "user": "eve",
+            "action": "read",
+            "object": "id123",
+            "type": "dog"
+        }
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url=opa_url, json=inputjson) as resp:
+            output = await resp.text()
+    output_dict = json.loads(output)
+    print(output_dict)
+    # print(output_dict["result"]["allow"])
+    permission_status = output_dict["result"]["allow"]
+    # return True
+    return permission_status
+
 
 async def helloworld(request):
     """
