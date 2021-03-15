@@ -61,7 +61,7 @@ def render_json(data):
     """
     res = Response()
     res.content_type = 'application/json'
-    res.body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    res.body = json.dumps(data, cls=CJsonEncoder, ensure_ascii=False).encode('utf-8')
     return res
 
 def render_image(data):
@@ -85,3 +85,18 @@ def render_file(data,format = 'image/jpeg'):
     res.content_type = format
     res.body = data
     return res
+
+
+class CJsonEncoder(json.JSONEncoder):
+    """
+    扩展 JSONEncoder出来用来格式化时间
+    使用方法 json.dumps(datalist, cls=CJsonEncoder)
+    """
+
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)

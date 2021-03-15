@@ -27,6 +27,7 @@ async def create_pool(loop, **kw):
         autocommit=kw.get('autocommit', True),
         maxsize=kw.get('maxsize', 10),
         minsize=kw.get('minsize', 1),
+        pool_recycle=60,  # 添加这解决 Lost connection to MySQL server during query
         loop=loop
     )
 
@@ -52,15 +53,20 @@ async def proc(p_sql, param):
     '''
     global __pool
     async with __pool.acquire() as conn:
-        async with conn.cursor() as cur:
+        async with conn.cursor(aiomysql.DictCursor) as cur:
             SQL = p_sql
             print(param)
             await cur.callproc(SQL, param)
             # print(cur.description)
+            r_list = []
             r = await cur.fetchall()
+            r_list.append(r)
+            while await cur.nextset():
+                rows = await cur.fetchall()
+                r_list.append(rows)
             # await cur.close()
             logging.info('rows returned: %s' % len(r))
-            return r
+            return r_list
 
 
 async def execmany(p_sql, param):
