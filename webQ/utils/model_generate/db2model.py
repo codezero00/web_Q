@@ -1,7 +1,6 @@
 import asyncio
 import aiomysql
 import logging
-# import aiofiles
 from jinja2 import Template, Environment, FileSystemLoader
 
 from webQ.utils.config import *

@@ -1,7 +1,7 @@
 import os
 templates_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../templates')
 
-from webQ.utils.config import *
+from config import *
 
 if __name__ == '__main__':
     __model_path = os.path.join(model_path, 'db2model.py')

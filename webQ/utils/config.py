@@ -3,6 +3,18 @@ Database config
 可配置项
 """
 
+# HOST = '172.16.4.110'
+# PORT = 3306
+# USER = 'root'
+# PASSWORD = 'zyjs2018!'
+# SCHEMA = 'zyjs_dwc_20181101'
+
+# HOST = '172.16.4.112'
+# PORT = 3306
+# USER = 'root'
+# PASSWORD = 'zyjs123ZYJS'
+# SCHEMA = 'qydb'
+
 HOST = '172.16.4.110'
 PORT = 3306
 USER = 'root'
@@ -16,9 +28,9 @@ Generated path
 """
 
 
-GEN_PATH = ''
+# GEN_PATH = 'C:/Users/Administrator/Desktop/webq_meta_tmp'
 
-
+GEN_PATH = 'C:/Users/Administrator/Desktop/wdis_backend/gen'
 
 
 """

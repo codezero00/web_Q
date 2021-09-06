@@ -37,3 +37,21 @@ def parescasetypetree(lis):
         else:
             entities[fid].setdefault('children', []).append(entitiy)
     return l
+
+def parestreedict(lis):
+    """
+    dict解析树结构函数，pid必须为-1
+    :param lis:
+    :return:
+    """
+    l = []
+    entities = {d['id']: {'id': d['id'], 'pid': d['pid'], 'label': d['name'], 'isresource': d.get('isresource'),'metaclsno': d.get('metaclsno'),'columnname': d.get('columnname'),'code': d.get('code')} for d in lis}
+
+    for e_id in entities:
+        entitiy = entities[e_id]
+        fid = entitiy['pid']
+        if fid == '-1':
+            l.append(entitiy)
+        else:
+            entities[fid].setdefault('children', []).append(entitiy)
+    return l
